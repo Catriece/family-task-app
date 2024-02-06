@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useContext, useState } from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,10 @@ import { useMutation } from "@tanstack/react-query";
 import { LoginUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import AuthContext from "../../auth/authContext";
 
 const LoginForm: FC = () => {
+  const { login } = useContext(AuthContext);
   const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
 
@@ -52,10 +54,21 @@ const LoginForm: FC = () => {
 
   const mutation = useMutation({
     mutationFn: (requestBody: LoginUser) => {
-      return axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
+      const res = axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
+      return res;
     },
-    onSuccess: () => navigate("/dashboard"),
-    onError: () => setErrorMessage(true),
+    onSuccess: (res) => {
+      console.log("RES: ", res);
+      const { access_token, payload } = res.data;
+
+      localStorage.setItem("token", access_token); // Set Token in LS
+      // console.log("USER TOKEN: ", token); // figure out what to do with the token
+      // login({ userCredentials: payload, token: token }); // Giving info to context to be used throughout the application
+
+      navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
+    },
+
+    onError: () => setErrorMessage(true), // maybe console log the error?
   });
 
   return (

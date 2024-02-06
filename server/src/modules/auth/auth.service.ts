@@ -18,8 +18,11 @@ export class AuthService {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new UnauthorizedException();
-      const payload = { sub: user.id, email: user.email };
-      return { access_token: await this.jwtService.signAsync(payload) };
+      const payload = { id: user.id, email: user.email };
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+        payload,
+      };
     } else {
       console.log('user does not exist');
     }
