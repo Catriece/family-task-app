@@ -13,12 +13,12 @@ import {
   InputRightElement,
   FormHelperText,
 } from "@chakra-ui/react";
-import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import { LoginUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import AuthContext from "../../auth/authContext";
+import { loginFunction } from "../../functions/mutations";
 
 const LoginForm: FC = () => {
   const { login } = useContext(AuthContext);
@@ -53,17 +53,14 @@ const LoginForm: FC = () => {
   // TanStack Query - useMutation used for CUD functions
 
   const mutation = useMutation({
-    mutationFn: (requestBody: LoginUser) => {
-      const res = axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
-      return res;
-    },
+    mutationFn: loginFunction,
     onSuccess: (res) => {
       console.log("RES: ", res);
       const { access_token, payload } = res.data;
 
       localStorage.setItem("token", access_token); // Set Token in LS
-      // console.log("USER TOKEN: ", token); // figure out what to do with the token
-      // login({ userCredentials: payload, token: token }); // Giving info to context to be used throughout the application
+      console.log("USER CREDENTIALS: ", payload); // figure out what to do with the token
+      login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
 
       navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
     },

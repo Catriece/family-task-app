@@ -9,7 +9,12 @@ export interface CreateUser extends LoginUser {
 }
 
 export interface User {
-  credentials: object | null; // Should include name, membership status, other important details upon acct creation or login
+  id: string;
+  firstName: string;
+  lastName: string;
+  isActive: boolean;
+  email: string;
+  // Should include name, membership status, other important details upon acct creation or login
 }
 
 export type CurrentUser = {
