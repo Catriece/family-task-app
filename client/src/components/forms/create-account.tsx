@@ -1,4 +1,4 @@
-import React, { FC, useState, useEffect, useRef } from "react";
+import React, { FC, useState, useEffect, useRef, useContext } from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,10 @@ import { useMutation } from "@tanstack/react-query";
 import { CreateUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import AuthContext from "../../auth/authContext";
 
 const CreateAccountForm: FC = () => {
+  const { login } = useContext(AuthContext);
   const [formData, setFormData] = useState<CreateUser>({
     email: "",
     firstName: "",
@@ -130,11 +132,10 @@ const CreateAccountForm: FC = () => {
   const submitForm = useMutation({
     mutationFn: (requestBody: CreateUser) => {
       if (formData.password !== confirmPassword) setDontMatch(true);
-      else {
-      }
-      const data = axios.post("http://localhost:2883/auth/signup", requestBody);
-      console.log("Data", data); // Data returned from createUsers service/controller
-      return data;
+
+      const res = axios.post("http://localhost:2883/auth/signup", requestBody);
+      console.log("Data", res); // Data returned from createUsers service/controller
+      return res;
     },
   });
 
@@ -144,7 +145,12 @@ const CreateAccountForm: FC = () => {
     try {
       const userCreated = await submitForm.mutateAsync(formData); // adding user to database
       console.log("User signed up: ", userCreated); // Do something with usercreated
-      navigate("/dashboard");
+      const { access_token, payload } = userCreated.data;
+
+      localStorage.setItem("token", access_token); // Set Token in LS
+      console.log("USER CREDENTIALS: ", payload); // figure out what to do with the token
+      login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
+      navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
     } catch (error) {
       console.error(error);
     }

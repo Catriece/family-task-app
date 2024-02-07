@@ -16,13 +16,20 @@ export class UserService {
   // creates new user profile
 
   async createUser(createUserDto: CreateUserDto) {
-    const user = await this.usersRepository.save(createUserDto);
+    const { id, email, firstName, lastName, isActive } =
+      await this.usersRepository.save(createUserDto);
 
-    return user;
+    const payload = {
+      id,
+      email,
+      firstName,
+      lastName,
+      isActive,
+    };
+    return payload;
   }
 
   async findUserByEmail(email: string) {
-    console.log('Email at findUserbyEmail func: ', email);
     return await this.usersRepository.findOne({ where: { email } });
   }
 

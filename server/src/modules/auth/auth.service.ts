@@ -18,7 +18,14 @@ export class AuthService {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new UnauthorizedException();
-      const payload = { id: user.id, email: user.email };
+      console.log('user', user);
+      const payload = {
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        isActive: user.isActive,
+      };
       return {
         access_token: await this.jwtService.signAsync(payload),
         payload,
@@ -42,10 +49,14 @@ export class AuthService {
       password: hashedPassword,
     };
 
-    const newUser = await this.userService.createUser(user);
+    const payload = await this.userService.createUser(user);
 
-    if (newUser !== null) return newUser;
-    else return false;
+    if (payload !== null) {
+      return {
+        access_token: await this.jwtService.signAsync(payload),
+        payload,
+      };
+    } else throw new Error('Unable to create new user.');
   }
 
   async checkEmail(email): Promise<any> {

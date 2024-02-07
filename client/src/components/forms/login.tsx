@@ -55,11 +55,9 @@ const LoginForm: FC = () => {
   const mutation = useMutation({
     mutationFn: loginFunction,
     onSuccess: (res) => {
-      console.log("RES: ", res);
       const { access_token, payload } = res.data;
 
       localStorage.setItem("token", access_token); // Set Token in LS
-      console.log("USER CREDENTIALS: ", payload); // figure out what to do with the token
       login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
 
       navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
