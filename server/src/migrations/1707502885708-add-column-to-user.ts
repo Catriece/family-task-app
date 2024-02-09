@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class AddColumnToUser1707090814841 implements MigrationInterface {
-    name = 'AddColumnToUser1707090814841'
+export class AddColumnToUser1707502885708 implements MigrationInterface {
+    name = 'AddColumnToUser1707502885708'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(`ALTER TABLE "user_entity" ADD "preferredName" character varying(255)`);
+        await queryRunner.query(`ALTER TABLE "user_entity" ADD "createdAt" integer`);
         await queryRunner.query(`ALTER TABLE "user_entity" DROP COLUMN "firstName"`);
         await queryRunner.query(`ALTER TABLE "user_entity" ADD "firstName" character varying(255)`);
         await queryRunner.query(`ALTER TABLE "user_entity" DROP COLUMN "lastName"`);
@@ -20,7 +20,7 @@ export class AddColumnToUser1707090814841 implements MigrationInterface {
         await queryRunner.query(`ALTER TABLE "user_entity" ADD "lastName" character varying`);
         await queryRunner.query(`ALTER TABLE "user_entity" DROP COLUMN "firstName"`);
         await queryRunner.query(`ALTER TABLE "user_entity" ADD "firstName" character varying`);
-        await queryRunner.query(`ALTER TABLE "user_entity" DROP COLUMN "preferredName"`);
+        await queryRunner.query(`ALTER TABLE "user_entity" DROP COLUMN "createdAt"`);
     }
 
 }

@@ -68,4 +68,17 @@ export class AuthService {
       return false;
     }
   }
+
+  async resetPassword(email: string) {
+    const user = await this.userService.findUserByEmail(email);
+    if (user == null) throw new UnauthorizedException('Email does not exist');
+
+    const payload = { sub: user.id, email: user.email, name: user.firstName };
+    const token = await this.jwtService.signAsync(payload, {
+      secret: `${user.password}-${user.createdAt}`, // add created_at in user entity
+      expiresIn: '600s',
+    });
+
+    // send email to user with link to reset password form + token + id
+  }
 }

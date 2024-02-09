@@ -30,6 +30,7 @@ const CreateAccountForm: FC = () => {
   });
   const [emailError, setEmailError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
+  const [passwordError, setPasswordError] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false); // For showing and hiding confirm password inputs
   const [dontMatch, setDontMatch] = useState<boolean>(false);
@@ -44,6 +45,8 @@ const CreateAccountForm: FC = () => {
   const screenWidth = isLargerThan800 ? "450px" : "280px"; // Changes the width of form container based on screen size
   const navigate = useNavigate();
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+  const passwordRegex =
+    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/; // Implement Password Regex Check
 
   useEffect(() => {
     if (checkPWRef.current !== null) {
@@ -88,6 +91,7 @@ const CreateAccountForm: FC = () => {
 
   const checkPasswordMatch = () => {
     // Checks if password and confirm pasword fields match. Enables button if passwords match and email input is valid
+
     if (formData.password !== confirmPassword) {
       setDontMatch(true); // sets error message if password and confirm password don't match
       setIsDisabled(true);
@@ -131,7 +135,7 @@ const CreateAccountForm: FC = () => {
 
   const submitForm = useMutation({
     mutationFn: (requestBody: CreateUser) => {
-      if (formData.password !== confirmPassword) setDontMatch(true);
+      if (formData.password !== confirmPassword) setDontMatch(true); // I think this is checked elsewhere in this code
 
       const res = axios.post("http://localhost:2883/auth/signup", requestBody);
       console.log("Data", res); // Data returned from createUsers service/controller
@@ -237,6 +241,9 @@ const CreateAccountForm: FC = () => {
                 type={showPassword ? "text" : "password"}
                 placeholder="Password"
                 value={formData.password}
+                isInvalid={passwordError}
+                focusBorderColor={passwordError ? "red.300" : "blue.300"}
+                errorBorderColor="red.300"
                 onChange={handleInput}
               />
               <FormLabel id="password-label">Password</FormLabel>
@@ -246,6 +253,13 @@ const CreateAccountForm: FC = () => {
                 </Button>
               </InputRightElement>
             </InputGroup>
+            {passwordError ? (
+              <Box sx={{ height: "40px" }}>
+                <Text fontSize="small" color="red" paddingTop="10px">
+                  Password does not meet requirements.
+                </Text>
+              </Box>
+            ) : null}
           </FormControl>
 
           <FormControl variant="floating">

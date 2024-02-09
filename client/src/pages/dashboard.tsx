@@ -14,6 +14,7 @@ import {
 import TodoForm from "../components/todos/todo-form";
 import TodoComponent from "../components/todos/todo-component";
 import MobileNavigation from "../components/navigation/mobile-navigation";
+import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
 
 const DashboardPage: FC = () => {
   const { user, logout } = useContext(AuthContext);
@@ -50,7 +51,7 @@ const DashboardPage: FC = () => {
                   "footer"`
           }
           gridTemplateRows={
-            isLargerThan525 ? "80px 100px 1fr 50px" : "90px 110px 60px 1fr 50px"
+            isLargerThan525 ? "80px 100px 1fr 50px" : "90px 110px 95px 1fr 50px"
           }
           gridTemplateColumns={isLargerThan525 ? "150px 1fr" : "1fr"}
           h="100vh"
@@ -72,8 +73,9 @@ const DashboardPage: FC = () => {
               </Text>
             </Flex>
           </GridItem>
-          <GridItem pl="2" bg="pink.300" area={"nav"}>
-            {isLargerThan525 ? "hi" : <MobileNavigation />}
+          <GridItem bg="pink.300" area={"nav"}>
+            {/* {isLargerThan525 ? "hi" : <MobileNavigation />} */}
+            {isLargerThan525 ? "hi" : <DaysOfTheWeek />}
           </GridItem>
 
           <GridItem pl="2" bg="green.300" area={"main"}>

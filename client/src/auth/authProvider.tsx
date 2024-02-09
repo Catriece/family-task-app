@@ -25,7 +25,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     token: string;
   }) => {
     // LOGIN LOGIC
-    console.log("USER GOING TO LOGIN FUNC", userCredentials);
     setUser(userCredentials);
     localStorage.setItem("user", JSON.stringify(userCredentials));
     localStorage.setItem("token", token);

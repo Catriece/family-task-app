@@ -38,4 +38,10 @@ export class AuthController {
     const data = await this.authService.checkEmail(email.email);
     return data;
   }
+
+  @Post('reset-password')
+  resetPassword(@Body('email') email: string) {
+    console.log('Email', email);
+    return this.authService.resetPassword(email);
+  }
 }
