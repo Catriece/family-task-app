@@ -16,6 +16,6 @@ export class MailController {
       html: '<p>Hey Email</p>',
     };
 
-    return await this.mailService.sendEmail(dto);
+    // return await this.mailService.sendEmail(dto);
   }
 }

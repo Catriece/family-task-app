@@ -22,7 +22,7 @@ export class MailService {
     return transporter;
   }
 
-  async sendEmail(dto: SendEmailDto) {
+  async sendPasswordResetEmail(dto: SendEmailDto, access_token, id) {
     const { from, recipients, subject, html, placeholderReplacements } = dto;
 
     const transport = this.mailTransport();
