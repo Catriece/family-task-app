@@ -81,4 +81,5 @@ In a new terminal:
 | |-- .env.copy (Environment Variables set up)
 | |-- package.json (dependencies list) & all other necessary files
 ```
+
 # family-task-app
