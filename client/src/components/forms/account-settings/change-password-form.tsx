@@ -36,7 +36,7 @@ const ChangePasswordPage = () => {
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)"); // Found in login.tsx file. Make a constants file and import into both files.
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
 
-  const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
+  // const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
 
   const { id, token } = useParams();
 
@@ -83,13 +83,13 @@ const ChangePasswordPage = () => {
   };
 
   return (
-    <Box w={screenWidth} p={5} paddingTop="0px">
+    <Stack spacing={1}>
+      <Text fontSize="3xl" fontWeight={700} textAlign="center">
+        Change Password
+      </Text>
+      <span></span>
       <Center>
-        <Stack spacing={1}>
-          <Text fontSize="3xl" fontWeight={700} textAlign="center">
-            Change Password
-          </Text>
-          <span></span>
+        <Box w="80%">
           <Text fontSize={"medium"} textAlign="left">
             Enter your current password
           </Text>
@@ -179,9 +179,9 @@ const ChangePasswordPage = () => {
             ) : null}
           </FormControl>
           <Button onClick={handlePasswordSubmission}>Change Password</Button>
-        </Stack>
+        </Box>
       </Center>
-    </Box>
+    </Stack>
   );
 };
 

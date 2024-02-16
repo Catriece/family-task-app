@@ -1,4 +1,12 @@
+// TODO: Change endpoint and place in a .env file
+// TODO: Implement Password Regex (last thing)
+
 import React, { FC, useState, useEffect, useRef, useContext } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useMutation } from "@tanstack/react-query";
+import AuthContext from "../../auth/authContext";
+import { CreateUser } from "../../types";
 import {
   Box,
   Button,
@@ -13,57 +21,62 @@ import {
   InputRightElement,
   FormHelperText,
 } from "@chakra-ui/react";
-import axios from "axios";
-import { useMutation } from "@tanstack/react-query";
-import { CreateUser } from "../../types";
-import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import AuthContext from "../../auth/authContext";
 
 const CreateAccountForm: FC = () => {
   const { login } = useContext(AuthContext);
+
   const [formData, setFormData] = useState<CreateUser>({
     email: "",
     firstName: "",
     lastName: "",
     password: "",
   });
+
   const [emailError, setEmailError] = useState<boolean>(false);
-  const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false); // For showing and hiding password inputs
   const [passwordError] = useState<boolean>(false);
-  const [showConfirmPassword, setShowConfirmPassword] =
+  const [showConfirmPasswordInput, setShowConfirmPasswordInput] =
     useState<boolean>(false); // For showing and hiding confirm password inputs
-  const [dontMatch, setDontMatch] = useState<boolean>(false);
+
+  const [dontMatch, setDontMatch] = useState<boolean>(false); // Use State for Password and Confirm Password Match
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
+  // Media queries for styling mobile and desktop screens
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
+  // Changes the width of form container based on screen size
+  const screenWidth = isLargerThan800 ? "450px" : "280px";
 
+  // Allows me to reference the current/updated state
   const emailErrorRef = useRef<boolean>(false);
   const checkPWRef = useRef<number | null>(null);
-  const screenWidth = isLargerThan800 ? "450px" : "280px"; // Changes the width of form container based on screen size
-  const navigate = useNavigate();
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  //const passwordRegex =
-  // /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/; // Implement Password Regex Check
 
+  const navigate = useNavigate();
+
+  // Email Regex for Validation
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+  // **PASSWORD REGEX IMPLEMENTATION
+  //const passwordRegex =
+  // /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/;
+
+  // Refreshes setTimeout when PW state is updated. This stalls UI error message
   useEffect(() => {
-    if (checkPWRef.current !== null) {
-      clearTimeout(checkPWRef.current);
-    }
+    if (checkPWRef.current !== null) clearTimeout(checkPWRef.current);
 
     checkPWRef.current = setTimeout(() => {
       checkPasswordMatch();
     }, 500);
   }, [confirmPassword, formData.email]);
 
-  // Accounting for changes to password field when the confirm password field already has value
+  // Accounting for changes to Password field when the Confirm Password field already has value
   useEffect(() => {
     if (confirmPassword !== "") checkPasswordMatch();
   }, [formData.password]);
 
-  // Checks database to see if email is already in use
+  // Database query to see if email is already in use before submission
   useEffect(() => {
     const findEmail = async () => {
       if (emailRegex.test(formData.email)) {
@@ -94,7 +107,7 @@ const CreateAccountForm: FC = () => {
 
     if (formData.password !== confirmPassword) {
       setDontMatch(true); // sets error message if password and confirm password don't match
-      setIsDisabled(true);
+      setIsDisabled(true); // Disables button if passwords don't match
     } else {
       emailRegex.test(formData.email) && emailErrorRef.current === false
         ? setIsDisabled(false) // Enables button if email passes regex test
@@ -122,12 +135,12 @@ const CreateAccountForm: FC = () => {
 
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setShowPassword(!showPassword);
+    setShowPasswordInput(!showPasswordInput);
   };
 
   const handleConfirmPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setShowConfirmPassword(!showConfirmPassword);
+    setShowConfirmPasswordInput(!showConfirmPasswordInput);
   };
 
   // TanStack Query - useMutation used for CUD functions
@@ -138,7 +151,7 @@ const CreateAccountForm: FC = () => {
       if (formData.password !== confirmPassword) setDontMatch(true); // I think this is checked elsewhere in this code
 
       const res = await axios.post(
-        "http://localhost:2883/auth/signup",
+        "http://localhost:2883/auth/signup", // MAKE AN ENV VARIABLE
         requestBody
       );
       console.log("Data", res); // Data returned from createUsers service/controller
@@ -241,7 +254,7 @@ const CreateAccountForm: FC = () => {
                 aria-labelledby="password-label"
                 id="password"
                 name="password"
-                type={showPassword ? "text" : "password"}
+                type={showPasswordInput ? "text" : "password"}
                 placeholder="Password"
                 value={formData.password}
                 isInvalid={passwordError}
@@ -252,7 +265,7 @@ const CreateAccountForm: FC = () => {
               <FormLabel id="password-label">Password</FormLabel>
               <InputRightElement>
                 <Button name="password" onClick={handlePassword}>
-                  {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
             </InputGroup>
@@ -271,7 +284,7 @@ const CreateAccountForm: FC = () => {
                 aria-labelledby="confirm-password-label"
                 id="confirmPassword"
                 name="confirmPassword"
-                type={showConfirmPassword ? "text" : "password"}
+                type={showConfirmPasswordInput ? "text" : "password"}
                 placeholder="Confirm Password"
                 isInvalid={dontMatch}
                 focusBorderColor={dontMatch ? "red.300" : "blue.300"}
@@ -282,7 +295,7 @@ const CreateAccountForm: FC = () => {
               <FormLabel>Confirm Password</FormLabel>
               <InputRightElement>
                 <Button name="confirmPassword" onClick={handleConfirmPassword}>
-                  {showConfirmPassword ? <ViewOffIcon /> : <ViewIcon />}
+                  {showConfirmPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
             </InputGroup>
