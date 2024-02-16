@@ -1,10 +1,28 @@
 # Your Favorite Family Task App
 
-## Introduction
+## Introduction:
 
 Welcome to Family Task App, a todo application designed to bring organization and collaboration to your family's daily activities. This application is here to simplify your family's routine by providing a centralized platform where everyone can stay connected and contribute to the shared responsibilities that make households run smoothly.
 
 This project is broken up into two folders: `/client` for frontend and `/server` for the backend/api.
+
+### Technologies used
+
+#### Client-Side
+
+- Vite
+- React
+- TypeScript
+- Tanstack Query
+- Axios
+- ChakraUI
+
+#### Server-Side
+
+- Nestjs
+- TypeScript
+- PostgreSQL
+- TypeOrm
 
 ## GETTING STARTED:
 
@@ -45,9 +63,10 @@ To start the development server in the terminal:
 
 In a new terminal:
 
-1. Navigate to the `/server` folder
-2. Install all dependencies with `npm install`
-3. Start the server with `nest run start:dev` command
+- [ ] Navigate to the `/server` folder
+- [ ] Install all dependencies with `npm install`
+- [ ] Start the server with `nest run start:dev` command
+- [ ]
 
 ## FOLDER STRUCTURE
 
@@ -65,20 +84,20 @@ In a new terminal:
 
 |-- `server`
 | |-- `src`
-| | |-- `app`
-| | | |-- `app.controller.ts` (Top level controllers file)
-| | | |-- `app.module.ts` (Top level modules file)
-| | | |-- `app.service.ts` (Top level routes file)
-| | |-- `entities`
-| | | |-- `entity name` (Example: "Users")
-| | | | |-- `entity file`
-| | | | |-- `entity controllers`
-| | | | |-- `entity module`
-| | | | |-- `entity routes`
-| | |-- test file
+| | |-- `config`
+| | |-- `functions`
+| | |-- `migrations`
+| | |-- `modules`
+| | | |-- `auth`
+| | | |-- `user`
+| | |-- `app.controller.ts` (Top level controllers file)
+| | |-- `app.module.ts` (Top level modules file)
+| | |-- `app.service.ts` (Top level routes file)
 | | |-- `main.ts`
+| | |-- `folder`
 | |-- `test`
 | |-- .env.copy (Environment Variables set up)
 | |-- package.json (dependencies list) & all other necessary files
 ```
+
 # family-task-app
