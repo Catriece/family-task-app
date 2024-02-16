@@ -65,8 +65,8 @@ In a new terminal:
 
 - [ ] Navigate to the `/server` folder
 - [ ] Install all dependencies with `npm install`
+- [ ] Run migration with: `npm run migration:run`
 - [ ] Start the server with `nest run start:dev` command
-- [ ]
 
 ## FOLDER STRUCTURE
 
