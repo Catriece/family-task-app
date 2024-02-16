@@ -20,24 +20,22 @@ export class AuthController {
 
   @Post('/login')
   async login(@Body() loginDto: UserLoginDto) {
-    console.log('Came to controller with: ', loginDto);
     const email: string = loginDto.email;
     const password: string = loginDto.password;
     const data = await this.authService.login(email, password);
-    console.log('Leaving the controller with: ', data);
     return data;
   }
 
   @Post('/signup')
   async signUp(@Body() signUpDto: SignUpDto) {
-    return await this.authService.signUp(signUpDto);
+    console.log('Came to controller with: ', signUpDto);
+    const data = await this.authService.signUp(signUpDto);
+    return data;
   }
 
   @Post('/checkemail')
   async checkEmail(@Body() email) {
-    console.log('Email that came: ', email.email);
     const data = await this.authService.checkEmail(email.email);
-    console.log('Data', data);
     return data;
   }
 }
