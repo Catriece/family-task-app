@@ -18,14 +18,13 @@ export class UserController {
   @Post()
   async createUser(@Body() createUserDto: CreateUserDto) {
     const data = await this.userService.createUser(createUserDto);
-    console.log('Returned from service with: ', data);
     return data;
   }
 
-  // @Get()
-  // findAll() {
-  //   return this.userService.findAll();
-  // }
+  @Post()
+  findAll() {
+    return 'This action finds all user groups';
+  }
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {

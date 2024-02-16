@@ -1,6 +1,4 @@
 import {
-  Box,
-  Button,
   Tabs,
   TabList,
   Tab,
@@ -8,7 +6,6 @@ import {
   TabPanel,
   Center,
 } from "@chakra-ui/react";
-import React from "react";
 import TodoComponent from "../todos/todo-component";
 
 const MobileNavigation = () => {

@@ -4,6 +4,7 @@ import { Get, Post, Body, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/login-user-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { AuthGuard } from './auth.guard';
+import { UpdatePasswordDto } from './dto/update-password-dto';
 
 @Controller('auth')
 export class AuthController {
@@ -37,5 +38,17 @@ export class AuthController {
   async checkEmail(@Body() email) {
     const data = await this.authService.checkEmail(email.email);
     return data;
+  }
+
+  @Post('/reset-password')
+  async resetPassword(@Body('email') email: string) {
+    const payload = await this.authService.resetPassword(email);
+    if (payload) return true;
+  }
+
+  @Post('/update-password')
+  async updatePassword(@Body() body: UpdatePasswordDto) {
+    const payload = await this.authService.updatePassword(body);
+    if (payload !== null) return true;
   }
 }

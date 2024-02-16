@@ -1,9 +1,7 @@
-import React from "react";
 import {
   Card,
   CardHeader,
   Flex,
-  Avatar,
   Box,
   Heading,
   Text,

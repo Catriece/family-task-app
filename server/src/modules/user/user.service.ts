@@ -16,8 +16,9 @@ export class UserService {
   // creates new user profile
 
   async createUser(createUserDto: CreateUserDto) {
+    const user = { ...createUserDto, createdAt: Date.now() };
     const { id, email, firstName, lastName, isActive } =
-      await this.usersRepository.save(createUserDto);
+      await this.usersRepository.save(user);
 
     const payload = {
       id,
@@ -31,6 +32,10 @@ export class UserService {
 
   async findUserByEmail(email: string) {
     return await this.usersRepository.findOne({ where: { email } });
+  }
+
+  async findUserById(id: string) {
+    return await this.usersRepository.findOne({ where: { id } });
   }
 
   findAll() {

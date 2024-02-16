@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import { FC, useState } from "react";
 import CreateAccountForm from "../components/forms/create-account";
 import LoginForm from "../components/forms/login";
 import {
@@ -13,7 +13,7 @@ import {
 } from "@chakra-ui/react";
 import TopNavigationBar from "../components/navigation/top-navigation-bar";
 
-const AccountsPage: FC = () => {
+const LoginPage: FC = () => {
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [pageView, setPageView] = useState<string>("login");
 
@@ -27,7 +27,6 @@ const AccountsPage: FC = () => {
         <GridItem area={"header"}>
           <TopNavigationBar />
         </GridItem>
-        {/* <LoginForm /> */}
         {pageView === "signup" && (
           <GridItem area={"main"}>
             {isLargerThan550 ? null : (
@@ -75,4 +74,4 @@ const AccountsPage: FC = () => {
   );
 };
 
-export default AccountsPage;
+export default LoginPage;
