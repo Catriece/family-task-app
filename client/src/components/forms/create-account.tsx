@@ -30,7 +30,7 @@ const CreateAccountForm: FC = () => {
   });
   const [emailError, setEmailError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
-  const [passwordError, setPasswordError] = useState<boolean>(false);
+  const [passwordError] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false); // For showing and hiding confirm password inputs
   const [dontMatch, setDontMatch] = useState<boolean>(false);
@@ -45,8 +45,8 @@ const CreateAccountForm: FC = () => {
   const screenWidth = isLargerThan800 ? "450px" : "280px"; // Changes the width of form container based on screen size
   const navigate = useNavigate();
   const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
-  const passwordRegex =
-    /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/; // Implement Password Regex Check
+  //const passwordRegex =
+  // /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/; // Implement Password Regex Check
 
   useEffect(() => {
     if (checkPWRef.current !== null) {
@@ -134,10 +134,13 @@ const CreateAccountForm: FC = () => {
   // How do I modularize this?
 
   const submitForm = useMutation({
-    mutationFn: (requestBody: CreateUser) => {
+    mutationFn: async (requestBody: CreateUser) => {
       if (formData.password !== confirmPassword) setDontMatch(true); // I think this is checked elsewhere in this code
 
-      const res = axios.post("http://localhost:2883/auth/signup", requestBody);
+      const res = await axios.post(
+        "http://localhost:2883/auth/signup",
+        requestBody
+      );
       console.log("Data", res); // Data returned from createUsers service/controller
       return res;
     },
@@ -148,15 +151,15 @@ const CreateAccountForm: FC = () => {
 
     try {
       const userCreated = await submitForm.mutateAsync(formData); // adding user to database
-      console.log("User signed up: ", userCreated); // Do something with usercreated
       const { access_token, payload } = userCreated.data;
 
       localStorage.setItem("token", access_token); // Set Token in LS
-      console.log("USER CREDENTIALS: ", payload); // figure out what to do with the token
+
       login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
       navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
     } catch (error) {
       console.error(error);
+      throw new Error("Error creating new user");
     }
   };
 

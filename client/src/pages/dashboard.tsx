@@ -1,23 +1,22 @@
-import React, { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useState } from "react";
 import AuthContext from "../auth/authContext";
 import { User } from "../types";
 import Loader from "../components/loader";
 import {
   Flex,
   Text,
-  Box,
   Grid,
   GridItem,
   Heading,
   useMediaQuery,
 } from "@chakra-ui/react";
-import TodoForm from "../components/todos/todo-form";
-import TodoComponent from "../components/todos/todo-component";
-import MobileNavigation from "../components/navigation/mobile-navigation";
-import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
+// import TodoForm from "../components/todos/todo-form";
+// import TodoComponent from "../components/todos/todo-component";
+// import MobileNavigation from "../components/navigation/mobile-navigation";
+// import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
 
 const DashboardPage: FC = () => {
-  const { user, logout } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -75,7 +74,7 @@ const DashboardPage: FC = () => {
           </GridItem>
           <GridItem bg="pink.300" area={"nav"}>
             {/* {isLargerThan525 ? "hi" : <MobileNavigation />} */}
-            {isLargerThan525 ? "hi" : <DaysOfTheWeek />}
+            {/* {isLargerThan525 ? "hi" : <DaysOfTheWeek />} */}
           </GridItem>
 
           <GridItem pl="2" bg="green.300" area={"main"}>

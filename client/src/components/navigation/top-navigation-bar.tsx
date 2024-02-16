@@ -1,15 +1,11 @@
-import React, { FC, useState } from "react";
 import {
   Flex,
-  Spacer,
-  Button,
   useMediaQuery,
   Tabs,
   Tab,
   TabList,
   TabPanels,
   TabPanel,
-  Center,
 } from "@chakra-ui/react";
 import LoginForm from "../forms/login";
 import CreateAccountForm from "../forms/create-account";

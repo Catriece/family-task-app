@@ -1,9 +1,7 @@
 import {
-  Box,
   FormControl,
   FormLabel,
   Input,
-  Text,
   Textarea,
   Modal,
   ModalOverlay,
@@ -14,7 +12,6 @@ import {
   ModalFooter,
   Button,
 } from "@chakra-ui/react";
-import React from "react";
 
 const TodoForm = ({}) => {
   return (

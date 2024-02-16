@@ -1,5 +1,4 @@
 import React, { FC, useContext, useState } from "react";
-import { useAuth0 } from "@auth0/auth0-react";
 import {
   Box,
   Button,
@@ -13,7 +12,6 @@ import {
   InputGroup,
   InputRightElement,
   FormHelperText,
-  Link,
 } from "@chakra-ui/react";
 import { useMutation } from "@tanstack/react-query";
 import { LoginUser } from "../../types";
@@ -23,11 +21,9 @@ import AuthContext from "../../auth/authContext";
 import { loginFunction } from "../../functions/mutations";
 
 import ForgotPasswordForm from "./forgot-password";
-import axios from "axios";
 
 const LoginForm: FC = () => {
   const { login } = useContext(AuthContext);
-  const [email, setEmail] = useState<string>("");
   const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
@@ -39,7 +35,7 @@ const LoginForm: FC = () => {
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
 
-  const screenWidth = isLargerThan800 ? "350px" : "95vw"; // Changes the width of form container based on screen size
+  const screenWidth = isLargerThan800 ? "450px" : "280px"; // Changes the width of form container based on screen size
 
   const navigate = useNavigate();
 
@@ -54,14 +50,6 @@ const LoginForm: FC = () => {
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword(!showPassword);
-  };
-
-  const onSubmitEmail = () => {
-    axios
-      .post("http://localhost: 2883/auth/reset-password", { email })
-      .then((res) => {
-        console.log("Response: ", res.data);
-      });
   };
 
   // TanStack Query - useMutation used for CUD functions

@@ -8,8 +8,10 @@ import Mail from 'nodemailer/lib/mailer';
 export class MailService {
   constructor(private readonly configService: ConfigService) {}
 
+  // Would like to utilize mail.ts file for modularization purposes. Not sure how, haha.
   mailTransport() {
     const transporter = nodemailer.createTransport({
+      service: this.configService.get<string>('MAIL_SERVICE'),
       host: this.configService.get<string>('MAIL_HOST'),
       port: this.configService.get<number>('MAIL_PORT'),
       secure: false,
@@ -22,8 +24,8 @@ export class MailService {
     return transporter;
   }
 
-  async sendPasswordResetEmail(dto: SendEmailDto, access_token, id) {
-    const { from, recipients, subject, html, placeholderReplacements } = dto;
+  async sendPasswordResetEmail(dto: SendEmailDto) {
+    const { from, recipients, subject, html } = dto;
 
     const transport = this.mailTransport();
 
@@ -41,7 +43,7 @@ export class MailService {
       const result = await transport.sendMail(options);
       return result;
     } catch (error) {
-      console.error('Error: ', error);
+      console.error('Error sending email:: ', error);
     }
   }
 }

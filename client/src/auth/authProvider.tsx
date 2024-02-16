@@ -1,7 +1,6 @@
-import React, { FC, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import AuthContext from "./authContext";
 import { CurrentUser, User } from "../types";
-import { useMutation } from "@tanstack/react-query";
 
 type AuthProviderProps = {
   children: React.ReactNode;

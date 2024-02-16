@@ -21,6 +21,6 @@ export class UserEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'int', nullable: true })
+  @Column({ type: 'bigint', nullable: true })
   createdAt: number;
 }

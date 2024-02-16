@@ -6,5 +6,4 @@ export type SendEmailDto = {
   subject: string;
   html: string;
   text?: string;
-  placeholderReplacements?: Record<string, string>;
 };
