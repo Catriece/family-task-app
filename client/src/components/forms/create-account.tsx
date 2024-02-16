@@ -39,8 +39,8 @@ const CreateAccountForm: FC = () => {
   const [showConfirmPasswordInput, setShowConfirmPasswordInput] =
     useState<boolean>(false); // For showing and hiding confirm password inputs
 
-  const [dontMatch, setDontMatch] = useState<boolean>(false); // Use State for Password and Confirm Password Match
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
+  const [dontMatch, setDontMatch] = useState<boolean>(false); // State for Password and Confirm Password Match
+  const [isDisabled, setIsDisabled] = useState<boolean>(true); // State for enabling or disabling button
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Media queries for styling mobile and desktop screens
@@ -82,7 +82,7 @@ const CreateAccountForm: FC = () => {
       if (emailRegex.test(formData.email)) {
         try {
           const res = await axios.post(
-            "http://localhost:2883/auth/checkemail",
+            "http://localhost:2883/auth/checkemail", // Create/change env variable
             { email: formData.email }
           ); // NESTJS expects to recieve an object
           if (res.data === true) {
@@ -117,8 +117,7 @@ const CreateAccountForm: FC = () => {
     }
   };
 
-  // TODO: query database to check if email is already in use
-
+  // Handles form inputs
   const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
 

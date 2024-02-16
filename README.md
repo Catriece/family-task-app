@@ -65,6 +65,8 @@ In a new terminal:
 
 - [ ] Navigate to the `/server` folder
 - [ ] Install all dependencies with `npm install`
+- [ ] Create `.env` file from `.env.copy` file
+- [ ]
 - [ ] Run migration with: `npm run migration:run`
 - [ ] Start the server with `nest run start:dev` command
 
