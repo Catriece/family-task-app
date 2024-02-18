@@ -9,7 +9,10 @@ import {
   GridItem,
   Heading,
   useMediaQuery,
+  Button,
 } from "@chakra-ui/react";
+import { useNavigate } from "react-router-dom";
+import SettingsPage from "./settings-page";
 // import TodoForm from "../components/todos/todo-form";
 // import TodoComponent from "../components/todos/todo-component";
 // import MobileNavigation from "../components/navigation/mobile-navigation";
@@ -22,6 +25,8 @@ const DashboardPage: FC = () => {
 
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     if (user) {
       setIsLoading(false);
@@ -30,6 +35,11 @@ const DashboardPage: FC = () => {
       setIsLoading(true);
     }
   }, [user]);
+
+  const toSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    navigate("/account/settings");
+  };
 
   return (
     <>
@@ -60,7 +70,8 @@ const DashboardPage: FC = () => {
           fontWeight="bold"
         >
           <GridItem pl="2" bg="orange.300" area={"header"}>
-            Header
+            <Button onClick={toSettings}>Settings</Button>
+            <Text>&#8593;NOT MUCH HERE BUT CHECK OUT THIS NEW FEATURE!!!!</Text>
           </GridItem>
           <GridItem pl="2" area={"greeting"}>
             <Flex flexDirection="column" justifyContent="center">

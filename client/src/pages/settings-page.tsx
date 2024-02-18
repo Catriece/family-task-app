@@ -55,7 +55,9 @@ const SettingsPage = () => {
       w={screenWidth}
       gap="1"
     >
-      <GridItem area={"header"}>HEADER WILL GO HERE</GridItem>
+      <GridItem area={"header"}>
+        <Text>HEADER WILL GO HERE</Text>
+      </GridItem>
       <GridItem area={"heading"}>
         <Flex
           justifyContent={"space-between"}
@@ -69,7 +71,7 @@ const SettingsPage = () => {
               justifyContent: "flex-end",
             }}
           >
-            <CloseIcon fontSize={"xl"} />
+            <CloseIcon fontSize={"sm"} />
           </Box>
           <Text
             fontSize={"4xl"}
@@ -162,7 +164,7 @@ const SettingsPage = () => {
           </Box>
           <Divider marginTop={"20px"} marginBottom={"20px"} />
         </Flex>
-        <Flex flexDirection={"column-reverse"}>
+        <Flex flexDirection={"column"}>
           <Box
             as="button"
             aria-labelledby="settings"
@@ -179,6 +181,11 @@ const SettingsPage = () => {
             </Text>
             <Box sx={{ flexGrow: 1 }} />
             <ChevronRightIcon boxSize={6} />
+          </Box>
+          <Box>
+            <Center>
+              <Button variant="ghost">Delete Account</Button>
+            </Center>
           </Box>
         </Flex>
       </GridItem>
