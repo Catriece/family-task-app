@@ -26,3 +26,11 @@ export type CurrentUser = {
   }) => Promise<void>;
   logout: () => void;
 };
+
+export type AccountInfo = {
+  // image: string
+  firstName: string;
+  lastName: string;
+  email: string;
+  // birthday: string
+};

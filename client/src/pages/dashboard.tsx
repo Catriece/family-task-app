@@ -11,8 +11,7 @@ import {
   useMediaQuery,
   Button,
 } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
-import SettingsPage from "./settings-page";
+import { useNavigate, useParams } from "react-router-dom";
 // import TodoForm from "../components/todos/todo-form";
 // import TodoComponent from "../components/todos/todo-component";
 // import MobileNavigation from "../components/navigation/mobile-navigation";
@@ -26,6 +25,7 @@ const DashboardPage: FC = () => {
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
 
   const navigate = useNavigate();
+  const { id } = useParams();
 
   useEffect(() => {
     if (user) {
@@ -38,7 +38,7 @@ const DashboardPage: FC = () => {
 
   const toSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    navigate("/account/settings");
+    navigate(`/account/${id}/settings/`);
   };
 
   return (

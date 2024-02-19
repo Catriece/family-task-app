@@ -1,22 +1,25 @@
-import { Controller, UseGuards } from '@nestjs/common';
+import { Controller, Param, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Get, Post, Body, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/login-user-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { AuthGuard } from './auth.guard';
 import { UpdatePasswordDto } from './dto/update-password-dto';
+import { UserService } from '../user/user.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly userService: UserService,
+  ) {}
 
   @UseGuards(AuthGuard)
-  @Get('user')
-  getUserData(@Request() req) {
-    console.log('USER: ', req.user);
-    // Call user service
-    // Get all associated data for user
-    return req.user;
+  @Get('/user')
+  async getUserData(@Request() params) {
+    const { id } = params.query;
+    const user = await this.userService.findUserById(id);
+    return user;
   }
 
   @Post('/login')
@@ -29,7 +32,6 @@ export class AuthController {
 
   @Post('/signup')
   async signUp(@Body() signUpDto: SignUpDto) {
-    console.log('Came to controller with: ', signUpDto);
     const data = await this.authService.signUp(signUpDto);
     return data;
   }

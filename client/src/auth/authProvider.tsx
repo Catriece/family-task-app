@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import AuthContext from "./authContext";
 import { CurrentUser, User } from "../types";
+import { useNavigate } from "react-router-dom";
 
 type AuthProviderProps = {
   children: React.ReactNode;
@@ -9,10 +10,12 @@ type AuthProviderProps = {
 const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    const stored_user = JSON.parse(localStorage.getItem("user") || "null");
-    if (stored_user) {
-      setUser(stored_user);
+    const storedUser = JSON.parse(localStorage.getItem("user") || "null");
+    if (storedUser) {
+      setUser(storedUser);
     }
   }, []);
 
@@ -34,6 +37,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
+    navigate("/login");
   };
 
   const userPackage: CurrentUser = {
