@@ -13,30 +13,46 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AccountInfo } from "../../types";
+import mediaQueries from "../constants";
 
 const container = {
-  borderRadius: "50px",
+  // borderRadius: "50px",
   background: "#e0e0e0",
   FlexShadow: "20px 20px 60px #bebebe -20px -20px 60px #ffffff",
-  padding: "20px 30px",
+  padding: "20px 10px",
 };
 
-const UserAccountCard: FC<AccountInfo> = ({ firstName, lastName, email }) => {
+const UserAccountDetailsCard: FC<AccountInfo> = ({
+  firstName,
+  lastName,
+  email,
+}) => {
+  const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
   const [editInput, setEditInput] = useState<boolean>(true);
   const [name, setName] = useState<string>(firstName + " " + lastName);
 
+  const avatarSize = ISSMALLERTHAN300 ? "md" : "xl";
+  const headingSize = ISSMALLERTHAN300 ? "lg" : "xl";
+  const textSize = ISSMALLERTHAN300 ? "sm" : ISLARGERTHAN550 ? "xl" : "md";
+  // const paddingText = ISSMALLERTHAN300 ? 2 : 5;
   return (
     <>
       <Card sx={container}>
         <Center>
-          <Avatar size="xl" />
+          <Avatar size={avatarSize} />
         </Center>
 
-        <Text fontSize={"xl"} fontWeight={700} mt={"10px"} mb={2}>
+        <Text fontSize={headingSize} fontWeight={700} mt={"10px"} mb={2}>
           Personal Information
         </Text>
-        <Flex alignItems={"center"}>
-          <Text fontSize={"md"} pl={5} mb={2} fontWeight={525}>
+        <Flex alignItems={"center"} flexDirection={"column"}>
+          <Text
+            fontSize={textSize}
+            pl={2}
+            mb={2}
+            fontWeight={600}
+            alignSelf="flex-start"
+          >
             Name:
           </Text>
           <Editable
@@ -62,8 +78,14 @@ const UserAccountCard: FC<AccountInfo> = ({ firstName, lastName, email }) => {
             </Editable>
           )}
         </Flex>
-        <Flex alignItems={"center"}>
-          <Text fontSize={"md"} pl={5} mb={2} fontWeight={525}>
+        <Flex alignItems={"center"} flexDirection={"column"}>
+          <Text
+            fontSize={textSize}
+            alignSelf="flex-start"
+            pl={2}
+            mb={2}
+            fontWeight={600}
+          >
             Email:
           </Text>
           <Editable
@@ -77,8 +99,14 @@ const UserAccountCard: FC<AccountInfo> = ({ firstName, lastName, email }) => {
             <EditableInput />
           </Editable>
         </Flex>
-        <Flex alignItems={"center"}>
-          <Text fontSize={"md"} pl={5} mb={2} fontWeight={525}>
+        <Flex alignItems={"center"} flexDirection={"column"}>
+          <Text
+            fontSize={textSize}
+            alignSelf="flex-start"
+            pl={2}
+            mb={2}
+            fontWeight={600}
+          >
             Birthday:
           </Text>
           <Editable
@@ -108,4 +136,4 @@ const UserAccountCard: FC<AccountInfo> = ({ firstName, lastName, email }) => {
   );
 };
 
-export default UserAccountCard;
+export default UserAccountDetailsCard;

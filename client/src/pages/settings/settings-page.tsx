@@ -10,7 +10,6 @@ import {
   Avatar,
   Divider,
 } from "@chakra-ui/react";
-import ChangePasswordPage from "../components/forms/account-settings/change-password-form";
 import {
   ArrowLeftIcon,
   AtSignIcon,
@@ -21,19 +20,12 @@ import {
   SettingsIcon,
 } from "@chakra-ui/icons";
 import { useContext, useState } from "react";
-import UserAccountCard from "../components/user/user-card-component";
+
+import UserAccountDetailsCard from "../../components/user/account-details-coponent";
+import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import AuthContext from "../auth/authContext";
-
-const desktop = {
-  border: "gray solid .5px",
-  padding: "20px 10px",
-  width: "90%",
-};
-
-const mobile = {
-  padding: "20px 10px",
-};
+import AuthContext from "../../auth/authContext";
+import mediaQueries from "../../components/constants";
 
 const button = {
   display: "flex",
@@ -43,18 +35,16 @@ const button = {
 };
 
 const SettingsPage = () => {
+  const { ISLARGERTHAN550, ISLARGERTHAN800, ISSMALLERTHAN300 } = mediaQueries();
   const { logout } = useContext(AuthContext);
   const [currentScreen, setCurrentScreen] = useState<string>("options");
 
-  const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
-  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
-
   // Responsive Design
-  const screenWidth = isLargerThan550 ? "80vw" : "90vw";
-  const screenHeight = isLargerThan550 ? "125vh" : "100svh";
-  const textSize = isLargerThan550 ? "xl" : "sm";
-  const iconSize = isLargerThan550 ? "3xl" : "2xl";
-  const avatarSize = isLargerThan550 ? "sm" : "xs";
+  const screenWidth = ISLARGERTHAN550 ? "80vw" : "90vw";
+  const screenHeight = ISLARGERTHAN550 ? "100vh" : "90svh";
+  const textSize = ISSMALLERTHAN300 ? "md" : ISLARGERTHAN550 ? "xl" : "lg";
+  const iconSize = ISLARGERTHAN550 ? "3xl" : "2xl";
+  const avatarSize = ISLARGERTHAN550 ? "sm" : "xs";
 
   const data: any = useLoaderData();
 
@@ -102,7 +92,7 @@ const SettingsPage = () => {
             />
           </Box>
           <Text
-            fontSize={"4xl"}
+            fontSize={ISSMALLERTHAN300 ? "xl" : ISLARGERTHAN550 ? "4xl" : "3xl"}
             fontWeight={700}
             pl={2}
             pb={2}
@@ -249,7 +239,7 @@ const SettingsPage = () => {
         </GridItem>
       )}
       {currentScreen === "Account Information" && (
-        <UserAccountCard
+        <UserAccountDetailsCard
           firstName={data.data.firstName}
           lastName={data.data.lastName}
           email={data.data.email}
@@ -272,7 +262,7 @@ const SettingsPage = () => {
       )}
       {currentScreen === "Settings" && (
         <Center>
-          <Text>Don't worry! This feature is coming soon :D</Text>
+          <ChangePasswordPage />
         </Center>
       )}
       <GridItem area={"footer"}></GridItem>

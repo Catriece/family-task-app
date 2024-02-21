@@ -12,18 +12,14 @@ import {
   Center,
   Stack,
   useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-const ChangePasswordPage = () => {
-  const [currentPassword, setCurrentPassword] = useState<string>("");
-  const [currentPasswordError, setCurrentPasswordError] =
-    useState<boolean>(false);
-  const [showCurrentPassword, setShowcurrentPassword] =
-    useState<boolean>(false);
+const ResetPasswordPage = () => {
   const [password, setPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -33,12 +29,15 @@ const ChangePasswordPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
+  const [directToLogin, setDirectToLogin] = useState<boolean>(false);
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)"); // Found in login.tsx file. Make a constants file and import into both files.
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
 
-  // const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
+  const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
 
   const { id, token } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -50,19 +49,40 @@ const ChangePasswordPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const toLogin = () => {
+    navigate("/login");
+  };
+
   const submit = useMutation({
     mutationFn: async (password: string) => {
-      return await axios.post("http://localhost:2883/auth/update-password", {
+      return await axios.post("http://localhost:2883/auth/reset-password", {
         password,
         token,
         id,
       });
     },
     onSuccess: () => {
+      toast({
+        title: "Password Reset",
+        description: "Your password was successfully reset.",
+        status: "success",
+        duration: 9000,
+        isClosable: false,
+      });
+
+      setDirectToLogin(true);
+
       console.log("Password success"); // Maybe use a toast?
     },
     onError: () => {
       console.error("Error updating password");
+      toast({
+        title: "Password Reset",
+        description: "Password reset was unsuccessful.",
+        status: "error",
+        duration: 9000,
+        isClosable: false,
+      });
     },
   });
 
@@ -83,41 +103,25 @@ const ChangePasswordPage = () => {
   };
 
   return (
-    <Stack spacing={1}>
-      <Text fontSize="3xl" fontWeight={700} textAlign="center">
-        Change Password
-      </Text>
-      <span></span>
-      <Center>
-        <Box w="80%">
-          <Text fontSize={"medium"} textAlign="left">
-            Enter your current password
+    <Center>
+      <Box
+        w={screenWidth}
+        p={5}
+        borderWidth={isLargerThan550 ? "1px" : "0px"}
+        borderRadius="lg"
+        boxShadow={isLargerThan550 ? "2xl" : "none"}
+        paddingTop="0px"
+      >
+        <Stack spacing={3}>
+          <Text
+            fontSize="3xl"
+            fontWeight={700}
+            textAlign="center"
+            marginTop="30px"
+          >
+            Password Reset
           </Text>
-          <FormControl variant="floating">
-            <InputGroup>
-              <Input
-                aria-labelledby="current-password-label"
-                id="currentPassword"
-                type={showCurrentPassword ? "text" : "password"}
-                name="currentPassword"
-                placeholder="currentPassword"
-                isInvalid={currentPasswordError}
-                value={currentPassword}
-                focusBorderColor={currentPasswordError ? "red.300" : "blue.300"}
-                errorBorderColor="red.300"
-                h="40px"
-                onChange={(e) => setCurrentPassword(e.target.value)}
-                required
-              />
-              <FormLabel id="currentPassword-label">Current Password</FormLabel>
-              <InputRightElement>
-                <Button name="currentPassword" onClick={handlePassword}>
-                  {showCurrentPassword ? <ViewOffIcon /> : <ViewIcon />}
-                </Button>
-              </InputRightElement>
-            </InputGroup>
-            <br />
-          </FormControl>
+          <span></span>
           <Text fontSize={"medium"} textAlign="left">
             Enter your new password
           </Text>
@@ -178,11 +182,13 @@ const ChangePasswordPage = () => {
               </Text>
             ) : null}
           </FormControl>
-          <Button onClick={handlePasswordSubmission}>Change Password</Button>
-        </Box>
-      </Center>
-    </Stack>
+          <Button onClick={!directToLogin ? handlePasswordSubmission : toLogin}>
+            {!directToLogin ? "Change Password" : "Go To Login Page"}
+          </Button>
+        </Stack>
+      </Box>
+    </Center>
   );
 };
 
-export default ChangePasswordPage;
+export default ResetPasswordPage;

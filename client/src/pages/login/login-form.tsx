@@ -20,7 +20,7 @@ import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
 import AuthContext from "../../auth/authContext";
 import { loginFunction } from "../../functions/mutations";
 
-import ForgotPasswordForm from "./forgot-password";
+import ForgotPasswordForm from "../settings/password/reset-password-email-link";
 
 const LoginForm: FC = () => {
   const { login } = useContext(AuthContext);

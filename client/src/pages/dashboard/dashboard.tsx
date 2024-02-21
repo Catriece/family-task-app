@@ -1,7 +1,7 @@
 import { FC, useContext, useEffect, useState } from "react";
-import AuthContext from "../auth/authContext";
-import { User } from "../types";
-import Loader from "../components/loader";
+import AuthContext from "../../auth/authContext";
+import { User } from "../../types";
+import Loader from "../../components/loader";
 import {
   Flex,
   Text,

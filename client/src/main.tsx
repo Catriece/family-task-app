@@ -1,25 +1,25 @@
-import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App.tsx";
 import "./index.css";
-import LoginPage from "./pages/login-page";
-import DashboardPage from "./pages/dashboard";
-import ResetPasswordPage from "./pages/reset-password";
-import SettingsPage from "./pages/settings-page";
+import LoginPage from "./pages/login/login-page.tsx";
+import DashboardPage from "./pages/dashboard/dashboard.tsx";
+import ResetPasswordPage from "./pages/settings/password/reset-password-form.tsx";
+import SettingsPage from "./pages/settings/settings-page.tsx";
 import axios from "axios";
+import ErrorPage from "./pages/error/error-page.tsx";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-const token = localStorage.getItem("token");
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // errorElement: <Error />,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/dashboard/:id",
         element: <DashboardPage />,
+        errorElement: <ErrorPage />,
       },
       {
         path: "/reset-password/:token/:id",
@@ -28,15 +28,16 @@ const router = createBrowserRouter([
       {
         path: "/account/:id/settings/",
         element: <SettingsPage />,
-        loader: async ({ params }) => {
-          console.log(params);
-          console.log(token);
+        loader: async (params) => {
+          console.log("PARAMS ARE: ", params);
+          const token = localStorage.getItem("token");
           const data = await axios.get("http://localhost:2883/auth/user", {
             params,
             headers: { Authorization: "Bearer " + token },
           });
           return data;
         },
+        errorElement: <ErrorPage />,
       },
       {
         path: "/login",

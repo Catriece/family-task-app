@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ViewOffIcon, ViewIcon } from "@chakra-ui/icons";
 import {
   FormControl,
@@ -12,13 +12,20 @@ import {
   Center,
   Stack,
   useMediaQuery,
+  Spacer,
 } from "@chakra-ui/react";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import mediaQueries from "../../../components/constants";
 
-const ResetPasswordPage = () => {
+const ChangePasswordPage = () => {
+  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [currentPasswordError, setCurrentPasswordError] =
+    useState<boolean>(false);
+  const [showCurrentPassword, setShowcurrentPassword] =
+    useState<boolean>(false);
   const [password, setPassword] = useState<string>("");
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -27,14 +34,31 @@ const ResetPasswordPage = () => {
     useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
+  const [disableButton, setDisableButton] = useState(true);
 
-  const [isLargerThan800] = useMediaQuery("(min-width: 800px)"); // Found in login.tsx file. Make a constants file and import into both files.
-  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
+  const { id } = useParams();
+  const token = localStorage.getItem("token");
 
-  const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
+  const { ISLARGERTHAN550, ISLARGERTHAN800, ISSMALLERTHAN300 } = mediaQueries();
 
-  const { id, token } = useParams();
+  // const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
 
+  useEffect(() => {
+    if (confirmPassword !== "" && password !== "" && currentPassword !== "")
+      setDisableButton(false);
+    else setDisableButton(true);
+  }, [confirmPassword, password, currentPassword]);
+
+  const headingTextSize = ISSMALLERTHAN300
+    ? "xl"
+    : ISLARGERTHAN550
+    ? "3xl"
+    : "2xl";
+
+  const containerWidth = ISSMALLERTHAN300 ? "90vw" : "80vw";
+
+  if (password === null || currentPassword === null || confirmPassword === null)
+    setDisableButton(true);
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword(!showPassword);
@@ -46,11 +70,10 @@ const ResetPasswordPage = () => {
   };
 
   const submit = useMutation({
-    mutationFn: async (password: string) => {
-      return await axios.post("http://localhost:2883/auth/update-password", {
-        password,
-        token,
-        id,
+    mutationFn: async (params) => {
+      console.log("Password", params);
+      return await axios.post("http://localhost:2883/auth/reset-password", {
+        params,
       });
     },
     onSuccess: () => {
@@ -70,33 +93,57 @@ const ResetPasswordPage = () => {
       setConfirmPasswordError(true);
       throw new Error("Error changing user password.");
     } // sets error message if password and confirm password don't match
+
     console.log("Does this console.log?");
 
-    const result = await submit.mutateAsync(password);
+    const passwordPkg = {
+      password,
+      id,
+      token: token || null,
+    };
+
+    console.log("PSPKG", passwordPkg);
+    const result = await submit.mutateAsync();
 
     console.log("Result of password change: ", result);
   };
 
   return (
-    <Center>
-      <Box
-        w={screenWidth}
-        p={5}
-        borderWidth={isLargerThan550 ? "1px" : "0px"}
-        borderRadius="lg"
-        boxShadow={isLargerThan550 ? "2xl" : "none"}
-        paddingTop="0px"
-      >
-        <Stack spacing={3}>
-          <Text
-            fontSize="3xl"
-            fontWeight={700}
-            textAlign="center"
-            marginTop="30px"
-          >
-            Password Reset
+    <Stack spacing={1}>
+      <Text fontSize={headingTextSize} fontWeight={700} textAlign="center">
+        Change Password
+      </Text>
+      <span></span>
+      <Center>
+        <Box w={containerWidth}>
+          <Text fontSize={"medium"} textAlign="left">
+            Enter your current password
           </Text>
-          <span></span>
+          <FormControl variant="floating">
+            <InputGroup>
+              <Input
+                aria-labelledby="current-password-label"
+                id="currentPassword"
+                type={showCurrentPassword ? "text" : "password"}
+                name="currentPassword"
+                placeholder="currentPassword"
+                isInvalid={currentPasswordError}
+                value={currentPassword}
+                focusBorderColor={currentPasswordError ? "red.300" : "blue.300"}
+                errorBorderColor="red.300"
+                h="40px"
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+              />
+              <FormLabel id="currentPassword-label">Current Password</FormLabel>
+              <InputRightElement>
+                <Button name="currentPassword" onClick={handlePassword}>
+                  {showCurrentPassword ? <ViewOffIcon /> : <ViewIcon />}
+                </Button>
+              </InputRightElement>
+            </InputGroup>
+            <br />
+          </FormControl>
           <Text fontSize={"medium"} textAlign="left">
             Enter your new password
           </Text>
@@ -157,11 +204,20 @@ const ResetPasswordPage = () => {
               </Text>
             ) : null}
           </FormControl>
-          <Button onClick={handlePasswordSubmission}>Change Password</Button>
-        </Stack>
-      </Box>
-    </Center>
+          <br />
+          <Center>
+            <Button
+              isDisabled={disableButton}
+              bg="red.300"
+              onClick={handlePasswordSubmission}
+            >
+              Change Password
+            </Button>
+          </Center>
+        </Box>
+      </Center>
+    </Stack>
   );
 };
 
-export default ResetPasswordPage;
+export default ChangePasswordPage;

@@ -7,6 +7,7 @@ import { SendEmailDto } from '../mail/dto/mail.dto';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordTemplate } from '../mail/emailTemplates/password-reset';
 import { UpdatePasswordDto } from './dto/update-password-dto';
+import { SignUpDto } from './dto/sign-up-dto';
 
 @Injectable()
 export class AuthService {
@@ -16,14 +17,14 @@ export class AuthService {
     private mailService: MailService,
   ) {} // Add constructor to allow usage of service
 
-  async login(email, password): Promise<any> {
+  async login(email: string, password: string): Promise<any> {
     const user = await this.userService.findUserByEmail(email); // findUserByEmail is a service function created in the UserModule and its being utilized by AuthModule
 
     if (user !== null) {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new UnauthorizedException();
-      console.log('user', user);
+
       const payload = {
         id: user.id,
         email: user.email,
@@ -38,7 +39,6 @@ export class AuthService {
     } else {
       console.log('user does not exist');
     }
-    // bcrypt compare
     return user;
   }
 
@@ -82,10 +82,6 @@ export class AuthService {
       secret: `${user.password}-${user.createdAt}`, // add created_at in user entity
       expiresIn: '600s',
     });
-
-    console.log('TOKEN CREATED: ', token);
-
-    // return { token, payload };
     // send email to user with link to reset password form + token + id
 
     const dto: SendEmailDto = {

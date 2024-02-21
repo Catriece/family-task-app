@@ -7,7 +7,7 @@ import {
   TabPanels,
   TabPanel,
 } from "@chakra-ui/react";
-import LoginForm from "../forms/login";
+import LoginForm from "../../pages/login/login-form";
 import CreateAccountForm from "../forms/create-account";
 
 const TopNavigationBar = () => {

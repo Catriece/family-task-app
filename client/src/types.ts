@@ -34,3 +34,11 @@ export type AccountInfo = {
   email: string;
   // birthday: string
 };
+
+export interface ToastMessage {
+  title: string;
+  description: string;
+  status: any; // Wouldn't take type string.
+  duration: number;
+  isClosable: boolean;
+}
