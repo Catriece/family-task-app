@@ -11,54 +11,85 @@ import {
   Box,
   Center,
   Stack,
-  useMediaQuery,
-  Spacer,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useMutation } from "@tanstack/react-query";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 import mediaQueries from "../../../components/constants";
+import { ChangePassword } from "../../../types";
+import { changePasswordFunction } from "../../../functions/mutations";
 
 const ChangePasswordPage = () => {
-  const [currentPassword, setCurrentPassword] = useState<string>("");
+  const [formData, setFormData] = useState<ChangePassword>({
+    id: "",
+    token: "",
+    newPassword: "",
+    currentPassword: "",
+  });
+
+  // Current Password State
   const [currentPasswordError, setCurrentPasswordError] =
     useState<boolean>(false);
   const [showCurrentPassword, setShowcurrentPassword] =
     useState<boolean>(false);
-  const [password, setPassword] = useState<string>("");
+
+  // New Password State
   const [passwordError, setPasswordError] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
+
+  // Confirm New Password State
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [confirmPasswordError, setConfirmPasswordError] =
     useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
-  const [disableButton, setDisableButton] = useState(true);
 
+  const [disableButton, setDisableButton] = useState(true); // Enable/Disable Button
+
+  // Params needed for change password route
   const { id } = useParams();
-  const token = localStorage.getItem("token");
+  const toast = useToast();
+  const token = localStorage.getItem("token" || null);
 
-  const { ISLARGERTHAN550, ISLARGERTHAN800, ISSMALLERTHAN300 } = mediaQueries();
-
-  // const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
-
-  useEffect(() => {
-    if (confirmPassword !== "" && password !== "" && currentPassword !== "")
-      setDisableButton(false);
-    else setDisableButton(true);
-  }, [confirmPassword, password, currentPassword]);
-
+  // Media Queries
+  const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
+  const containerWidth = ISSMALLERTHAN300 ? "90vw" : "80vw";
   const headingTextSize = ISSMALLERTHAN300
     ? "xl"
     : ISLARGERTHAN550
     ? "3xl"
     : "2xl";
 
-  const containerWidth = ISSMALLERTHAN300 ? "90vw" : "80vw";
+  // Enables/Disable submit button based on presence of inputs
+  useEffect(() => {
+    if (
+      confirmPassword !== "" &&
+      formData.newPassword !== "" &&
+      formData.currentPassword !== ""
+    )
+      setDisableButton(false);
+    else setDisableButton(true);
+  }, [confirmPassword, formData.newPassword, formData.currentPassword]);
 
-  if (password === null || currentPassword === null || confirmPassword === null)
-    setDisableButton(true);
+  const handleFieldInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    if (passwordError) setPasswordError(false); // Removes error message upon input field re-entry
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+      token: token,
+      id: id,
+    });
+  };
+
+  // if (
+  //   formData.password === null ||
+  //   currentPassword === null ||
+  //   (confirmPassword === null && formData.password === confirmPassword)
+  // )
+  //   setDisableButton(true);
+
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPassword(!showPassword);
@@ -70,43 +101,45 @@ const ChangePasswordPage = () => {
   };
 
   const submit = useMutation({
-    mutationFn: async (params) => {
-      console.log("Password", params);
-      return await axios.post("http://localhost:2883/auth/reset-password", {
-        params,
-      });
-    },
+    mutationFn: changePasswordFunction,
     onSuccess: () => {
-      console.log("Password success"); // Maybe use a toast?
+      console.log("Password success");
+      toast({
+        title: "Password Reset",
+        description: "Your password was successfully reset.",
+        status: "success",
+        duration: 9000,
+        isClosable: false,
+      });
     },
     onError: () => {
       console.error("Error updating password");
+      toast({
+        title: "Password Reset",
+        description: "There was an error updating your password.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
     },
   });
 
-  const handlePasswordSubmission = async (
-    e: React.MouseEvent<HTMLButtonElement>
-  ) => {
-    // Checks if password and confirm pasword fields match. Enables button if passwords match and email input is valid
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setConfirmPasswordError(true);
-      throw new Error("Error changing user password.");
-    } // sets error message if password and confirm password don't match
+  // const handlePasswordSubmission = async (
+  //   e: React.MouseEvent<HTMLButtonElement>
+  // ) => {
+  //   // Checks if password and confirm pasword fields match. Enables button if passwords match and email input is valid
+  //   e.preventDefault();
+  //   if (formData.password !== confirmPassword) {
+  //     setConfirmPasswordError(true);
+  //     throw new Error("Error changing user password.");
+  //   } // sets error message if password and confirm password don't match
 
-    console.log("Does this console.log?");
+  //   console.log("Does this console.log?");
 
-    const passwordPkg = {
-      password,
-      id,
-      token: token || null,
-    };
+  //   const result = await submit.mutateAsync(passwordPkg);
 
-    console.log("PSPKG", passwordPkg);
-    const result = await submit.mutateAsync();
-
-    console.log("Result of password change: ", result);
-  };
+  //   console.log("Result of password change: ", result);
+  // };
 
   return (
     <Stack spacing={1}>
@@ -116,7 +149,7 @@ const ChangePasswordPage = () => {
       <span></span>
       <Center>
         <Box w={containerWidth}>
-          <Text fontSize={"medium"} textAlign="left">
+          <Text fontSize={"medium"} textAlign="left" pb={3}>
             Enter your current password
           </Text>
           <FormControl variant="floating">
@@ -128,11 +161,11 @@ const ChangePasswordPage = () => {
                 name="currentPassword"
                 placeholder="currentPassword"
                 isInvalid={currentPasswordError}
-                value={currentPassword}
+                value={formData.currentPassword}
                 focusBorderColor={currentPasswordError ? "red.300" : "blue.300"}
                 errorBorderColor="red.300"
                 h="40px"
-                onChange={(e) => setCurrentPassword(e.target.value)}
+                onChange={handleFieldInput}
                 required
               />
               <FormLabel id="currentPassword-label">Current Password</FormLabel>
@@ -144,7 +177,7 @@ const ChangePasswordPage = () => {
             </InputGroup>
             <br />
           </FormControl>
-          <Text fontSize={"medium"} textAlign="left">
+          <Text fontSize={"medium"} textAlign="left" pb={3}>
             Enter your new password
           </Text>
           <FormControl variant="floating">
@@ -153,14 +186,14 @@ const ChangePasswordPage = () => {
                 aria-labelledby="password-label"
                 id="password"
                 type={showPassword ? "text" : "password"}
-                name="password"
+                name="newPassword"
                 placeholder="password"
                 isInvalid={passwordError}
-                value={password}
+                value={formData.newPassword}
                 focusBorderColor={passwordError ? "red.300" : "blue.300"}
                 errorBorderColor="red.300"
                 h="40px"
-                onChange={(e) => setPassword(e.target.value)}
+                onChange={handleFieldInput}
                 required
               />
               <FormLabel id="password-label">Password</FormLabel>
@@ -172,7 +205,7 @@ const ChangePasswordPage = () => {
             </InputGroup>
             <br />
           </FormControl>
-          <Text fontSize={"medium"} textAlign="left">
+          <Text fontSize={"medium"} textAlign="left" pb={3}>
             Re-enter your new password
           </Text>
           <FormControl variant="floating">
@@ -209,7 +242,9 @@ const ChangePasswordPage = () => {
             <Button
               isDisabled={disableButton}
               bg="red.300"
-              onClick={handlePasswordSubmission}
+              onClick={() => {
+                submit.mutate(formData);
+              }}
             >
               Change Password
             </Button>

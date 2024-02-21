@@ -42,3 +42,10 @@ export interface ToastMessage {
   duration: number;
   isClosable: boolean;
 }
+
+export interface ChangePassword {
+  id: string | undefined;
+  token: string | null;
+  currentPassword: string;
+  newPassword: string;
+}

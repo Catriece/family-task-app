@@ -4,7 +4,10 @@ import { Get, Post, Body, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/login-user-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { AuthGuard } from './auth.guard';
-import { UpdatePasswordDto } from './dto/update-password-dto';
+import {
+  ChangePasswordDto,
+  UpdatePasswordDto,
+} from './dto/update-password-dto';
 import { UserService } from '../user/user.service';
 
 @Controller('auth')
@@ -54,20 +57,20 @@ export class AuthController {
     if (payload) return true;
   }
 
+  // Change password route from forgot-password
   @Post('/reset-password')
-  async updatePassword(@Body() body: UpdatePasswordDto, @Param() params) {
-    console.log('body: ', body);
-    console.log('Params', params);
-    const payload = await this.authService.updatePassword(body);
+  async updatePassword(@Body() body: UpdatePasswordDto) {
+    let status: string = 'from-login';
+
+    const payload = await this.authService.updatePassword(body, status);
     if (payload !== null) return true;
   }
 
   // Change password route when user is logged in
+  @UseGuards(AuthGuard)
   @Post('/update-password')
-  async changePassword(@Body() body: UpdatePasswordDto, @Param() params) {
-    console.log('body: ', body);
-    console.log('Params', params);
-    const payload = await this.authService.updatePassword(body);
+  async changePassword(@Body() body: ChangePasswordDto) {
+    const payload = await this.authService.changePassword(body);
     if (payload !== null) return true;
   }
 }
