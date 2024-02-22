@@ -21,7 +21,7 @@ import {
 } from "@chakra-ui/icons";
 import { useContext, useState } from "react";
 
-import UserAccountDetailsCard from "../../components/user/account-details-coponent";
+import UserAccountDetailsCard from "./account-settings/account-details-coponent";
 import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../auth/authContext";

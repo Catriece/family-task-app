@@ -109,7 +109,7 @@ const ChangePasswordPage = () => {
         description: "Your password was successfully reset.",
         status: "success",
         duration: 9000,
-        isClosable: false,
+        isClosable: true,
       });
     },
     onError: () => {

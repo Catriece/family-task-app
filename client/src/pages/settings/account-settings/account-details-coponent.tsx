@@ -12,8 +12,8 @@ import {
   EditablePreview,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AccountInfo } from "../../types";
-import mediaQueries from "../constants";
+import { AccountInfo } from "../../../types";
+import mediaQueries from "../../../components/constants";
 
 const container = {
   // borderRadius: "50px",
