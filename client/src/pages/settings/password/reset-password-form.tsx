@@ -12,11 +12,12 @@ import {
   Center,
   Stack,
   useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const ResetPasswordPage = () => {
   const [password, setPassword] = useState<string>("");
@@ -28,12 +29,15 @@ const ResetPasswordPage = () => {
   const [showConfirmPassword, setShowConfirmPassword] =
     useState<boolean>(false);
 
+  const [directToLogin, setDirectToLogin] = useState<boolean>(false);
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)"); // Found in login.tsx file. Make a constants file and import into both files.
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
 
   const screenWidth = isLargerThan800 ? "350px" : "280px"; // Found in login.tsx file. Make a constants file and import into both files.
 
   const { id, token } = useParams();
+  const navigate = useNavigate();
+  const toast = useToast();
 
   const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
@@ -45,19 +49,40 @@ const ResetPasswordPage = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
 
+  const toLogin = () => {
+    navigate("/login");
+  };
+
   const submit = useMutation({
     mutationFn: async (password: string) => {
-      return await axios.post("http://localhost:2883/auth/update-password", {
+      return await axios.post("http://localhost:2883/auth/reset-password", {
         password,
         token,
         id,
       });
     },
     onSuccess: () => {
+      toast({
+        title: "Password Reset",
+        description: "Your password was successfully reset.",
+        status: "success",
+        duration: 9000,
+        isClosable: false,
+      });
+
+      setDirectToLogin(true);
+
       console.log("Password success"); // Maybe use a toast?
     },
     onError: () => {
       console.error("Error updating password");
+      toast({
+        title: "Password Reset",
+        description: "Password reset was unsuccessful.",
+        status: "error",
+        duration: 9000,
+        isClosable: false,
+      });
     },
   });
 
@@ -157,7 +182,9 @@ const ResetPasswordPage = () => {
               </Text>
             ) : null}
           </FormControl>
-          <Button onClick={handlePasswordSubmission}>Change Password</Button>
+          <Button onClick={!directToLogin ? handlePasswordSubmission : toLogin}>
+            {!directToLogin ? "Change Password" : "Go To Login Page"}
+          </Button>
         </Stack>
       </Box>
     </Center>

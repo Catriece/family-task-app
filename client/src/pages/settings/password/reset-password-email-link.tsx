@@ -11,6 +11,7 @@ import {
   Center,
   Stack,
   useMediaQuery,
+  useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
 
@@ -18,7 +19,6 @@ const ForgotPasswordForm = () => {
   const [email, setEmail] = useState<string>("");
   const [emailError, setEmailError] = useState<boolean>(false);
   const [errorMessage] = useState<string>("");
-  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<string>("enterEmail");
 
@@ -27,21 +27,30 @@ const ForgotPasswordForm = () => {
 
   const screenWidth = isLargerThan800 ? "350px" : "95vw"; // Found in login.tsx file. Make a constants file and import into both files.
 
-  // const validEmailInput = () => {
-  //   if (!emailRegex.test(email)) setEmailError(true);
-  //   console.log("Email regex", emailRegex.test(email));
-  // };
+  const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
+  const toast = useToast();
 
   const handleEmailSubmission = async (
     e: React.MouseEvent<HTMLButtonElement>
   ) => {
     e.preventDefault();
-    if (!emailRegex.test(email)) setEmailError(true);
+    if (!emailRegex.test(email)) {
+      setEmailError(true);
+      toast({
+        title: "Password Reset",
+        description: "Invalid email address submitted.",
+        status: "error",
+        duration: 9000,
+        isClosable: false,
+      });
+    }
+
     if (emailRegex.test(email)) {
       try {
         setIsLoading(true);
         const result = await axios.post(
-          "http://localhost:2883/auth/reset-password",
+          "http://localhost:2883/auth/reset-password-email",
           { email }
         );
         if (result) setIsLoading(false);
@@ -100,7 +109,7 @@ const ForgotPasswordForm = () => {
           )}
           {currentStep === "showMessage" && (
             <Text fontSize={"xl"} textAlign="center" marginBottom={5}>
-              A password reset link was sent to your email.
+              We just sent a password reset link to your email.
             </Text>
           )}
         </Stack>

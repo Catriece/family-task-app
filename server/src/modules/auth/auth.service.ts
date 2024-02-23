@@ -7,6 +7,8 @@ import { SendEmailDto } from '../mail/dto/mail.dto';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordTemplate } from '../mail/emailTemplates/password-reset';
 import { UpdatePasswordDto } from './dto/update-password-dto';
+import { SignUpDto } from './dto/sign-up-dto';
+import { ChangePasswordDto } from './dto/change-password-dto';
 
 @Injectable()
 export class AuthService {
@@ -16,14 +18,14 @@ export class AuthService {
     private mailService: MailService,
   ) {} // Add constructor to allow usage of service
 
-  async login(email, password): Promise<any> {
+  async login(email: string, password: string): Promise<any> {
     const user = await this.userService.findUserByEmail(email); // findUserByEmail is a service function created in the UserModule and its being utilized by AuthModule
 
     if (user !== null) {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new UnauthorizedException();
-      console.log('user', user);
+
       const payload = {
         id: user.id,
         email: user.email,
@@ -38,13 +40,16 @@ export class AuthService {
     } else {
       console.log('user does not exist');
     }
-    // bcrypt compare
     return user;
   }
 
   // Salt and hashing password
-  async hashPassword(password) {
+  async hashPassword(password: string) {
     return await bcrypt.hash(password, 10); // 10 salt rounds
+  }
+  // Compare Password
+  async comparePassword(password: string, hashedPassword: string) {
+    return bcrypt.compare(password, hashedPassword);
   }
 
   async signUp(signUpDto): Promise<any> {
@@ -82,10 +87,6 @@ export class AuthService {
       secret: `${user.password}-${user.createdAt}`, // add created_at in user entity
       expiresIn: '600s',
     });
-
-    console.log('TOKEN CREATED: ', token);
-
-    // return { token, payload };
     // send email to user with link to reset password form + token + id
 
     const dto: SendEmailDto = {
@@ -97,21 +98,35 @@ export class AuthService {
     return await this.mailService.sendPasswordResetEmail(dto);
   }
 
-  async updatePassword(updatePasswordDto: UpdatePasswordDto) {
+  async updatePassword(updatePasswordDto: UpdatePasswordDto, status: string) {
     const { id, token, password } = updatePasswordDto;
 
     const user = await this.userService.findUserById(id);
-    console.log('USER BEING UPDATED: ', user);
 
     const payload = await this.jwtService.verifyAsync(token, {
       secret: `${user.password}-${user.createdAt}`,
     });
-    console.log('PAYLOAD IN UP: ', payload);
 
     if (payload) {
       const hashedPassword = await this.hashPassword(password);
       user.password = hashedPassword;
-      console.log('USER BEING CREATED: ', user);
+      return await this.userService.createUser(user);
+    }
+  }
+
+  async changePassword(changePasswordDto: ChangePasswordDto) {
+    const { id, token, newPassword, currentPassword } = changePasswordDto;
+
+    const user = await this.userService.findUserById(id);
+
+    // Compare incoming current password to db password
+    const verified = await this.comparePassword(currentPassword, user.password);
+
+    if (verified === false)
+      throw new UnauthorizedException('Current password is incorrect');
+    else {
+      const hashedPassword = await this.hashPassword(newPassword);
+      user.password = hashedPassword;
       return await this.userService.createUser(user);
     }
   }

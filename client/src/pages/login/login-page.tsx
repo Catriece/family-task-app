@@ -1,6 +1,6 @@
 import { FC, useState } from "react";
-import CreateAccountForm from "../components/forms/create-account";
-import LoginForm from "../components/forms/login";
+import CreateAccountForm from "../../components/forms/create-account";
+import LoginForm from "./login-form";
 import {
   Box,
   Text,
@@ -11,7 +11,7 @@ import {
   Button,
   Flex,
 } from "@chakra-ui/react";
-import TopNavigationBar from "../components/navigation/top-navigation-bar";
+import TopNavigationBar from "../../components/navigation/top-navigation-bar";
 
 const LoginPage: FC = () => {
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");

@@ -26,3 +26,26 @@ export type CurrentUser = {
   }) => Promise<void>;
   logout: () => void;
 };
+
+export type AccountInfo = {
+  // image: string
+  firstName: string;
+  lastName: string;
+  email: string;
+  // birthday: string
+};
+
+export interface ToastMessage {
+  title: string;
+  description: string;
+  status: any; // Wouldn't take type string.
+  duration: number;
+  isClosable: boolean;
+}
+
+export interface ChangePassword {
+  id: string | undefined;
+  token: string | null;
+  currentPassword: string;
+  newPassword: string;
+}
