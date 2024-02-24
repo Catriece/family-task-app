@@ -24,7 +24,7 @@ import ForgotPasswordForm from "../settings/password/reset-password-email-link";
 
 const LoginForm: FC = () => {
   const { login } = useContext(AuthContext);
-  const [showPassword, setShowPassword] = useState<boolean>(false); // For showing and hiding password inputs
+  const [showPasswordInput, setShowPasswordInput] = useState<boolean>(false); // For showing and hiding password inputs
   const [errorMessage, setErrorMessage] = useState<boolean>(false);
   const [forgotPassword, setForgotPassword] = useState<boolean>(false);
   const [formData, setFormData] = useState<LoginUser>({
@@ -41,15 +41,15 @@ const LoginForm: FC = () => {
 
   // FUNCTIONS
 
-  const handleFieldInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFormFieldInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     if (errorMessage) setErrorMessage(false); // Removes error message upon input field re-entry
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePasswordVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    setShowPassword(!showPassword);
+    setShowPasswordInput(!showPasswordInput);
   };
 
   // TanStack Query - useMutation used for CUD functions
@@ -95,7 +95,7 @@ const LoginForm: FC = () => {
                   required
                   h="40px"
                   value={formData.email}
-                  onChange={handleFieldInput}
+                  onChange={handleFormFieldInput}
                 />
                 <FormLabel id="email-label">Email</FormLabel>
               </FormControl>
@@ -106,17 +106,17 @@ const LoginForm: FC = () => {
                     aria-labelledby="password-label"
                     id="password"
                     name="password"
-                    type={showPassword ? "text" : "password"}
+                    type={showPasswordInput ? "text" : "password"}
                     placeholder="Password"
                     value={formData.password}
                     h="40px"
-                    onChange={handleFieldInput}
+                    onChange={handleFormFieldInput}
                     required
                   />
                   <FormLabel id="password-label">Password</FormLabel>
                   <InputRightElement h="40px">
-                    <Button name="password" onClick={handlePassword}>
-                      {showPassword ? <ViewOffIcon /> : <ViewIcon />}
+                    <Button name="password" onClick={handlePasswordVisibility}>
+                      {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                     </Button>
                   </InputRightElement>
                 </InputGroup>

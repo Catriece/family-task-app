@@ -39,8 +39,8 @@ const CreateAccountForm: FC = () => {
   const [showConfirmPasswordInput, setShowConfirmPasswordInput] =
     useState<boolean>(false); // For showing and hiding confirm password inputs
 
-  const [dontMatch, setDontMatch] = useState<boolean>(false); // State for Password and Confirm Password Match
-  const [isDisabled, setIsDisabled] = useState<boolean>(true); // State for enabling or disabling button
+  const [passwordsDontMatch, setPasswordsDontMatch] = useState<boolean>(false); // State for Password and Confirm Password Match
+  const [disableSubmitButton, setDisableSubmitButton] = useState<boolean>(true); // State for enabling or disabling button
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Media queries for styling mobile and desktop screens
@@ -50,8 +50,8 @@ const CreateAccountForm: FC = () => {
   const screenWidth = isLargerThan800 ? "450px" : "280px";
 
   // Allows me to reference the current/updated state
-  const emailErrorRef = useRef<boolean>(false);
-  const checkPWRef = useRef<number | null>(null);
+  const emailErrorReference = useRef<boolean>(false);
+  const checkPasswordReference = useRef<number | null>(null);
 
   const navigate = useNavigate();
 
@@ -64,9 +64,10 @@ const CreateAccountForm: FC = () => {
 
   // Refreshes setTimeout when PW state is updated. This stalls UI error message
   useEffect(() => {
-    if (checkPWRef.current !== null) clearTimeout(checkPWRef.current);
+    if (checkPasswordReference.current !== null)
+      clearTimeout(checkPasswordReference.current);
 
-    checkPWRef.current = setTimeout(() => {
+    checkPasswordReference.current = setTimeout(() => {
       checkPasswordMatch();
     }, 500);
   }, [confirmPassword, formData.email]);
@@ -78,7 +79,7 @@ const CreateAccountForm: FC = () => {
 
   // Database query to see if email is already in use before submission
   useEffect(() => {
-    const findEmail = async () => {
+    const isEmailInUse = async () => {
       if (emailRegex.test(formData.email)) {
         try {
           const res = await axios.post(
@@ -87,11 +88,11 @@ const CreateAccountForm: FC = () => {
           ); // NESTJS expects to recieve an object
           if (res.data === true) {
             setEmailError(true);
-            emailErrorRef.current = true;
+            emailErrorReference.current = true;
           }
           if (res.data === false) {
             setEmailError(false);
-            emailErrorRef.current = false; // Helps reference current state due to states async nature
+            emailErrorReference.current = false; // Helps reference current state due to states async nature
           }
         } catch (error) {
           console.error("Error fetching email: ", error);
@@ -99,21 +100,21 @@ const CreateAccountForm: FC = () => {
       } else setEmailError(false);
     };
 
-    findEmail();
+    isEmailInUse();
   }, [formData.email]);
 
   const checkPasswordMatch = () => {
     // Checks if password and confirm pasword fields match. Enables button if passwords match and email input is valid
 
     if (formData.password !== confirmPassword) {
-      setDontMatch(true); // sets error message if password and confirm password don't match
-      setIsDisabled(true); // Disables button if passwords don't match
+      setPasswordsDontMatch(true); // sets error message if password and confirm password don't match
+      setDisableSubmitButton(true); // Disables button if passwords don't match
     } else {
-      emailRegex.test(formData.email) && emailErrorRef.current === false
-        ? setIsDisabled(false) // Enables button if email passes regex test
-        : setIsDisabled(true); // Keeps button disabled if email doesn't pass regex test
+      emailRegex.test(formData.email) && emailErrorReference.current === false
+        ? setDisableSubmitButton(false) // Enables button if email passes regex test
+        : setDisableSubmitButton(true); // Keeps button disabled if email doesn't pass regex test
 
-      setDontMatch(false);
+      setPasswordsDontMatch(false);
     }
   };
 
@@ -123,8 +124,9 @@ const CreateAccountForm: FC = () => {
 
     setFormData({ ...formData, [e.target.name]: e.target.value });
     if (e.target.name == "confirmPassword") {
-      if (checkPWRef.current !== null) clearTimeout(checkPWRef.current);
-      checkPWRef.current = setTimeout(() => {
+      if (checkPasswordReference.current !== null)
+        clearTimeout(checkPasswordReference.current);
+      checkPasswordReference.current = setTimeout(() => {
         checkPasswordMatch();
       }, 500);
 
@@ -132,12 +134,14 @@ const CreateAccountForm: FC = () => {
     }
   };
 
-  const handlePassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePasswordVisibility = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     setShowPasswordInput(!showPasswordInput);
   };
 
-  const handleConfirmPassword = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleConfirmPasswordVisibility = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
     e.preventDefault();
     setShowConfirmPasswordInput(!showConfirmPasswordInput);
   };
@@ -147,14 +151,12 @@ const CreateAccountForm: FC = () => {
 
   const submitForm = useMutation({
     mutationFn: async (requestBody: CreateUser) => {
-      if (formData.password !== confirmPassword) setDontMatch(true); // I think this is checked elsewhere in this code
+      if (formData.password !== confirmPassword) setPasswordsDontMatch(true); // I think this is checked elsewhere in this code
 
-      const res = await axios.post(
+      return await axios.post(
         "http://localhost:2883/auth/signup", // MAKE AN ENV VARIABLE
         requestBody
       );
-      console.log("Data", res); // Data returned from createUsers service/controller
-      return res;
     },
   });
 
@@ -164,8 +166,6 @@ const CreateAccountForm: FC = () => {
     try {
       const userCreated = await submitForm.mutateAsync(formData); // adding user to database
       const { access_token, payload } = userCreated.data;
-
-      localStorage.setItem("token", access_token); // Set Token in LS
 
       login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
       navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
@@ -263,7 +263,7 @@ const CreateAccountForm: FC = () => {
               />
               <FormLabel id="password-label">Password</FormLabel>
               <InputRightElement>
-                <Button name="password" onClick={handlePassword}>
+                <Button name="password" onClick={handlePasswordVisibility}>
                   {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
@@ -285,21 +285,24 @@ const CreateAccountForm: FC = () => {
                 name="confirmPassword"
                 type={showConfirmPasswordInput ? "text" : "password"}
                 placeholder="Confirm Password"
-                isInvalid={dontMatch}
-                focusBorderColor={dontMatch ? "red.300" : "blue.300"}
+                isInvalid={passwordsDontMatch}
+                focusBorderColor={passwordsDontMatch ? "red.300" : "blue.300"}
                 errorBorderColor="red.300"
                 value={confirmPassword}
                 onChange={handleInput}
               />
               <FormLabel>Confirm Password</FormLabel>
               <InputRightElement>
-                <Button name="confirmPassword" onClick={handleConfirmPassword}>
+                <Button
+                  name="confirmPassword"
+                  onClick={handleConfirmPasswordVisibility}
+                >
                   {showConfirmPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
             </InputGroup>
             <Box sx={{ height: "40px" }}>
-              {dontMatch ? (
+              {passwordsDontMatch ? (
                 <Text fontSize="small" color="red" paddingTop="10px">
                   Password and Confirm Password does not match
                 </Text>
@@ -307,7 +310,7 @@ const CreateAccountForm: FC = () => {
             </Box>
           </FormControl>
 
-          <Button isDisabled={isDisabled} onClick={handleSubmitForm}>
+          <Button isDisabled={disableSubmitButton} onClick={handleSubmitForm}>
             Sign Up
           </Button>
         </Stack>
