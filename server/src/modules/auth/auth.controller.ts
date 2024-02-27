@@ -9,6 +9,7 @@ import {
   UpdatePasswordDto,
 } from './dto/update-password-dto';
 import { UserService } from '../user/user.service';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -71,6 +72,14 @@ export class AuthController {
   @Post('/update-password')
   async changePassword(@Body() body: ChangePasswordDto) {
     const payload = await this.authService.changePassword(body);
+    if (payload !== null) return true;
+  }
+
+  // Change name route
+  @UseGuards(AuthGuard)
+  @Post('/update-user-first-name')
+  async changeFirstName(@Body() body: UpdateUserDto) {
+    const payload = await this.authService.changeFirstName(body);
     if (payload !== null) return true;
   }
 }

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { ChangePassword, CreateUser, LoginUser } from "../types";
+import { ChangePassword, LoginUser, UpdateFirstName } from "../types";
 
 export const loginFunction = (requestBody: LoginUser) => {
   const res = axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
@@ -13,4 +13,18 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
       Authorization: `Bearer ${token}`,
     },
   });
+};
+
+export const updateUserFunction = (requestBody: UpdateFirstName) => {
+  console.log("UPDATE USER, ", requestBody);
+  const { token, url } = requestBody;
+  return axios.post(
+    `http://localhost:2883/auth/update-user-${url}`,
+    requestBody,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 };

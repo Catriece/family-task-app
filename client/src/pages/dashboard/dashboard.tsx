@@ -2,6 +2,7 @@ import { FC, useContext, useEffect, useState } from "react";
 import AuthContext from "../../auth/authContext";
 import { User } from "../../types";
 import Loader from "../../components/loader";
+import HeaderComponent from "../../components/header/header";
 import {
   Flex,
   Text,
@@ -12,6 +13,7 @@ import {
   Button,
 } from "@chakra-ui/react";
 import { useNavigate, useParams } from "react-router-dom";
+import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
 // import TodoForm from "../components/todos/todo-form";
 // import TodoComponent from "../components/todos/todo-component";
 // import MobileNavigation from "../components/navigation/mobile-navigation";
@@ -60,7 +62,7 @@ const DashboardPage: FC = () => {
                   "footer"`
           }
           gridTemplateRows={
-            isLargerThan525 ? "80px 100px 1fr 50px" : "90px 110px 95px 1fr 50px"
+            isLargerThan525 ? "7% 100px 1fr 50px" : "7% 110px 95px 1fr 50px"
           }
           gridTemplateColumns={isLargerThan525 ? "150px 1fr" : "1fr"}
           h="100vh"
@@ -69,21 +71,25 @@ const DashboardPage: FC = () => {
           color="blackAlpha.700"
           fontWeight="bold"
         >
-          <GridItem pl="2" bg="orange.300" area={"header"}>
-            <Button onClick={toSettings}>Settings</Button>
-            <Text>&#8593;NOT MUCH HERE BUT CHECK OUT THIS NEW FEATURE!!!!</Text>
+          <GridItem pl="2" area={"header"}>
+            <HeaderComponent />
           </GridItem>
           <GridItem pl="2" area={"greeting"}>
             <Flex flexDirection="column" justifyContent="center">
               <Heading color="black" fontSize="38px" fontWeight={800}>
                 Hey, {currentUser?.firstName}!
               </Heading>
+              <Button onClick={toSettings}>Settings</Button>
+              <Text>
+                &#8593;NOT MUCH HERE BUT CHECK OUT THIS NEW FEATURE!!!!
+              </Text>
               <Text color="black" fontSize="xl">
                 Make today a great day!
               </Text>
             </Flex>
           </GridItem>
           <GridItem bg="pink.300" area={"nav"}>
+            <WeeklyCalendarComponent />
             {/* {isLargerThan525 ? "hi" : <MobileNavigation />} */}
             {/* {isLargerThan525 ? "hi" : <DaysOfTheWeek />} */}
           </GridItem>

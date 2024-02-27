@@ -9,6 +9,7 @@ import { ResetPasswordTemplate } from '../mail/emailTemplates/password-reset';
 import { UpdatePasswordDto } from './dto/update-password-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
+import { UpdateUserDto } from '../user/dto/update-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -127,6 +128,19 @@ export class AuthService {
     else {
       const hashedPassword = await this.hashPassword(newPassword);
       user.password = hashedPassword;
+      return await this.userService.createUser(user);
+    }
+  }
+
+  async changeFirstName(updateUserDto: UpdateUserDto) {
+    const { id, firstName } = updateUserDto;
+
+    const user = await this.userService.findUserById(id);
+
+    if (firstName)
+      throw new UnauthorizedException('Current password is incorrect');
+    else {
+      user.firstName = firstName;
       return await this.userService.createUser(user);
     }
   }

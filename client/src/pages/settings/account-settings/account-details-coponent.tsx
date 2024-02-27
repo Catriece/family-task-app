@@ -3,23 +3,29 @@ import {
   Avatar,
   Flex,
   Card,
-  Center,
   Text,
-  Box,
   Button,
+  Box,
+  useToast,
+  FormLabel,
+  Input,
+  FormControl,
   Editable,
   EditableInput,
   EditablePreview,
 } from "@chakra-ui/react";
 import { useState } from "react";
-import { AccountInfo } from "../../../types";
+import { AccountInfo, UpdateFirstName } from "../../../types";
 import mediaQueries from "../../../components/constants";
+import axios from "axios";
+import { updateUserFunction } from "../../../functions/mutations";
+import { useMutation } from "@tanstack/react-query";
+import { EditIcon } from "@chakra-ui/icons";
 
 const container = {
-  // borderRadius: "50px",
   background: "#e0e0e0",
   FlexShadow: "20px 20px 60px #bebebe -20px -20px 60px #ffffff",
-  padding: "20px 10px",
+  padding: "20px 30px",
 };
 
 const UserAccountDetailsCard: FC<AccountInfo> = ({
@@ -28,109 +34,121 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   email,
 }) => {
   const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
-  const [editInput, setEditInput] = useState<boolean>(true);
-  const [name, setName] = useState<string>(firstName + " " + lastName);
+  const [editPhotoText, setEditPhotoText] = useState<string>("Edit photo");
+  const [buttonName, setButtonName] = useState<string>("Edit Information");
+  const [formView, setFormView] = useState<boolean>(false);
+
+  const toast = useToast();
 
   const avatarSize = ISSMALLERTHAN300 ? "md" : "xl";
   const headingSize = ISSMALLERTHAN300 ? "lg" : "xl";
-  const textSize = ISSMALLERTHAN300 ? "sm" : ISLARGERTHAN550 ? "xl" : "md";
-  // const paddingText = ISSMALLERTHAN300 ? 2 : 5;
+  const fieldNameTextSize = ISSMALLERTHAN300
+    ? "md"
+    : ISLARGERTHAN550
+    ? "2xl"
+    : "xl";
+  const contentTextSize = ISSMALLERTHAN300
+    ? "sm"
+    : ISLARGERTHAN550
+    ? "xl"
+    : "lg";
+
+  const handleEditPersonalInfoButton = (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    buttonName === "Edit Information"
+      ? setButtonName("Save Information")
+      : setButtonName("Edit Information");
+
+    setFormView(!formView);
+  };
+
+  const handleUploadPhoto = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    editPhotoText === "Edit photo"
+      ? setEditPhotoText("Save photo")
+      : setEditPhotoText("Edit Photo");
+    console.log("Upload new image");
+  };
+
+  const updateUser = useMutation({
+    mutationFn: updateUserFunction,
+    onSuccess: () => {
+      console.log("Account update success");
+      toast({
+        title: "Update Account Information",
+        description: "Your account was successfully updated.",
+        status: "success",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+    onError: () => {
+      console.log("Account update error");
+      toast({
+        title: "Update Account Information",
+        description: "There was an error updating your account.",
+        status: "error",
+        duration: 9000,
+        isClosable: true,
+      });
+    },
+  });
+
   return (
     <>
       <Card sx={container}>
-        <Center>
-          <Avatar size={avatarSize} />
-        </Center>
-
-        <Text fontSize={headingSize} fontWeight={700} mt={"10px"} mb={2}>
-          Personal Information
+        <Text fontSize={"md"}>
+          You can manage all of your personal information here.
         </Text>
-        <Flex alignItems={"center"} flexDirection={"column"}>
-          <Text
-            fontSize={textSize}
-            pl={2}
-            mb={2}
-            fontWeight={600}
-            alignSelf="flex-start"
+        <Text mt={5} fontSize={headingSize} fontWeight={600}>
+          Profile Photo
+        </Text>
+        <Flex
+          justifyContent={"center"}
+          alignItems={"center"}
+          flexDirection={"column"}
+        >
+          <Avatar size={avatarSize} />
+          <Button
+            variant="ghost"
+            fontSize={"sm"}
+            alignSelf={"flex-end"}
+            onClick={handleUploadPhoto}
           >
-            Name:
-          </Text>
-          <Editable
-            w={"90%"}
-            defaultValue={name}
-            isDisabled={editInput}
-            pl={2}
-            mb={2}
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-          {editInput ? null : (
-            <Editable
-              w={"90%"}
-              defaultValue={lastName}
-              isDisabled={editInput}
-              pl={2}
-              mb={2}
+            {editPhotoText}
+          </Button>
+        </Flex>
+        <Flex
+          h={"100%"}
+          justifyContent={"space-between"}
+          flexDirection={"column"}
+        >
+          <Box>
+            <Text mt={2} fontSize={headingSize} fontWeight={650}>
+              Personal Information
+            </Text>
+            <Text>{firstName}</Text>
+            <Flex
+              paddingTop="10px"
+              justifyContent={"space-between"}
+              alignItems={"center"}
             >
-              <EditablePreview />
-              <EditableInput />
-            </Editable>
-          )}
+              <Text>Will Eventually Add Account Edits Here</Text>
+            </Flex>
+          </Box>
         </Flex>
-        <Flex alignItems={"center"} flexDirection={"column"}>
-          <Text
-            fontSize={textSize}
-            alignSelf="flex-start"
-            pl={2}
-            mb={2}
-            fontWeight={600}
-          >
-            Email:
-          </Text>
-          <Editable
-            w={"90%"}
-            defaultValue={email}
-            isDisabled={editInput}
-            pl={2}
-            mb={2}
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-        </Flex>
-        <Flex alignItems={"center"} flexDirection={"column"}>
-          <Text
-            fontSize={textSize}
-            alignSelf="flex-start"
-            pl={2}
-            mb={2}
-            fontWeight={600}
-          >
-            Birthday:
-          </Text>
-          <Editable
-            w={"90%"}
-            defaultValue="BIRTHDAY"
-            isDisabled={editInput}
-            pl={2}
-            mb={2}
-          >
-            <EditablePreview />
-            <EditableInput />
-          </Editable>
-        </Flex>
-        <Flex justifyContent={"flex-end"}>
-          {editInput ? (
-            <Button variant="ghost" onClick={() => setEditInput(false)}>
-              Edit Account Info
-            </Button>
-          ) : (
-            <Button variant="ghost" onClick={() => setEditInput(true)}>
-              Save Account Info
-            </Button>
-          )}
-        </Flex>
+        <Button
+          variant="ghost"
+          fontSize={"sm"}
+          alignSelf={"flex-end"}
+          onClick={handleEditPersonalInfoButton}
+          pr={0}
+        >
+          {buttonName}
+        </Button>
       </Card>
     </>
   );

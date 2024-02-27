@@ -49,3 +49,12 @@ export interface ChangePassword {
   currentPassword: string;
   newPassword: string;
 }
+
+export interface UpdateFirstName {
+  id: string | undefined;
+  token: string | null;
+  url: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+}

@@ -205,17 +205,22 @@ const SettingsPage = () => {
           <Flex flexDirection={"column"}>
             <Box
               as="button"
-              aria-labelledby="settings"
+              aria-labelledby="change-password"
               role="button"
-              name="settings"
+              name="change-password"
               sx={button}
-              onClick={() => setCurrentScreen("Settings")}
+              onClick={() => setCurrentScreen("Change Password")}
               textAlign="left"
               h={"60px"}
             >
               <SettingsIcon fontSize={iconSize} />
-              <Text id="settings" pl={3} fontSize={textSize} fontWeight={500}>
-                Settings
+              <Text
+                id="change-password"
+                pl={3}
+                fontSize={textSize}
+                fontWeight={500}
+              >
+                Change Password
               </Text>
               <Box sx={{ flexGrow: 1 }} />
               <ChevronRightIcon
@@ -260,7 +265,7 @@ const SettingsPage = () => {
           <Text>Don't worry! This feature is coming soon :D</Text>
         </Center>
       )}
-      {currentScreen === "Settings" && (
+      {currentScreen === "Change Password" && (
         <Center>
           <ChangePasswordPage />
         </Center>
