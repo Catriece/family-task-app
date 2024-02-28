@@ -10,6 +10,7 @@ import { UpdatePasswordDto } from './dto/update-password-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
+import { DeleteUserDto } from '../user/dto/delete-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -22,7 +23,7 @@ export class AuthService {
   async login(email: string, password: string): Promise<any> {
     const user = await this.userService.findUserByEmail(email); // findUserByEmail is a service function created in the UserModule and its being utilized by AuthModule
 
-    if (user !== null) {
+    if (user) {
       const passwordMatch = await bcrypt.compare(password, user.password);
 
       if (!passwordMatch) throw new UnauthorizedException();
@@ -132,16 +133,37 @@ export class AuthService {
     }
   }
 
-  async changeFirstName(updateUserDto: UpdateUserDto) {
-    const { id, firstName } = updateUserDto;
+  async updatePersonalInformation(
+    id: string,
+    firstName: string,
+    lastName: string,
+    preferredName: string,
+    email: string,
+    birthday: string,
+  ) {
+    console.log('ID', id);
+    const user = await this.userService.findUserById(id);
+    console.log('USER', user);
+    if (firstName) user.firstName = firstName;
+    if (lastName) user.lastName = lastName;
+    if (preferredName) user.preferredName = preferredName;
+    if (birthday) user.birthday = birthday;
+    if (email) user.email = email; // Eventually new email should be delayed and verified with mailservice
+
+    if (user === null) throw new UnauthorizedException('User does not exist');
+    else return await this.userService.updateUser(user);
+  }
+
+  async deleteUser(deleteUserDto: DeleteUserDto) {
+    const { id, password } = deleteUserDto;
 
     const user = await this.userService.findUserById(id);
 
-    if (firstName)
-      throw new UnauthorizedException('Current password is incorrect');
-    else {
-      user.firstName = firstName;
-      return await this.userService.createUser(user);
-    }
+    // Compare incoming current password to db password
+    const verified = await this.comparePassword(password, user.password);
+
+    if (verified === false)
+      throw new UnauthorizedException('Incorrect password');
+    else return await this.userService.deleteUser(id);
   }
 }

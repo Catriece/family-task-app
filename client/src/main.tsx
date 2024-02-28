@@ -9,6 +9,7 @@ import axios from "axios";
 import ErrorPage from "./pages/error/error-page.tsx";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import UserAccountDetailsCard from "./pages/settings/account-settings/account-details-coponent.tsx";
 
 const router = createBrowserRouter([
   {
@@ -17,31 +18,42 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
         path: "/dashboard/:id",
         element: <DashboardPage />,
         errorElement: <ErrorPage />,
+        loader: async () => {
+          const token = localStorage.getItem("token");
+          const id = localStorage.getItem("userId");
+
+          return await axios.get(`http://localhost:2883/auth/user`, {
+            params: { id },
+            headers: { Authorization: "Bearer " + token },
+          });
+        },
       },
       {
         path: "/reset-password/:token/:id",
         element: <ResetPasswordPage />,
       },
       {
-        path: "/account/:id/settings/",
+        path: "/account/settings/:id",
         element: <SettingsPage />,
-        loader: async (params) => {
-          console.log("PARAMS ARE: ", params);
+        errorElement: <ErrorPage />,
+        loader: async () => {
           const token = localStorage.getItem("token");
-          const data = await axios.get("http://localhost:2883/auth/user", {
-            params,
+          const id = localStorage.getItem("userId");
+
+          const data = await axios.get(`http://localhost:2883/auth/user`, {
+            params: { id },
             headers: { Authorization: "Bearer " + token },
           });
+
           return data;
         },
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
       },
     ],
   },

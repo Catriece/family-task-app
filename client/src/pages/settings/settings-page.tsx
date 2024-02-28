@@ -2,13 +2,24 @@ import {
   Flex,
   Center,
   Box,
-  useMediaQuery,
   Text,
   Grid,
   GridItem,
   Button,
   Avatar,
   Divider,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  useDisclosure,
+  FormControl,
+  FormLabel,
+  Input,
+  Stack,
 } from "@chakra-ui/react";
 import {
   ArrowLeftIcon,
@@ -26,6 +37,8 @@ import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../auth/authContext";
 import mediaQueries from "../../components/constants";
+import { deleteUserFunction } from "../../functions/mutations";
+import { useMutation } from "@tanstack/react-query";
 
 const button = {
   display: "flex",
@@ -35,9 +48,19 @@ const button = {
 };
 
 const SettingsPage = () => {
-  const { ISLARGERTHAN550, ISLARGERTHAN800, ISSMALLERTHAN300 } = mediaQueries();
+  const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
   const { logout } = useContext(AuthContext);
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const [currentScreen, setCurrentScreen] = useState<string>("options");
+  const [modalBody, setModalBody] = useState<boolean>(false);
+
+  // Necessary for Account Deletion
+  const [password, setPassword] = useState<string>("");
+  const token = localStorage.getItem("token");
+
+  // Delete account error handling
+  const [errorDeletingAccount, setErrorDeletingAccount] =
+    useState<boolean>(false);
 
   // Responsive Design
   const screenWidth = ISLARGERTHAN550 ? "80vw" : "90vw";
@@ -50,7 +73,25 @@ const SettingsPage = () => {
 
   const navigate = useNavigate();
   const { id } = useParams();
-  console.log(data.data);
+
+  const deleteUser = useMutation({
+    mutationFn: deleteUserFunction,
+    onSuccess: () => {
+      logout();
+    },
+    onError: () => {
+      console.error("ERROR OCCURED");
+      setErrorDeletingAccount(true);
+    },
+  });
+
+  const handleDeleteUser = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const payload = { password, token, id };
+    const response = deleteUser.mutateAsync(payload);
+    console.log(response);
+    return response;
+  };
 
   return (
     <Grid
@@ -82,7 +123,10 @@ const SettingsPage = () => {
             {currentScreen === "options" ? null : (
               <ArrowLeftIcon
                 fontSize={"sm"}
-                onClick={() => setCurrentScreen("options")}
+                onClick={() => {
+                  navigate(`/account/settings/${id}`); // Repulls loader data
+                  setCurrentScreen("options");
+                }}
               />
             )}
             <Box sx={{ flexGrow: 1 }} />
@@ -105,7 +149,7 @@ const SettingsPage = () => {
       {currentScreen === "options" && (
         <GridItem
           area={"main"}
-          bg="gray.300"
+          // bg="gray.30  0"
           borderRadius={15}
           h={"100%"}
           sx={{
@@ -235,7 +279,7 @@ const SettingsPage = () => {
             </Center>
             <Box>
               <Center>
-                <Button variant="ghost" fontSize={"xs"}>
+                <Button variant="ghost" fontSize={"xs"} onClick={onOpen}>
                   Delete Account
                 </Button>
               </Center>
@@ -243,11 +287,82 @@ const SettingsPage = () => {
           </Flex>
         </GridItem>
       )}
+      {/* Modal */}
+
+      <Modal isCentered isOpen={isOpen} onClose={onClose}>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Delete Your Account</ModalHeader>
+          <ModalCloseButton />
+          <ModalBody>
+            {modalBody ? (
+              <>
+                <Stack spacing={6}>
+                  <FormControl>
+                    <FormLabel>Enter Your Password</FormLabel>
+                    <Input
+                      value={password}
+                      onChange={(e) => {
+                        setErrorDeletingAccount(false);
+                        setPassword(e.target.value);
+                      }}
+                    />
+                    {errorDeletingAccount ? (
+                      <Text pl={5} fontSize={"sm"} color="red.500">
+                        Incorrect password
+                      </Text>
+                    ) : null}
+                  </FormControl>
+                  <Button bg="red.300" onClick={handleDeleteUser}>
+                    Delete Your Account
+                  </Button>
+                </Stack>
+              </>
+            ) : (
+              <>
+                <Text fontSize={"sm"}>
+                  Hey {data.data.firstName},<br /> Deleting your account is a{" "}
+                  <b>permanent action</b>, and it will result in the permanent
+                  removal of <b>all</b> data associated with your account from
+                  our system.{" "}
+                  <b>
+                    This includes all tasks, task lists, and any other
+                    information you've stored within the application
+                  </b>
+                  . <br />
+                  <br />
+                  If you have any tasks saved or shared with others, please make
+                  sure to save them elsewhere <b>before</b> proceeding with the
+                  account deletion. Once your account is deleted, all tasks and
+                  lists created by you will be permanently removed from our
+                  system.
+                </Text>
+                <br />
+                <Text fontSize={"sm"}>
+                  If you are ready to proceed. Click 'Next'. To exit, click
+                  'Close'.
+                </Text>
+              </>
+            )}
+          </ModalBody>
+
+          <ModalFooter>
+            <Button colorScheme="blue" mr={3} onClick={onClose}>
+              Close
+            </Button>
+            <Button variant="ghost" onClick={() => setModalBody(!modalBody)}>
+              {modalBody ? "Back" : "Next"}
+            </Button>
+          </ModalFooter>
+        </ModalContent>
+      </Modal>
+
       {currentScreen === "Account Information" && (
         <UserAccountDetailsCard
           firstName={data.data.firstName}
           lastName={data.data.lastName}
           email={data.data.email}
+          preferredName={data.data.preferredName}
         />
       )}
       {currentScreen === "Members" && (

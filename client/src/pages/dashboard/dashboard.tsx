@@ -40,7 +40,7 @@ const DashboardPage: FC = () => {
 
   const toSettings = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    navigate(`/account/${id}/settings/`);
+    navigate(`/account/settings/${id}`);
   };
 
   return (
