@@ -9,6 +9,7 @@ import axios from "axios";
 import ErrorPage from "./pages/error/error-page.tsx";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import TodoComponent from "./components/todos/todo-component.tsx";
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,19 @@ const router = createBrowserRouter([
         path: "/dashboard/:id",
         element: <DashboardPage />,
         errorElement: <ErrorPage />,
+        loader: async () => {
+          const token = localStorage.getItem("token");
+          const id = localStorage.getItem("userId");
+          const data = await axios.get(
+            `http://localhost:2883/auth/user?id=${id}`,
+            {
+              headers: { Authorization: "Bearer " + token },
+            }
+          );
+          console.log(data);
+          return data;
+        },
+        children: [{ element: <TodoComponent /> }],
       },
       {
         path: "/reset-password/:token/:id",
@@ -29,7 +43,6 @@ const router = createBrowserRouter([
         path: "/account/:id/settings/",
         element: <SettingsPage />,
         loader: async (params) => {
-          console.log("PARAMS ARE: ", params);
           const token = localStorage.getItem("token");
           const data = await axios.get("http://localhost:2883/auth/user", {
             params,

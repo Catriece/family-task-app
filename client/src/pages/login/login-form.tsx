@@ -17,8 +17,8 @@ import { useMutation } from "@tanstack/react-query";
 import { LoginUser } from "../../types";
 import { useNavigate } from "react-router-dom";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
-import AuthContext from "../../auth/authContext";
-import { loginFunction } from "../../functions/mutations";
+import AuthContext from "../../context/auth/authContext";
+import { loginFunction } from "../../functions/user-mutations";
 
 import ForgotPasswordForm from "../settings/password/reset-password-email-link";
 
@@ -82,7 +82,13 @@ const LoginForm: FC = () => {
         ) : (
           <>
             <Stack spacing={6}>
-              <Text fontSize="3xl" fontWeight={700} textAlign="center">
+              <Text
+                role="heading"
+                aria-level={1}
+                fontSize="3xl"
+                fontWeight={700}
+                textAlign="center"
+              >
                 Login
               </Text>
               <span></span>
@@ -90,7 +96,7 @@ const LoginForm: FC = () => {
                 <Input
                   aria-labelledby="email-label"
                   name="email"
-                  id="email"
+                  id="email-input-label"
                   placeholder="Email"
                   required
                   h="40px"
@@ -104,7 +110,7 @@ const LoginForm: FC = () => {
                 <InputGroup>
                   <Input
                     aria-labelledby="password-label"
-                    id="password"
+                    id="password-input-label"
                     name="password"
                     type={showPasswordInput ? "text" : "password"}
                     placeholder="Password"
@@ -115,7 +121,11 @@ const LoginForm: FC = () => {
                   />
                   <FormLabel id="password-label">Password</FormLabel>
                   <InputRightElement h="40px">
-                    <Button name="password" onClick={handlePasswordVisibility}>
+                    <Button
+                      name="password"
+                      aria-label="Show-Password-Icon"
+                      onClick={handlePasswordVisibility}
+                    >
                       {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                     </Button>
                   </InputRightElement>

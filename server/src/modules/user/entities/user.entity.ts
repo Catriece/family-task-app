@@ -18,7 +18,7 @@ export class UserEntity {
   @Column({ type: 'varchar', nullable: true })
   password: string;
 
-  @Column({ default: true })
+  @Column({ default: true, nullable: true })
   isActive: boolean;
 
   @Column({ type: 'bigint', nullable: true })

@@ -5,7 +5,7 @@ import React, { FC, useState, useEffect, useRef, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
-import AuthContext from "../../auth/authContext";
+import AuthContext from "../../context/auth/authContext";
 import { CreateUser } from "../../types";
 import {
   Box,
@@ -191,6 +191,8 @@ const CreateAccountForm: FC = () => {
             fontWeight={700}
             textAlign="center"
             marginTop="30px"
+            role="heading"
+            aria-level={1}
           >
             Sign Up
           </Text>
@@ -198,9 +200,9 @@ const CreateAccountForm: FC = () => {
 
           <FormControl variant="floating">
             <Input
-              aria-labelledby="email-label"
+              aria-labelledby="create-user-email-label"
               name="email"
-              id="email"
+              id="create-user-email"
               placeholder="Email"
               required
               isInvalid={emailError}
@@ -209,7 +211,7 @@ const CreateAccountForm: FC = () => {
               value={formData.email}
               onChange={handleInput}
             />
-            <FormLabel id="email-label">Email</FormLabel>
+            <FormLabel id="create-user-email-label">Email</FormLabel>
             {emailError ? (
               <FormHelperText fontSize="small" color="red">
                 Email is already in use.
@@ -250,8 +252,8 @@ const CreateAccountForm: FC = () => {
           <FormControl variant="floating">
             <InputGroup>
               <Input
-                aria-labelledby="password-label"
-                id="password"
+                aria-labelledby="create-user-password-label"
+                id="create-user-password"
                 name="password"
                 type={showPasswordInput ? "text" : "password"}
                 placeholder="Password"
@@ -261,7 +263,7 @@ const CreateAccountForm: FC = () => {
                 errorBorderColor="red.300"
                 onChange={handleInput}
               />
-              <FormLabel id="password-label">Password</FormLabel>
+              <FormLabel id="create-user-password-label">Password</FormLabel>
               <InputRightElement>
                 <Button name="password" onClick={handlePasswordVisibility}>
                   {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}

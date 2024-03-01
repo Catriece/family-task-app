@@ -2,7 +2,6 @@ import {
   Flex,
   Center,
   Box,
-  useMediaQuery,
   Text,
   Grid,
   GridItem,
@@ -24,7 +23,7 @@ import { useContext, useState } from "react";
 import UserAccountDetailsCard from "./account-settings/account-details-coponent";
 import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import AuthContext from "../../auth/authContext";
+import AuthContext from "../../context/auth/authContext";
 import mediaQueries from "../../components/constants";
 
 const button = {
@@ -35,7 +34,7 @@ const button = {
 };
 
 const SettingsPage = () => {
-  const { ISLARGERTHAN550, ISLARGERTHAN800, ISSMALLERTHAN300 } = mediaQueries();
+  const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
   const { logout } = useContext(AuthContext);
   const [currentScreen, setCurrentScreen] = useState<string>("options");
 

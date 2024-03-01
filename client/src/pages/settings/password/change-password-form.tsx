@@ -18,7 +18,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
 import mediaQueries from "../../../components/constants";
 import { ChangePassword } from "../../../types";
-import { changePasswordFunction } from "../../../functions/mutations";
+import { changePasswordFunction } from "../../../functions/user-mutations";
 
 const ChangePasswordPage = () => {
   const [formData, setFormData] = useState<ChangePassword>({

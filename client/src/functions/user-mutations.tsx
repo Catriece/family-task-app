@@ -16,7 +16,6 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
 };
 
 export const updateUserFunction = (requestBody: UpdateFirstName) => {
-  console.log("UPDATE USER, ", requestBody);
   const { token, url } = requestBody;
   return axios.post(
     `http://localhost:2883/auth/update-user-${url}`,
