@@ -6,6 +6,9 @@ Welcome to Family Task App, a todo application designed to bring organization an
 
 This project is broken up into two folders: `/client` for frontend and `/server` for the backend/api.
 
+Check out my Trello Board:
+https://trello.com/b/fd78pYk3/cwc-todo-app
+
 ### Technologies used
 
 #### Client-Side

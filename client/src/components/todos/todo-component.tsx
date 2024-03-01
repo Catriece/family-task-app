@@ -9,33 +9,42 @@ import {
   Collapse,
   useDisclosure,
   Checkbox,
+  Tooltip,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 const TodoComponent = () => {
   const { isOpen, onToggle } = useDisclosure();
   return (
     <Card maxW="md">
-      <CardHeader>
-        <Flex>
-          <Flex flex="1" gap="4" alignItems="center" flexWrap="wrap">
-            {/* <Avatar name="Segun Adebayo" src="https://bit.ly/sage-adebayo" /> */}
+      <CardHeader p={3} pb={0}>
+        <Flex flexDirection={"column"}>
+          <Flex justifyContent={"space-between"}>
+            <Text>Priority Level</Text>
             <Checkbox variant={"square"} />
-            <Box>
-              <Heading size="sm">Title of Note</Heading>
-              <Text>Due Date</Text>
-            </Box>
           </Flex>
-          <IconButton
-            variant="ghost"
-            colorScheme="gray"
-            aria-label="See menu"
-            icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />} // Description must also be present
-            onClick={onToggle}
-          />
+          <Box>
+            <Heading size="md" pl={3}>
+              Title of Note
+            </Heading>
+          </Box>
+          <Flex justifyContent={"space-between"}>
+            <Tooltip label="See task description">
+              <IconButton
+                variant="ghost"
+                colorScheme="gray"
+                aria-label="See menu"
+                icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />} // Description must also be present
+                onClick={onToggle}
+              />
+            </Tooltip>
+            <Text>Due Date</Text>
+          </Flex>
         </Flex>
       </CardHeader>
       <Collapse in={isOpen} animateOpacity>
-        <Text>Description of Todo goes here</Text>
+        <Text pb={4} pl={5}>
+          Description of Todo goes here
+        </Text>
       </Collapse>
     </Card>
   );

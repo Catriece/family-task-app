@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthContext from "./authContext";
-import { CurrentUser, User } from "../types";
+import { CurrentUser, User } from "../../types";
 import { useNavigate } from "react-router-dom";
 
 type AuthProviderProps = {

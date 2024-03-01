@@ -35,7 +35,7 @@ import { useContext, useState } from "react";
 import UserAccountDetailsCard from "./account-settings/account-details-coponent";
 import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
-import AuthContext from "../../auth/authContext";
+import AuthContext from "../../context/auth/authContext";
 import mediaQueries from "../../components/constants";
 import { deleteUserFunction } from "../../functions/mutations";
 import { useMutation } from "@tanstack/react-query";

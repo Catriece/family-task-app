@@ -17,6 +17,8 @@ import { useState } from "react";
 import { AccountInfo } from "../../../types";
 import mediaQueries from "../../../components/constants";
 import { updateUserFunction } from "../../../functions/mutations";
+import axios from "axios";
+import { updateUserFunction } from "../../../functions/user-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { EditIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";

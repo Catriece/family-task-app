@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { CurrentUser } from "../types";
+import { CurrentUser } from "../../types";
 
 const AuthContext = createContext<CurrentUser>({
   isAuthenticated: false,

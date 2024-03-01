@@ -65,3 +65,16 @@ export interface DeleteUser {
   token: string | null;
   password: string;
 }
+
+export interface TodoFormData {
+  title: string;
+  description: string;
+}
+
+export interface ModalContextInterface {
+  form?: any | null;
+  isOpen: boolean;
+  openModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  closeModal: () => void;
+  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+}

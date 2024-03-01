@@ -38,8 +38,7 @@ export class AuthController {
   async login(@Body() loginDto: UserLoginDto) {
     const email: string = loginDto.email;
     const password: string = loginDto.password;
-    const data = await this.authService.login(email, password);
-    return data;
+    return await this.authService.login(email, password);
   }
 
   @Post('/signup')
