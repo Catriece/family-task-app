@@ -18,6 +18,10 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
+        path: "/login",
+        element: <LoginPage />,
+      },
+      {
         path: "/dashboard/:id",
         element: <DashboardPage />,
         errorElement: <ErrorPage />,
@@ -40,21 +44,19 @@ const router = createBrowserRouter([
         element: <ResetPasswordPage />,
       },
       {
-        path: "/account/:id/settings/",
+        path: "/account/settings/:id",
         element: <SettingsPage />,
         loader: async (params) => {
           const token = localStorage.getItem("token");
-          const data = await axios.get("http://localhost:2883/auth/user", {
-            params,
+          const id = localStorage.getItem("userId");
+
+          const data = await axios.get(`http://localhost:2883/auth/user`, {
+            params: { id },
             headers: { Authorization: "Bearer " + token },
           });
+
           return data;
         },
-        errorElement: <ErrorPage />,
-      },
-      {
-        path: "/login",
-        element: <LoginPage />,
       },
     ],
   },

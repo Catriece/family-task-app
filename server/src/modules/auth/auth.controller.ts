@@ -1,4 +1,11 @@
-import { Controller, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Param,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Get, Post, Body, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/login-user-dto';
@@ -10,6 +17,7 @@ import {
 } from './dto/update-password-dto';
 import { UserService } from '../user/user.service';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
+import { DeleteUserDto } from '../user/dto/delete-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -20,16 +28,10 @@ export class AuthController {
 
   @UseGuards(AuthGuard)
   @Get('/user')
-  async getUserData(@Request() params) {
-    const { id } = params.query;
-    const user = await this.userService.findUserById(id);
-    const userPackage = {
-      id,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      email: user.email,
-    };
-    return userPackage;
+  async getUserData(@Query('id') id: string) {
+    const payload = await this.userService.findUserById(id);
+    console.log('Remember to return user w/out password', payload);
+    return payload;
   }
 
   @Post('/login')
@@ -74,11 +76,27 @@ export class AuthController {
     if (payload !== null) return true;
   }
 
+  @UseGuards(AuthGuard)
+  @Delete('/delete-user')
+  async deleteUser(@Body() body: DeleteUserDto) {
+    console.log('Deleting User');
+    const payload = await this.authService.deleteUser(body);
+  }
+
   // Change name route
   @UseGuards(AuthGuard)
-  @Post('/update-user-first-name')
-  async changeFirstName(@Body() body: UpdateUserDto) {
-    const payload = await this.authService.changeFirstName(body);
-    if (payload !== null) return true;
+  @Post('/update-user-personal-info')
+  async updatePersonalInformation(@Body() body: UpdateUserDto) {
+    const { id, firstName, lastName, preferredName, email, birthday } = body;
+    const payload = await this.authService.updatePersonalInformation(
+      id,
+      firstName,
+      lastName,
+      preferredName,
+      email,
+      birthday,
+    );
+
+    if (payload) return payload;
   }
 }

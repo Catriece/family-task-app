@@ -32,6 +32,7 @@ export type AccountInfo = {
   firstName: string;
   lastName: string;
   email: string;
+  preferredName: string;
   // birthday: string
 };
 
@@ -50,13 +51,19 @@ export interface ChangePassword {
   newPassword: string;
 }
 
-export interface UpdateFirstName {
+export interface UpdateUserInformation {
   id: string | undefined;
   token: string | null;
-  url: string;
-  firstName: string;
-  lastName: string;
-  email: string;
+  firstName?: string;
+  lastName?: string;
+  preferredName?: string;
+  email?: string;
+}
+
+export interface DeleteUser {
+  id: string | undefined;
+  token: string | null;
+  password: string;
 }
 
 export interface TodoFormData {

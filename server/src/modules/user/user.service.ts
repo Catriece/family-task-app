@@ -38,6 +38,11 @@ export class UserService {
     return await this.usersRepository.findOne({ where: { id } });
   }
 
+  async updateUser(updateUserDto: UpdateUserDto) {
+    const user = await this.usersRepository.save(updateUserDto);
+    return user;
+  }
+
   findAll() {
     return `This action returns all user`;
   }
@@ -50,7 +55,8 @@ export class UserService {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async deleteUser(id: string) {
+    const user = await this.usersRepository.delete(id);
+    return user;
   }
 }
