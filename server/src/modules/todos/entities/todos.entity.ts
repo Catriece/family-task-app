@@ -1,9 +1,10 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { UserEntity } from 'src/modules/user/entities/user.entity';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class TodosEntity {
   @PrimaryGeneratedColumn()
-  notesId: string; // notesId
+  notesId: number; // notesId
 
   @Column({ nullable: true }) // Need to set up foreign key
   userId: string;
@@ -22,4 +23,7 @@ export class TodosEntity {
 
   @Column({ type: 'boolean', nullable: true, default: false })
   completed: boolean;
+
+  @ManyToOne(() => UserEntity, (user) => user.todos)
+  user: UserEntity;
 }

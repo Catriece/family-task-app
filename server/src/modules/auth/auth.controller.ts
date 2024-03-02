@@ -29,7 +29,12 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('/user')
   async getUserData(@Query('id') id: string) {
-    const payload = await this.userService.findUserById(id);
+    const user = await this.userService.findUserById(id);
+    const payload = {
+      ...user,
+      // isActive: user.isActive === true,
+      // password: user.password === undefined,
+    };
     console.log('Remember to return user w/out password', payload);
     return payload;
   }
@@ -59,7 +64,7 @@ export class AuthController {
     if (payload) return true;
   }
 
-  // Change password route from forgot-password
+  // Change password route when user is logged out
   @Post('/reset-password')
   async updatePassword(@Body() body: UpdatePasswordDto) {
     let status: string = 'from-login';

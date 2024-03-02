@@ -1,20 +1,27 @@
 import axios from "axios";
 
 interface NewTodo {
-  id: string;
-  token: string;
-  priority: string | null;
-  dueDate: Date;
-  title: string;
-  description: string | null;
-  completed: boolean;
+  userId: string | undefined;
+  token?: string | null;
+  priority?: string | null;
+  dueDate?: string | null;
+  title?: string;
+  description?: string | null;
+  completed?: boolean;
 }
 
-export const createTodo = (requestBody: NewTodo) => {
+export const createTodoFunction = async (requestBody: NewTodo) => {
   const { token } = requestBody;
-  return axios.post("http://localhost:2883/todo/create-new-todo", requestBody, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  console.log("requestBody", requestBody);
+  const data = await axios.post(
+    "http://localhost:2883/todos/create-todos",
+    requestBody,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  console.log("What's happening", data);
+  return data;
 };

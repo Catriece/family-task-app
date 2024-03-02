@@ -37,7 +37,7 @@ import ChangePasswordPage from "./password/change-password-form";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
 import mediaQueries from "../../components/constants";
-import { deleteUserFunction } from "../../functions/mutations";
+import { deleteUserFunction } from "../../functions/user-mutations";
 import { useMutation } from "@tanstack/react-query";
 
 const button = {

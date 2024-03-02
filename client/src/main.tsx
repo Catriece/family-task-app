@@ -28,16 +28,31 @@ const router = createBrowserRouter([
         loader: async () => {
           const token = localStorage.getItem("token");
           const id = localStorage.getItem("userId");
-          const data = await axios.get(
+          const user = await axios.get(
             `http://localhost:2883/auth/user?id=${id}`,
             {
               headers: { Authorization: "Bearer " + token },
             }
           );
-          console.log(data);
+          const todos = await axios.get(
+            `http://localhost:2883/todos/get-todos?id=${id}`,
+            {
+              headers: { Authorization: "Bearer " + token },
+            }
+          );
+
+          const data = new Map([
+            ["user", user],
+            ["todos", todos],
+          ]);
           return data;
         },
-        children: [{ element: <TodoComponent /> }],
+        children: [
+          // Do I want TODO Component as a child?
+          {
+            element: <TodoComponent />,
+          },
+        ],
       },
       {
         path: "/reset-password/:token/:id",
@@ -46,7 +61,7 @@ const router = createBrowserRouter([
       {
         path: "/account/settings/:id",
         element: <SettingsPage />,
-        loader: async (params) => {
+        loader: async () => {
           const token = localStorage.getItem("token");
           const id = localStorage.getItem("userId");
 

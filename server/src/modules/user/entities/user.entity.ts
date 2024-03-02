@@ -1,5 +1,6 @@
 // table schema for database
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { TodosEntity } from 'src/modules/todos/entities/todos.entity';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
 export class UserEntity {
@@ -27,9 +28,12 @@ export class UserEntity {
   @Column({ nullable: true, type: 'varchar' })
   birthday: string;
 
-  @Column({ default: true })
+  @Column({ default: false })
   isActive: boolean;
 
   @Column({ type: 'bigint', nullable: true })
   createdAt: number;
+
+  @OneToMany(() => TodosEntity, (todo) => todo.userId)
+  todos: TodosEntity[];
 }

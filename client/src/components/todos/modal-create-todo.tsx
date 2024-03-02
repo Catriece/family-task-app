@@ -20,15 +20,19 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useModal } from "../../context/modal-context";
+import { createTodoFunction } from "../../functions/todo-mutations";
+import { useMutation } from "@tanstack/react-query";
+import { useParams } from "react-router-dom";
 
-const TodoForm = ({}) => {
+const TodoModalForm = ({}) => {
   const [formData, setFormData] = useState<TodoFormData>({
     title: "",
     description: "",
   });
-  const [dateTime, setDateTime] = useState<string>("");
+  const [dueOn, setDueOn] = useState<string>("");
   const [priority, setPriority] = useState<string>("");
   const { closeModal, isOpen } = useModal();
+  const { id } = useParams();
 
   const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
@@ -40,11 +44,31 @@ const TodoForm = ({}) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmitForm = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const data = { ...formData, priority, dateTime };
-    console.log("Form Data to be sent to server", data);
+    const token = localStorage.getItem("token");
+    const data = {
+      ...formData,
+      userId: id,
+      token,
+      priority,
+      dueOn,
+      completed: false,
+    };
+    const todo = await createTodo.mutateAsync(data);
+    console.log("RETURNED TODO: ", todo);
   };
+
+  const createTodo = useMutation({
+    mutationFn: createTodoFunction,
+    onSuccess: () => {
+      console.log("New task created");
+      closeModal();
+    },
+    onError: () => {
+      console.log("Error creating new task");
+    },
+  });
 
   return (
     <Modal isOpen={isOpen} onClose={closeModal} isCentered>
@@ -74,12 +98,12 @@ const TodoForm = ({}) => {
             <Input
               name="dateTime"
               isRequired
-              w={"75%"}
+              w={"50%"}
               placeholder="Select Date and Time"
               size="sm"
-              type="datetime-local"
-              value={dateTime}
-              onChange={(e) => setDateTime(e.target.value)}
+              type="date"
+              value={dueOn}
+              onChange={(e) => setDueOn(e.target.value)}
             />
             <Text fontWeight={600} mr={3}>
               Due:{" "}
@@ -94,8 +118,8 @@ const TodoForm = ({}) => {
               w={"45%"}
               onChange={(e) => setPriority(e.target.value)}
             >
-              <option value="High Priority">High Priority</option>
-              <option value="Low Priority">Low Priority</option>
+              <option value={1}>High Priority</option>
+              <option value={0}>Low Priority</option>
             </Select>
             <Box>
               {/* <Button mr={2} onClick={(e) => isOpen === false}>Close</Button> */}
@@ -108,4 +132,4 @@ const TodoForm = ({}) => {
   );
 };
 
-export default TodoForm;
+export default TodoModalForm;

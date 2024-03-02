@@ -1,5 +1,5 @@
 import { ChakraProvider, Grid, GridItem, Heading } from "@chakra-ui/react";
-import { inputTheme } from "./themes.ts";
+import { theme } from "./themes/floating-label.themes.ts";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AuthProvider from "./context/auth/authProvider.tsx";
@@ -14,7 +14,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <ModalContextProvider>
-          <ChakraProvider theme={inputTheme}>
+          <ChakraProvider theme={theme}>
             <Outlet />
           </ChakraProvider>
         </ModalContextProvider>

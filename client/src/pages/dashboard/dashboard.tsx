@@ -1,7 +1,4 @@
-import { FC, useContext, useEffect, useState } from "react";
-import AuthContext from "../../context/auth/authContext";
-import { User } from "../../types";
-import Loader from "../../components/loader";
+import { FC } from "react";
 import HeaderComponent from "../../components/header/header";
 import {
   Flex,
@@ -11,17 +8,14 @@ import {
   Heading,
   useMediaQuery,
   Button,
-  Box,
 } from "@chakra-ui/react";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { useLoaderData } from "react-router-dom";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
-import TodoForm from "../../components/todos/modal-create-todo";
+import TodoModalForm from "../../components/todos/modal-create-todo";
 import TodoComponent from "../../components/todos/todo-component";
 import { useModal } from "../../context/modal-context";
-import { HamburgerIcon } from "@chakra-ui/icons";
 import MenuComponent from "../../components/menu/menu-component";
-// import TodoForm from "../components/todos/todo-form";
-// import TodoComponent from "../components/todos/todo-component";
+import { AddIcon } from "@chakra-ui/icons";
 // import MobileNavigation from "../components/navigation/mobile-navigation";
 // import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
 
@@ -30,6 +24,7 @@ const DashboardPage: FC = () => {
 
   const { openModal } = useModal();
   const data: any = useLoaderData();
+  const user = data.get("user");
 
   return (
     <Grid
@@ -46,7 +41,7 @@ const DashboardPage: FC = () => {
                   "footer"`
       }
       gridTemplateRows={
-        isLargerThan525 ? "7% 100px 1fr 50px" : "7% 110px 95px 1fr 50px"
+        isLargerThan525 ? "7% 100px 1fr 65px" : "7% 110px 95px 1fr 65px"
       }
       gridTemplateColumns={isLargerThan525 ? "150px 1fr" : "1fr"}
       h="100vh"
@@ -70,7 +65,7 @@ const DashboardPage: FC = () => {
       <GridItem pl="2" area={"greeting"}>
         <Flex flexDirection="column" justifyContent="center">
           <Heading color="black" fontSize="38px" fontWeight={800}>
-            Hey, {data.data.firstName}!
+            Hey, {user.data.firstName}!
           </Heading>
           <Text color="black" fontSize="xl">
             Make today a great day!
@@ -83,13 +78,29 @@ const DashboardPage: FC = () => {
         {/* {isLargerThan525 ? "hi" : <DaysOfTheWeek />} */}
       </GridItem>
 
-      <GridItem pl="2" bg="green.300" area={"main"}>
-        <Button onClick={openModal}>Open Modal</Button>
-        <TodoForm />
-        <TodoComponent />
+      <GridItem bg="green.300" area={"main"}>
+        <Flex
+          justifyContent={"space-between"}
+          alignItems={"center"}
+          margin={"10px 7px"}
+          borderRadius={"25px"}
+        >
+          <Text>Sort by</Text>
+        </Flex>
+        <Flex w={"100%"} justifyContent={"center"} alignItems={"center"}>
+          <TodoComponent />
+        </Flex>
       </GridItem>
-      <GridItem pl="2" bg="blue.300" area={"footer"}>
-        Footer
+      <GridItem position={"fixed"} bottom={8} left={4} area={"footer"}>
+        <Button
+          borderRadius="20"
+          leftIcon={<AddIcon fontSize={13} />}
+          onClick={openModal}
+          bgColor={"#FFDB58"}
+        >
+          Create Todo
+        </Button>
+        <TodoModalForm />
       </GridItem>
     </Grid>
   );
