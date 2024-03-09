@@ -15,7 +15,7 @@ export class TodosEntity {
   @Column({ nullable: true, type: 'varchar' })
   description: string;
 
-  @Column({ nullable: true, type: 'date' }) // maybe big int, need to see how dayjs dates come in
+  @Column({ nullable: true, type: 'varchar' }) // maybe big int, need to see how dayjs dates come in
   dueOn: string;
 
   @Column({ nullable: true, type: 'int' })

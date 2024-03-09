@@ -5,19 +5,21 @@ import {
   Text,
   Grid,
   GridItem,
-  Heading,
   useMediaQuery,
   Button,
+  Box,
+  Select,
 } from "@chakra-ui/react";
 import { useLoaderData } from "react-router-dom";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
 import TodoModalForm from "../../components/todos/modal-create-todo";
-import TodoComponent from "../../components/todos/todo-component";
 import { useModal } from "../../context/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
-import { AddIcon } from "@chakra-ui/icons";
-// import MobileNavigation from "../components/navigation/mobile-navigation";
-// import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
+import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
+import UserBioCard from "../../components/user/user-card";
+import { MAINACCENTCOLOR } from "../../components/styles";
+import SearchBarComponent from "../../components/search/search-bar-component";
+import TodoByWeekCalendarComponent from "../../components/calendar/todo-calendar-component";
 
 const DashboardPage: FC = () => {
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
@@ -41,7 +43,7 @@ const DashboardPage: FC = () => {
                   "footer"`
       }
       gridTemplateRows={
-        isLargerThan525 ? "7% 100px 1fr 65px" : "7% 110px 95px 1fr 65px"
+        isLargerThan525 ? "7% 10% 1fr 65px" : "7% 8% 90px 1fr 65px"
       }
       gridTemplateColumns={isLargerThan525 ? "150px 1fr" : "1fr"}
       h="100vh"
@@ -54,52 +56,67 @@ const DashboardPage: FC = () => {
         <Flex justifyContent={"space-between"}>
           <HeaderComponent />
           <Flex alignItems={"center"}>
-            {/* <Button fontSize={"sm"} variant="ghost" onClick={logout}>
-              Logout
-            </Button>
-            <HamburgerIcon mr={2} /> */}
             <MenuComponent />
           </Flex>
         </Flex>
       </GridItem>
+
       <GridItem pl="2" area={"greeting"}>
-        <Flex flexDirection="column" justifyContent="center">
-          <Heading color="black" fontSize="38px" fontWeight={800}>
-            Hey, {user.data.firstName}!
-          </Heading>
-          <Text color="black" fontSize="xl">
-            Make today a great day!
-          </Text>
+        <Flex w={"100%"} zIndex={1} justifyContent="center">
+          <UserBioCard />
         </Flex>
       </GridItem>
-      <GridItem bg="pink.300" area={"nav"}>
-        <WeeklyCalendarComponent />
-        {/* {isLargerThan525 ? "hi" : <MobileNavigation />} */}
-        {/* {isLargerThan525 ? "hi" : <DaysOfTheWeek />} */}
+
+      <GridItem area={"nav"}>
+        <Flex w={"100%"} zIndex={1} justifyContent={"center"}>
+          <WeeklyCalendarComponent />
+        </Flex>
       </GridItem>
 
-      <GridItem bg="green.300" area={"main"}>
+      <GridItem area={"main"} marginTop={2}>
+        <Flex
+          w={"100%"}
+          justifyContent={"center"}
+          alignItems={"center"}
+          zIndex={1}
+        >
+          <SearchBarComponent />
+        </Flex>
         <Flex
           justifyContent={"space-between"}
           alignItems={"center"}
           margin={"10px 7px"}
           borderRadius={"25px"}
+          mt={5}
+          ml={3}
+          mr={3}
         >
-          <Text>Sort by</Text>
+          <Select placeholder="Sort by" w={"30%"} h={"25px"}>
+            <option>Priority</option>
+            <option>Upcoming</option>
+            <option>Date</option>
+          </Select>
+          <Text fontSize={"lg"}>
+            See all
+            <ChevronRightIcon />
+          </Text>
         </Flex>
-        <Flex w={"100%"} justifyContent={"center"} alignItems={"center"}>
-          <TodoComponent />
-        </Flex>
+        <Box position="fixed" w={"100%"}>
+          <TodoByWeekCalendarComponent />
+        </Box>
       </GridItem>
-      <GridItem position={"fixed"} bottom={8} left={4} area={"footer"}>
-        <Button
-          borderRadius="20"
-          leftIcon={<AddIcon fontSize={13} />}
-          onClick={openModal}
-          bgColor={"#FFDB58"}
-        >
-          Create Todo
-        </Button>
+      <GridItem area={"footer"}>
+        <Box position={"sticky"} overflow={"scroll"} bottom={10} left={4}>
+          <Button
+            borderRadius="20"
+            textAlign={"left"}
+            leftIcon={<AddIcon fontSize={13} />}
+            onClick={openModal}
+            bgColor={MAINACCENTCOLOR}
+          >
+            Create Todo
+          </Button>
+        </Box>
         <TodoModalForm />
       </GridItem>
     </Grid>

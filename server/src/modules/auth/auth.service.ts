@@ -28,10 +28,8 @@ export class AuthService {
       if (!passwordMatch) throw new UnauthorizedException();
 
       const payload = {
-        id: user.id,
+        sub: user.id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
         isActive: user.isActive,
       };
       return {
@@ -88,8 +86,8 @@ export class AuthService {
       secret: `${user.password}-${user.createdAt}`, // add created_at in user entity
       expiresIn: '600s',
     });
-    // send email to user with link to reset password form + token + id
 
+    // send email to user with link to reset password form + token + id
     const dto: SendEmailDto = {
       recipients: [{ name: payload.name, address: payload.email }],
       subject: 'Password Reset',

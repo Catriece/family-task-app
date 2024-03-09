@@ -122,7 +122,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
       preferredNameFormData["preferredName"] = updatePreferredName;
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...preferredNameFormData, token, id };
+    const formData = { ...preferredNameFormData, token };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditPreferredName(!editPreferredName);

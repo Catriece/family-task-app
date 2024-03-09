@@ -9,7 +9,7 @@ import axios from "axios";
 import ErrorPage from "./pages/error/error-page.tsx";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import TodoComponent from "./components/todos/todo-component.tsx";
+import TodoByWeekCalendarComponent from "./components/calendar/todo-calendar-component.tsx";
 
 const router = createBrowserRouter([
   {
@@ -27,15 +27,11 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: async () => {
           const token = localStorage.getItem("token");
-          const id = localStorage.getItem("userId");
-          const user = await axios.get(
-            `http://localhost:2883/auth/user?id=${id}`,
-            {
-              headers: { Authorization: "Bearer " + token },
-            }
-          );
+          const user = await axios.get("http://localhost:2883/auth/get-user", {
+            headers: { Authorization: "Bearer " + token },
+          });
           const todos = await axios.get(
-            `http://localhost:2883/todos/get-todos?id=${id}`,
+            "http://localhost:2883/todos/get-todos",
             {
               headers: { Authorization: "Bearer " + token },
             }
@@ -48,9 +44,8 @@ const router = createBrowserRouter([
           return data;
         },
         children: [
-          // Do I want TODO Component as a child?
           {
-            element: <TodoComponent />,
+            element: <TodoByWeekCalendarComponent />,
           },
         ],
       },
@@ -63,14 +58,10 @@ const router = createBrowserRouter([
         element: <SettingsPage />,
         loader: async () => {
           const token = localStorage.getItem("token");
-          const id = localStorage.getItem("userId");
 
-          const data = await axios.get(`http://localhost:2883/auth/user`, {
-            params: { id },
+          return await axios.get(`http://localhost:2883/auth/get-user`, {
             headers: { Authorization: "Bearer " + token },
           });
-
-          return data;
         },
       },
     ],

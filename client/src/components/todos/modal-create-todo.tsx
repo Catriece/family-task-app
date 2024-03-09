@@ -23,6 +23,31 @@ import { useModal } from "../../context/modal-context";
 import { createTodoFunction } from "../../functions/todo-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { useParams } from "react-router-dom";
+import dayjs from "dayjs";
+
+const dayNames = [
+  "Sunday",
+  "Monday",
+  "Tuesday",
+  "Wednesday",
+  "Thursday",
+  "Friday",
+  "Saturday",
+];
+const monthAbbr = [
+  "Jan",
+  "Feb",
+  "Mar",
+  "Apr",
+  "May",
+  "Jun",
+  "Jul",
+  "Aug",
+  "Sept",
+  "Oct",
+  "Nov",
+  "Dec",
+];
 
 const TodoModalForm = ({}) => {
   const [formData, setFormData] = useState<TodoFormData>({
@@ -30,39 +55,56 @@ const TodoModalForm = ({}) => {
     description: "",
   });
   const [dueOn, setDueOn] = useState<string>("");
-  const [priority, setPriority] = useState<string>("");
+  const [formatDate, setFormatDate] = useState<string>("");
+  const [priority, setPriority] = useState<number>(0);
   const { closeModal, isOpen } = useModal();
   const { id } = useParams();
 
-  const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault();
+  const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
 
-  const handleTextAreaField = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-    e.preventDefault();
+  const handleTextAreaField = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+  const handlePriority = (e: React.ChangeEvent<HTMLSelectElement>) =>
+    setPriority(Number(e.target.value));
+
+  const handleDueOn = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = e.target.value;
+    const dotw = dayjs(e.target.value).get("day");
+    setDueOn(date);
+    // Is this called destructuring?
+    const [year, month, day] = date.split("-");
+    const index = Number(month) - 1;
+    const formattedDate = `${dayNames[dotw]} (${monthAbbr[index]} ${day})`;
+    console.log(formattedDate);
+    setFormatDate(formattedDate);
   };
 
   const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const token = localStorage.getItem("token");
+
+    if (!priority) {
+      setPriority(0);
+    }
+
     const data = {
       ...formData,
       userId: id,
       token,
       priority,
-      dueOn,
+      dueOn: formatDate,
       completed: false,
     };
+    console.log(data);
+
     const todo = await createTodo.mutateAsync(data);
-    console.log("RETURNED TODO: ", todo);
   };
 
   const createTodo = useMutation({
     mutationFn: createTodoFunction,
     onSuccess: () => {
-      console.log("New task created");
       closeModal();
     },
     onError: () => {
@@ -71,7 +113,7 @@ const TodoModalForm = ({}) => {
   });
 
   return (
-    <Modal isOpen={isOpen} onClose={closeModal} isCentered>
+    <Modal size={"sm"} isOpen={isOpen} onClose={closeModal} isCentered>
       <ModalOverlay />
       <ModalContent>
         <ModalHeader>Create New Todo</ModalHeader>
@@ -103,7 +145,7 @@ const TodoModalForm = ({}) => {
               size="sm"
               type="date"
               value={dueOn}
-              onChange={(e) => setDueOn(e.target.value)}
+              onChange={handleDueOn}
             />
             <Text fontWeight={600} mr={3}>
               Due:{" "}
@@ -116,7 +158,8 @@ const TodoModalForm = ({}) => {
               fontSize={"sm"}
               placeholder="Select Priority"
               w={"45%"}
-              onChange={(e) => setPriority(e.target.value)}
+              value={priority}
+              onChange={handlePriority}
             >
               <option value={1}>High Priority</option>
               <option value={0}>Low Priority</option>

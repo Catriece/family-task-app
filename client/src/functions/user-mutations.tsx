@@ -22,7 +22,7 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
 
 export const updateUserFunction = (requestBody: UpdateUserInformation) => {
   const { token } = requestBody;
-  return axios.post(
+  const data = axios.post(
     `http://localhost:2883/auth/update-user-personal-info`,
     requestBody,
     {
@@ -31,6 +31,8 @@ export const updateUserFunction = (requestBody: UpdateUserInformation) => {
       },
     }
   );
+  console.log("DATA", data)
+  return data
 };
 
 export const deleteUserFunction = (requestBody: DeleteUser) => {

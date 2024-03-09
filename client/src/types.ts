@@ -52,7 +52,7 @@ export interface ChangePassword {
 }
 
 export interface UpdateUserInformation {
-  id: string | undefined;
+  //id: string | undefined;
   token: string | null;
   firstName?: string;
   lastName?: string;
