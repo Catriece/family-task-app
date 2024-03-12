@@ -17,7 +17,7 @@ import { useModal } from "../../context/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
 import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import UserBioCard from "../../components/user/user-card";
-import { MAINACCENTCOLOR } from "../../components/styles";
+import { PRIMARYCOLOR } from "../../components/styles";
 import SearchBarComponent from "../../components/search/search-bar-component";
 import TodoByWeekCalendarComponent from "../../components/calendar/todo-calendar-component";
 
@@ -112,7 +112,7 @@ const DashboardPage: FC = () => {
             textAlign={"left"}
             leftIcon={<AddIcon fontSize={13} />}
             onClick={openModal}
-            bgColor={MAINACCENTCOLOR}
+            bgColor={PRIMARYCOLOR}
           >
             Create Todo
           </Button>

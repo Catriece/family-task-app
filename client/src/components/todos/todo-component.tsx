@@ -10,14 +10,15 @@ import {
   Collapse,
   useDisclosure,
   Checkbox,
-  Tooltip,
+  useToast,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { TfiTrash } from "react-icons/tfi";
 import { BiEditAlt } from "react-icons/bi";
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { deleteTodoFunction } from "../../functions/todo-mutations";
+import { HIGHPRIORITY, SECONDARYCOLOR } from "../styles";
 
 interface TodoData {
   title: string;
@@ -38,13 +39,30 @@ const TodoComponent: FC<TodoData> = ({
   const data: any = useLoaderData();
   const { id } = useParams();
 
+  const revalidator = useRevalidator();
+  const toast = useToast();
+
   const remove = useMutation({
     mutationFn: deleteTodoFunction,
     onSuccess: () => {
-      console.log("Todo successfully deleted");
+      toast({
+        title: "Todo deleted",
+        description: "We've deleted your Todo for you.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
+      revalidator.revalidate();
     },
     onError: () => {
       console.error("Todo unsuccessfully deleted");
+      toast({
+        title: "Failed Todo Delete.",
+        description: "We were unable to delete your Todo for you.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     },
   });
 
@@ -57,8 +75,7 @@ const TodoComponent: FC<TodoData> = ({
       userId: id,
     };
 
-    const response = await remove.mutateAsync(formData);
-    console.log(response);
+    await remove.mutateAsync(formData);
   };
 
   const editTodo = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -70,9 +87,9 @@ const TodoComponent: FC<TodoData> = ({
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? "red.500" : "green.500"}
+      borderColor={priority === 1 ? HIGHPRIORITY : SECONDARYCOLOR}
       borderWidth=".1em"
-      bg={priority === 1 ? "red.300" : "green.300"}
+      bg={priority === 1 ? HIGHPRIORITY : SECONDARYCOLOR}
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>
@@ -85,8 +102,7 @@ const TodoComponent: FC<TodoData> = ({
             </Box>
           </Flex>
 
-          <Flex alignItems={"center"} justifyContent={"flex-end"}>
-            <Text fontWeight={500}>{dueOn}</Text>
+          <Flex alignItems={"center"}>
             <IconButton
               variant="ghost"
               colorScheme="gray"
@@ -94,6 +110,7 @@ const TodoComponent: FC<TodoData> = ({
               icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />} // Description must also be present
               onClick={onToggle}
             />
+            <Text fontWeight={500}>{dueOn}</Text>
           </Flex>
         </Flex>
       </CardHeader>

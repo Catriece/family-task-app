@@ -22,7 +22,8 @@ import {
 import { useModal } from "../../context/modal-context";
 import { createTodoFunction } from "../../functions/todo-mutations";
 import { useMutation } from "@tanstack/react-query";
-import { useParams } from "react-router-dom";
+import { useParams, useRevalidator } from "react-router-dom";
+
 import dayjs from "dayjs";
 
 const dayNames = [
@@ -57,8 +58,10 @@ const TodoModalForm = ({}) => {
   const [dueOn, setDueOn] = useState<string>("");
   const [formatDate, setFormatDate] = useState<string>("");
   const [priority, setPriority] = useState<number>(0);
+
   const { closeModal, isOpen } = useModal();
   const { id } = useParams();
+  const revalidator = useRevalidator();
 
   const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -76,7 +79,7 @@ const TodoModalForm = ({}) => {
     // Is this called destructuring?
     const [year, month, day] = date.split("-");
     const index = Number(month) - 1;
-    const formattedDate = `${dayNames[dotw]} (${monthAbbr[index]} ${day})`;
+    const formattedDate = `${dayNames[dotw]}, ${monthAbbr[index]} ${day}`;
     console.log(formattedDate);
     setFormatDate(formattedDate);
   };
@@ -99,7 +102,16 @@ const TodoModalForm = ({}) => {
     };
     console.log(data);
 
-    const todo = await createTodo.mutateAsync(data);
+    await createTodo.mutateAsync(data);
+    revalidator.revalidate();
+
+    setFormData({
+      title: "",
+      description: "",
+    });
+    setDueOn("");
+    setFormatDate("");
+    setPriority(0);
   };
 
   const createTodo = useMutation({

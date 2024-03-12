@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TodosEntity } from './entities/todos.entity';
@@ -14,6 +14,7 @@ export class TodosService {
   ) {}
 
   async getUserTodos(id: string) {
+    if (!id) throw new UnauthorizedException('User to find user tasks.');
     return await this.todosRepository.find({ where: { userId: id } });
   }
 
@@ -24,10 +25,19 @@ export class TodosService {
   async deleteTodo(notesId: number) {
     const todo = await this.todosRepository.delete(notesId);
 
+    if (!todo)
+      throw new UnauthorizedException('User is unable to delete this task.');
+
     return todo;
   }
 
   async editTodo(updateTodoDto: UpdateTodoDto) {
+    const { userId, notesId } = updateTodoDto;
+    const taskNeedingUpdate = this.todosRepository.findOne({
+      where: {
+        notesId,
+      },
+    });
     return await this.todosRepository.save(updateTodoDto);
   }
 }

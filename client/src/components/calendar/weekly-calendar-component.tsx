@@ -1,6 +1,6 @@
 import { Box, Flex, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
-import { MAINACCENTCOLOR } from "../styles";
+import { OPTIONAL } from "../styles";
 import mediaQueries from "../constants";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 
@@ -38,7 +38,7 @@ const WeeklyCalendarComponent = () => {
             h={"100%"}
             w={"14%"}
             p={2}
-            bg={ISLARGERTHAN550 ? "" : findWeekDay === 0 ? MAINACCENTCOLOR : ""}
+            bg={ISLARGERTHAN550 ? "" : findWeekDay === 0 ? OPTIONAL : ""}
             flexDirection={"column"}
             alignItems={"center"}
             borderRadius={
