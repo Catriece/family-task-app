@@ -3,7 +3,7 @@ import { Menu, MenuButton, Button, MenuList, MenuItem } from "@chakra-ui/react";
 import { useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
-import { useModal } from "../../context/modal-context";
+import { useModal } from "../../context/modal/modal-context";
 
 const MenuComponent = () => {
   const { logout } = useContext(AuthContext);

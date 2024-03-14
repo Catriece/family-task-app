@@ -1,5 +1,5 @@
 // table schema for database
-import { TodosEntity } from 'src/modules/todos/entities/todos.entity';
+import { TasksEntity } from 'src/modules/tasks/entities/tasks.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
@@ -34,6 +34,6 @@ export class UserEntity {
   @Column({ type: 'bigint', nullable: true })
   createdAt: number;
 
-  @OneToMany(() => TodosEntity, (todo) => todo.userId)
-  todos: TodosEntity[];
+  @OneToMany(() => TasksEntity, (task) => task.userId)
+  tasks: TasksEntity[];
 }

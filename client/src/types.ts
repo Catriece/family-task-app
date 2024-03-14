@@ -66,7 +66,7 @@ export interface DeleteUser {
   password: string;
 }
 
-export interface TodoFormData {
+export interface TaskFormData {
   title: string;
   description: string;
 }
@@ -74,7 +74,17 @@ export interface TodoFormData {
 export interface ModalContextInterface {
   form?: any | null;
   isOpen: boolean;
-  openModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  openModal: () => void;
   closeModal: () => void;
-  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  // edits: {};
+  // setEdits: (edits: {}) => void;
+  //setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface TaskData {
+  title: string;
+  description: string;
+  priority: number;
+  dueOn: string;
+  index: string;
 }

@@ -17,18 +17,11 @@ import { TfiTrash } from "react-icons/tfi";
 import { BiEditAlt } from "react-icons/bi";
 import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
-import { deleteTodoFunction } from "../../functions/todo-mutations";
-import { HIGHPRIORITY, SECONDARYCOLOR } from "../styles";
+import { deleteTaskFunction } from "../../functions/task-mutations";
+import { TaskData } from "../../types";
+import { useModal } from "../../context/modal/modal-context";
 
-interface TodoData {
-  title: string;
-  description: string;
-  priority: number;
-  dueOn: string;
-  index: string;
-}
-
-const TodoComponent: FC<TodoData> = ({
+const TaskComponent: FC<TaskData> = ({
   title,
   description,
   priority,
@@ -41,13 +34,14 @@ const TodoComponent: FC<TodoData> = ({
 
   const revalidator = useRevalidator();
   const toast = useToast();
+  const { openModal, closeModal, isOpen: handleModal } = useModal();
 
   const remove = useMutation({
-    mutationFn: deleteTodoFunction,
+    mutationFn: deleteTaskFunction,
     onSuccess: () => {
       toast({
-        title: "Todo deleted",
-        description: "We've deleted your Todo for you.",
+        title: "Task deleted",
+        description: "Your task was successfully deleted.",
         status: "success",
         duration: 5000,
         isClosable: true,
@@ -55,10 +49,10 @@ const TodoComponent: FC<TodoData> = ({
       revalidator.revalidate();
     },
     onError: () => {
-      console.error("Todo unsuccessfully deleted");
+      console.error("Task unsuccessfully deleted.");
       toast({
-        title: "Failed Todo Delete.",
-        description: "We were unable to delete your Todo for you.",
+        title: "Failed Task Delete.",
+        description: "We were unable to delete your task for you.",
         status: "error",
         duration: 5000,
         isClosable: true,
@@ -66,20 +60,20 @@ const TodoComponent: FC<TodoData> = ({
     },
   });
 
-  const deleteTodo = async () => {
+  const deleteTask = async () => {
     const token = localStorage.getItem("token");
 
     const formData = {
       token,
-      notesId: Number(index),
+      taskId: Number(index),
       userId: id,
     };
 
     await remove.mutateAsync(formData);
   };
 
-  const editTodo = (e: React.MouseEvent<HTMLButtonElement>) => {
-    console.log(e, "edit button");
+  const editTask = () => {
+    handleModal ? closeModal() : openModal();
   };
 
   return (
@@ -87,9 +81,9 @@ const TodoComponent: FC<TodoData> = ({
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? HIGHPRIORITY : SECONDARYCOLOR}
+      borderColor={priority === 1 ? "red" : "green"}
       borderWidth=".1em"
-      bg={priority === 1 ? HIGHPRIORITY : SECONDARYCOLOR}
+      bg={priority === 1 ? "red" : "green"}
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>
@@ -130,10 +124,10 @@ const TodoComponent: FC<TodoData> = ({
             </Text>
           </Box>
           <Flex justifyContent={"space-around"} w={"20%"}>
-            <Box as="button" onClick={editTodo}>
+            <Box as="button" onClick={editTask}>
               <BiEditAlt size="20px" />
             </Box>
-            <Box as="button" onClick={deleteTodo}>
+            <Box as="button" onClick={deleteTask}>
               <TfiTrash size="20px" />
             </Box>
           </Flex>
@@ -143,4 +137,4 @@ const TodoComponent: FC<TodoData> = ({
   );
 };
 
-export default TodoComponent;
+export default TaskComponent;

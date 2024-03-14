@@ -1,12 +1,10 @@
 import { IsBoolean, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
-import { CreateTodoDto } from './create-todo-dto';
-import { PartialType } from '@nestjs/mapped-types';
 import { Transform } from 'class-transformer';
 import sanitizeHtml from 'sanitize-html';
 
-export class UpdateTodoDto {
+export class UpdateTaskDto {
   @IsNotEmpty()
-  notesId: number;
+  taskId: number;
 
   @IsNotEmpty()
   userId: string;

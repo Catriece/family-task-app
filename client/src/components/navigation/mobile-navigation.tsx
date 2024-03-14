@@ -6,7 +6,7 @@ import {
   TabPanel,
   Center,
 } from "@chakra-ui/react";
-import TodoComponent from "../todos/todo-component";
+import TaskComponent from "../tasks/task-component";
 
 const MobileNavigation = () => {
   return (
@@ -14,7 +14,7 @@ const MobileNavigation = () => {
       <Tabs h="60px" w="90%" isFitted>
         <TabList mb="1em">
           <Tab fontSize="xl" fontWeight={500}>
-            Todos
+            Tasks
           </Tab>
           <Tab fontSize="xl" fontWeight={500}>
             Calendar
@@ -24,9 +24,7 @@ const MobileNavigation = () => {
           </Tab>
         </TabList>
         <TabPanels>
-          <TabPanel>
-            <TodoComponent />
-          </TabPanel>
+          <TabPanel>{/* <TaskComponent /> */}</TabPanel>
           <TabPanel>
             <p>Calendar?</p>
           </TabPanel>

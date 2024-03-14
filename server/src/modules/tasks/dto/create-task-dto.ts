@@ -1,9 +1,7 @@
-import { Transform } from 'class-transformer';
 import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
-import * as sanitizehtml from 'sanitize-html';
 
-export class CreateTodoDto {
-  notesId: number;
+export class CreateTaskDto {
+  taskId: number;
 
   @IsNotEmpty()
   @IsString()

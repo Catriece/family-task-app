@@ -1,16 +1,15 @@
 import { Center, Flex, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 
-import TodoComponent from "../todos/todo-component";
+import TaskComponent from "../tasks/task-component";
 import { useLoaderData } from "react-router-dom";
 
-const TodoByWeekCalendarComponent = () => {
+const TaskByWeekCalendarComponent = () => {
   const today = dayjs().format("dddd, MMMM D, YYYY"); // current day
   const tomorrow = dayjs().add(1, "d").format("dddd, MMMM D, YYYY"); // current day
 
   let data: any = useLoaderData();
-  const todos = data.get("todos").data;
-  console.log("data: ", todos.length);
+  const tasks = data.get("tasks").data;
 
   return (
     <Flex
@@ -22,22 +21,22 @@ const TodoByWeekCalendarComponent = () => {
       justifyContent={"flex-start"}
       alignItems={"center"}
     >
-      {todos.length > 0
-        ? todos.map((todo: any, index: number) => {
+      {tasks.length > 0
+        ? tasks.map((task: any, index: number) => {
             return (
-              <TodoComponent
+              <TaskComponent
                 key={index}
-                index={todo.notesId}
-                description={todo.description}
-                dueOn={todo.dueOn}
-                priority={todo.priority}
-                title={todo.title}
+                index={task.taskId}
+                description={task.description}
+                dueOn={task.dueOn}
+                priority={task.priority}
+                title={task.title}
               />
             );
           })
-        : "Create new todo"}
+        : "Create new task"}
     </Flex>
   );
 };
 
-export default TodoByWeekCalendarComponent;
+export default TaskByWeekCalendarComponent;

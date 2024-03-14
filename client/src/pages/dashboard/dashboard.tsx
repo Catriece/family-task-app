@@ -10,23 +10,20 @@ import {
   Box,
   Select,
 } from "@chakra-ui/react";
-import { useLoaderData } from "react-router-dom";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
-import TodoModalForm from "../../components/todos/modal-create-todo";
-import { useModal } from "../../context/modal-context";
+import TaskModalForm from "../../components/tasks/modal-create-task";
+import { useModal } from "../../context/modal/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
 import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import UserBioCard from "../../components/user/user-card";
 import { PRIMARYCOLOR } from "../../components/styles";
 import SearchBarComponent from "../../components/search/search-bar-component";
-import TodoByWeekCalendarComponent from "../../components/calendar/todo-calendar-component";
+import TaskByWeekCalendarComponent from "../../components/calendar/task-calendar-component";
 
 const DashboardPage: FC = () => {
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
 
   const { openModal } = useModal();
-  const data: any = useLoaderData();
-  const user = data.get("user");
 
   return (
     <Grid
@@ -102,7 +99,7 @@ const DashboardPage: FC = () => {
           </Text>
         </Flex>
         <Box position="fixed" w={"100%"}>
-          <TodoByWeekCalendarComponent />
+          <TaskByWeekCalendarComponent />
         </Box>
       </GridItem>
       <GridItem area={"footer"}>
@@ -114,10 +111,10 @@ const DashboardPage: FC = () => {
             onClick={openModal}
             bgColor={PRIMARYCOLOR}
           >
-            Create Todo
+            Create Task
           </Button>
         </Box>
-        <TodoModalForm />
+        <TaskModalForm />
       </GridItem>
     </Grid>
   );

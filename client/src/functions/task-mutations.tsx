@@ -1,6 +1,6 @@
 import axios from "axios";
 
-interface NewTodo {
+interface NewTask {
   userId: string | undefined;
   token?: string | null;
   priority?: number | null; // why are string values the interface but interger values stored?
@@ -10,16 +10,16 @@ interface NewTodo {
   completed?: boolean;
 }
 
-interface DeleteTodo {
+interface DeleteTask {
   userId: string | undefined;
   token: string | null;
-  notesId: number | null;
+  taskId: number | null;
 }
 
-export const createTodoFunction = async (requestBody: NewTodo) => {
+export const createTaskFunction = async (requestBody: NewTask) => {
   const { token } = requestBody;
   const data = await axios.post(
-    "http://localhost:2883/todos/create-todos",
+    "http://localhost:2883/tasks/create-tasks",
     requestBody,
     {
       headers: {
@@ -30,9 +30,9 @@ export const createTodoFunction = async (requestBody: NewTodo) => {
   return data;
 };
 
-export const deleteTodoFunction = async (requestBody: DeleteTodo) => {
+export const deleteTaskFunction = async (requestBody: DeleteTask) => {
   const { token } = requestBody;
-  const data = await axios.delete("http://localhost:2883/todos/delete-todo", {
+  const data = await axios.delete("http://localhost:2883/tasks/delete-task", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

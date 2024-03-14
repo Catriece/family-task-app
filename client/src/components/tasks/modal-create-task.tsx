@@ -1,6 +1,6 @@
 // Need to create modal context
-import React, { useState } from "react";
-import { TodoFormData } from "../../types";
+import React, { FC, useState } from "react";
+import { TaskFormData } from "../../types";
 import {
   FormControl,
   FormLabel,
@@ -19,8 +19,8 @@ import {
   Select,
   Flex,
 } from "@chakra-ui/react";
-import { useModal } from "../../context/modal-context";
-import { createTodoFunction } from "../../functions/todo-mutations";
+import { useModal } from "../../context/modal/modal-context";
+import { createTaskFunction } from "../../functions/task-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { useParams, useRevalidator } from "react-router-dom";
 
@@ -50,8 +50,20 @@ const monthAbbr = [
   "Dec",
 ];
 
-const TodoModalForm = ({}) => {
-  const [formData, setFormData] = useState<TodoFormData>({
+interface TaskModalForm {
+  editTitle?: string;
+  editDescription?: string;
+  editDate?: string;
+  editPriority?: string;
+}
+
+const TaskModalForm: FC<TaskModalForm> = ({
+  editTitle,
+  editDescription,
+  editPriority,
+  editDate,
+}) => {
+  const [formData, setFormData] = useState<TaskFormData>({
     title: "",
     description: "",
   });
@@ -62,6 +74,12 @@ const TodoModalForm = ({}) => {
   const { closeModal, isOpen } = useModal();
   const { id } = useParams();
   const revalidator = useRevalidator();
+
+  // Change Title Between Edit and Creating Todo
+  const titleOfModal =
+    editDate || editDescription || editPriority || editTitle
+      ? "Edit"
+      : "Create";
 
   const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -102,7 +120,7 @@ const TodoModalForm = ({}) => {
     };
     console.log(data);
 
-    await createTodo.mutateAsync(data);
+    await createTask.mutateAsync(data);
     revalidator.revalidate();
 
     setFormData({
@@ -114,8 +132,8 @@ const TodoModalForm = ({}) => {
     setPriority(0);
   };
 
-  const createTodo = useMutation({
-    mutationFn: createTodoFunction,
+  const createTask = useMutation({
+    mutationFn: createTaskFunction,
     onSuccess: () => {
       closeModal();
     },
@@ -128,7 +146,7 @@ const TodoModalForm = ({}) => {
     <Modal size={"sm"} isOpen={isOpen} onClose={closeModal} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Create New Todo</ModalHeader>
+        <ModalHeader>{`${titleOfModal} New Task`}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
@@ -136,18 +154,16 @@ const TodoModalForm = ({}) => {
             <Input
               name="title"
               isRequired
-              value={formData.title}
+              value={editTitle ? editTitle : formData.title}
               onChange={handleInputField}
             />
           </FormControl>
           <FormLabel>Description:</FormLabel>
           <Textarea
             name="description"
-            value={formData.description}
+            value={editDescription ? editDescription : formData.description}
             onChange={handleTextAreaField}
-          >
-            {formData.description}
-          </Textarea>
+          ></Textarea>
           <Flex mt={2} flexDirection={"row-reverse"} align={"center"}>
             <Input
               name="dateTime"
@@ -156,7 +172,7 @@ const TodoModalForm = ({}) => {
               placeholder="Select Date and Time"
               size="sm"
               type="date"
-              value={dueOn}
+              value={editDate ? editDate : dueOn}
               onChange={handleDueOn}
             />
             <Text fontWeight={600} mr={3}>
@@ -170,14 +186,13 @@ const TodoModalForm = ({}) => {
               fontSize={"sm"}
               placeholder="Select Priority"
               w={"45%"}
-              value={priority}
+              value={editPriority ? editPriority : priority}
               onChange={handlePriority}
             >
               <option value={1}>High Priority</option>
               <option value={0}>Low Priority</option>
             </Select>
             <Box>
-              {/* <Button mr={2} onClick={(e) => isOpen === false}>Close</Button> */}
               <Button onClick={handleSubmitForm}>Submit</Button>
             </Box>
           </Flex>
@@ -187,4 +202,4 @@ const TodoModalForm = ({}) => {
   );
 };
 
-export default TodoModalForm;
+export default TaskModalForm;

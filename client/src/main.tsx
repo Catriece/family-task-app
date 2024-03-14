@@ -7,9 +7,9 @@ import ResetPasswordPage from "./pages/settings/password/reset-password-form.tsx
 import SettingsPage from "./pages/settings/settings-page.tsx";
 import axios from "axios";
 import ErrorPage from "./pages/error/error-page.tsx";
+import TodoByWeekCalendarComponent from "./components/calendar/task-calendar-component.tsx";
 
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
-import TodoByWeekCalendarComponent from "./components/calendar/todo-calendar-component.tsx";
 
 const router = createBrowserRouter([
   {
@@ -30,8 +30,8 @@ const router = createBrowserRouter([
           const user = await axios.get("http://localhost:2883/auth/get-user", {
             headers: { Authorization: "Bearer " + token },
           });
-          const todos = await axios.get(
-            "http://localhost:2883/todos/get-todos",
+          const tasks = await axios.get(
+            "http://localhost:2883/tasks/get-tasks",
             {
               headers: { Authorization: "Bearer " + token },
             }
@@ -39,7 +39,7 @@ const router = createBrowserRouter([
 
           const data = new Map([
             ["user", user],
-            ["todos", todos],
+            ["tasks", tasks],
           ]);
           return data;
         },

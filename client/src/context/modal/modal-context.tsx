@@ -1,12 +1,19 @@
 "use client";
 
 import { createContext, useContext, useState, useRef } from "react";
-import { ModalContextInterface } from "../types";
+import { ModalContextInterface, TaskData } from "../../types";
 
 const ModalContext = createContext<ModalContextInterface | null>(null);
 
 export const ModalContextProvider = ({ children }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Modal state
+  const [edits, setEdits] = useState<TaskData>({
+    title: "",
+    description: "",
+    priority: 0 | 1,
+    dueOn: "",
+    index: "",
+  });
 
   const openModalRef = useRef<boolean>(false);
 
@@ -26,7 +33,8 @@ export const ModalContextProvider = ({ children }: any) => {
     openModalRef,
     openModal,
     closeModal,
-    children,
+    edits,
+    setEdits,
   };
 
   return (

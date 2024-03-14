@@ -1,9 +1,9 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
-export class DeleteTodoDto {
+export class DeleteTaskDto {
   @IsNotEmpty()
   @IsNumber()
-  notesId: number;
+  taskId: number;
 
   @IsNotEmpty()
   @IsString()
