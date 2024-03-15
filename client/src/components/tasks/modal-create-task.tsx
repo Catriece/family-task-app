@@ -25,6 +25,14 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams, useRevalidator } from "react-router-dom";
 
 import dayjs from "dayjs";
+import {
+  DARKESTVARIATION,
+  DARKVARIATION,
+  LIGHESTVARIATION,
+  MEDIUMVARIATION,
+  PRIMARYCOLOR,
+  WHITE,
+} from "../styles";
 
 const dayNames = [
   "Sunday",
@@ -69,7 +77,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
   });
   const [dueOn, setDueOn] = useState<string>("");
   const [formatDate, setFormatDate] = useState<string>("");
-  const [priority, setPriority] = useState<number>(0);
+  const [priority, setPriority] = useState<number>();
 
   const { closeModal, isOpen } = useModal();
   const { id } = useParams();
@@ -146,27 +154,34 @@ const TaskModalForm: FC<TaskModalForm> = ({
     <Modal size={"sm"} isOpen={isOpen} onClose={closeModal} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>{`${titleOfModal} New Task`}</ModalHeader>
+        <ModalHeader
+          color={DARKESTVARIATION}
+        >{`${titleOfModal} New Task`}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
-            <FormLabel>Title:</FormLabel>
+            <FormLabel color={DARKESTVARIATION}>Title:</FormLabel>
             <Input
               name="title"
               isRequired
               value={editTitle ? editTitle : formData.title}
               onChange={handleInputField}
+              color={DARKVARIATION}
+              borderColor={MEDIUMVARIATION}
             />
           </FormControl>
-          <FormLabel>Description:</FormLabel>
+          <FormLabel color={DARKESTVARIATION}>Description:</FormLabel>
           <Textarea
             name="description"
             value={editDescription ? editDescription : formData.description}
             onChange={handleTextAreaField}
+            color={DARKVARIATION}
+            borderColor={MEDIUMVARIATION}
           ></Textarea>
           <Flex mt={2} flexDirection={"row-reverse"} align={"center"}>
             <Input
               name="dateTime"
+              color={DARKVARIATION}
               isRequired
               w={"50%"}
               placeholder="Select Date and Time"
@@ -174,8 +189,9 @@ const TaskModalForm: FC<TaskModalForm> = ({
               type="date"
               value={editDate ? editDate : dueOn}
               onChange={handleDueOn}
+              borderColor={MEDIUMVARIATION}
             />
-            <Text fontWeight={600} mr={3}>
+            <Text color={DARKESTVARIATION} fontWeight={600} mr={3}>
               Due:{" "}
             </Text>
           </Flex>
@@ -188,12 +204,20 @@ const TaskModalForm: FC<TaskModalForm> = ({
               w={"45%"}
               value={editPriority ? editPriority : priority}
               onChange={handlePriority}
+              color={DARKVARIATION}
+              borderColor={MEDIUMVARIATION}
             >
               <option value={1}>High Priority</option>
               <option value={0}>Low Priority</option>
             </Select>
-            <Box>
-              <Button onClick={handleSubmitForm}>Submit</Button>
+            <Box w={"50%"}>
+              <Button
+                w={"100%"}
+                bgColor={PRIMARYCOLOR}
+                onClick={handleSubmitForm}
+              >
+                Submit
+              </Button>
             </Box>
           </Flex>
         </ModalFooter>
