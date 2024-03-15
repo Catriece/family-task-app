@@ -84,7 +84,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Delete('/delete-user')
   async deleteUser(@Body() body: DeleteUserDto) {
-    console.log('Deleting User');
     const payload = await this.authService.deleteUser(body);
   }
 

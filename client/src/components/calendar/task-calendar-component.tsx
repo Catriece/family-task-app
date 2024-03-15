@@ -15,11 +15,10 @@ const TaskByWeekCalendarComponent = () => {
     <Flex
       w={"100%"}
       h={"100%"}
-      pt={5}
-      pb={5}
       flexDirection={"column"}
       justifyContent={"flex-start"}
       alignItems={"center"}
+      overflow={"scroll"}
     >
       {tasks.length > 0
         ? tasks.map((task: any, index: number) => {

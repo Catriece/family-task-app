@@ -20,6 +20,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteTaskFunction } from "../../functions/task-mutations";
 import { TaskData } from "../../types";
 import { useModal } from "../../context/modal/modal-context";
+import { ERROR, SUCCESS } from "../styles";
 
 const TaskComponent: FC<TaskData> = ({
   title,
@@ -81,9 +82,9 @@ const TaskComponent: FC<TaskData> = ({
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? "red" : "green"}
+      borderColor={priority === 1 ? ERROR : SUCCESS}
       borderWidth=".1em"
-      bg={priority === 1 ? "red" : "green"}
+      bg={priority === 1 ? ERROR : SUCCESS}
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>

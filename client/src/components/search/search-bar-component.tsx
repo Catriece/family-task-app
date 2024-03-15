@@ -6,6 +6,7 @@ import {
   Input,
   Flex,
 } from "@chakra-ui/react";
+import { DARKVARIATION, MD, MEDIUMVARIATION } from "../styles";
 
 const SearchBarComponent = () => {
   return (
@@ -13,9 +14,15 @@ const SearchBarComponent = () => {
       <Stack spacing={4} w={"90%"}>
         <InputGroup>
           <InputLeftElement pointerEvents="none">
-            <SearchIcon color="gray.300" />
+            <SearchIcon color={MEDIUMVARIATION} />
           </InputLeftElement>
-          <Input borderRadius={"20"} type="text" placeholder="Search Todos" />
+          <Input
+            borderColor={DARKVARIATION}
+            color={DARKVARIATION}
+            borderRadius={MD}
+            type="text"
+            placeholder="Search Todos"
+          />
         </InputGroup>
       </Stack>
     </Flex>

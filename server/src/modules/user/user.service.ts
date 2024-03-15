@@ -57,7 +57,6 @@ export class UserService {
   public extractPayloadFromHeader(authorizationHeader) {
     const token = authorizationHeader.split(' ')[1];
     const decodedToken = jwt.decode(token);
-    console.log(decodedToken['email']);
     return decodedToken;
   }
 }

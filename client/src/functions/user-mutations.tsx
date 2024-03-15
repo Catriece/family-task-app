@@ -31,8 +31,7 @@ export const updateUserFunction = (requestBody: UpdateUserInformation) => {
       },
     }
   );
-  console.log("DATA", data)
-  return data
+  return data;
 };
 
 export const deleteUserFunction = (requestBody: DeleteUser) => {

@@ -7,13 +7,6 @@ const ModalContext = createContext<ModalContextInterface | null>(null);
 
 export const ModalContextProvider = ({ children }: any) => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Modal state
-  const [edits, setEdits] = useState<TaskData>({
-    title: "",
-    description: "",
-    priority: 0 | 1,
-    dueOn: "",
-    index: "",
-  });
 
   const openModalRef = useRef<boolean>(false);
 
@@ -33,8 +26,6 @@ export const ModalContextProvider = ({ children }: any) => {
     openModalRef,
     openModal,
     closeModal,
-    edits,
-    setEdits,
   };
 
   return (

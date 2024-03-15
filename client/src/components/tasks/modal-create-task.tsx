@@ -14,7 +14,6 @@ import {
   ModalCloseButton,
   ModalBody,
   ModalFooter,
-  Button,
   Box,
   Select,
   Flex,
@@ -25,14 +24,8 @@ import { useMutation } from "@tanstack/react-query";
 import { useParams, useRevalidator } from "react-router-dom";
 
 import dayjs from "dayjs";
-import {
-  DARKESTVARIATION,
-  DARKVARIATION,
-  LIGHESTVARIATION,
-  MEDIUMVARIATION,
-  PRIMARYCOLOR,
-  WHITE,
-} from "../styles";
+import { DARKESTVARIATION, DARKVARIATION, MEDIUMVARIATION } from "../styles";
+import ButtonComponent from "../buttons/my-button-component";
 
 const dayNames = [
   "Sunday",
@@ -146,7 +139,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
       closeModal();
     },
     onError: () => {
-      console.log("Error creating new task");
+      console.error("Error creating new task");
     },
   });
 
@@ -156,11 +149,14 @@ const TaskModalForm: FC<TaskModalForm> = ({
       <ModalContent>
         <ModalHeader
           color={DARKESTVARIATION}
+          fontSize={"2xl"}
         >{`${titleOfModal} New Task`}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <FormControl>
-            <FormLabel color={DARKESTVARIATION}>Title:</FormLabel>
+            <FormLabel fontSize={"xl"} color={DARKESTVARIATION}>
+              Title:
+            </FormLabel>
             <Input
               name="title"
               isRequired
@@ -170,7 +166,9 @@ const TaskModalForm: FC<TaskModalForm> = ({
               borderColor={MEDIUMVARIATION}
             />
           </FormControl>
-          <FormLabel color={DARKESTVARIATION}>Description:</FormLabel>
+          <FormLabel fontSize={"xl"} color={DARKESTVARIATION}>
+            Description:
+          </FormLabel>
           <Textarea
             name="description"
             value={editDescription ? editDescription : formData.description}
@@ -191,7 +189,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
               onChange={handleDueOn}
               borderColor={MEDIUMVARIATION}
             />
-            <Text color={DARKESTVARIATION} fontWeight={600} mr={3}>
+            <Text fontSize={"xl"} color={DARKESTVARIATION} mr={3}>
               Due:{" "}
             </Text>
           </Flex>
@@ -211,13 +209,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
               <option value={0}>Low Priority</option>
             </Select>
             <Box w={"50%"}>
-              <Button
-                w={"100%"}
-                bgColor={PRIMARYCOLOR}
-                onClick={handleSubmitForm}
-              >
-                Submit
-              </Button>
+              <ButtonComponent func={handleSubmitForm} buttonName={"Submit"} />
             </Box>
           </Flex>
         </ModalFooter>

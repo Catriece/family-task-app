@@ -19,10 +19,10 @@ const UserBioCard = () => {
 
   return (
     <Flex
-      padding=" 0 10px"
+      padding=" 0 16pt"
       justifyContent={"center"}
       alignItems={"center"}
-      w={"100%"}
+      //w={"100%"}
     >
       <Avatar size={"md"} />
       <Flex flexDirection={"column"} ml={2} justifyContent={"center"}>

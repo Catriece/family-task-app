@@ -14,7 +14,7 @@ export class TasksService {
   ) {}
 
   async getUserTasks(id: string) {
-    if (!id) throw new UnauthorizedException('User to find user tasks.');
+    if (!id) throw new UnauthorizedException('Unable to find user tasks.');
     return await this.taskRepository.find({ where: { userId: id } });
   }
 

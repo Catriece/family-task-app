@@ -37,7 +37,7 @@ export class AuthService {
         payload,
       };
     } else {
-      console.log('user does not exist');
+      console.error('user does not exist');
     }
     return user;
   }
@@ -138,9 +138,7 @@ export class AuthService {
     email: string,
     birthday: string,
   ) {
-    console.log('ID', id);
     const user = await this.userService.findUserById(id);
-    console.log('USER', user);
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (preferredName) user.preferredName = preferredName;
