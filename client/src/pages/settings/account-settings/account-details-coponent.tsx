@@ -16,8 +16,6 @@ import {
 import { useState } from "react";
 import { AccountInfo } from "../../../types";
 import mediaQueries from "../../../components/constants";
-import { updateUserFunction } from "../../../functions/mutations";
-import axios from "axios";
 import { updateUserFunction } from "../../../functions/user-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { EditIcon } from "@chakra-ui/icons";
@@ -124,7 +122,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
       preferredNameFormData["preferredName"] = updatePreferredName;
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...preferredNameFormData, token, id };
+    const formData = { ...preferredNameFormData, token };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditPreferredName(!editPreferredName);

@@ -7,7 +7,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Get, Post, Body, Request } from '@nestjs/common';
+import { Get, Post, Body, Headers, Request } from '@nestjs/common';
 import { UserLoginDto } from './dto/login-user-dto';
 import { SignUpDto } from './dto/sign-up-dto';
 import { AuthGuard } from './auth.guard';
@@ -18,6 +18,7 @@ import {
 import { UserService } from '../user/user.service';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
+import * as jwt from 'jsonwebtoken';
 
 @Controller('auth')
 export class AuthController {
@@ -27,10 +28,14 @@ export class AuthController {
   ) {}
 
   @UseGuards(AuthGuard)
-  @Get('/user')
-  async getUserData(@Query('id') id: string) {
-    const payload = await this.userService.findUserById(id);
-    console.log('Remember to return user w/out password', payload);
+  @Get('/get-user')
+  async getUserData(@Headers('Authorization') authorizationHeader: string) {
+    const user = await this.userService.findUserWithToken(authorizationHeader);
+    const payload = {
+      ...user,
+      isActive: user.isActive === true,
+      password: user.password === undefined,
+    };
     return payload;
   }
 
@@ -59,7 +64,7 @@ export class AuthController {
     if (payload) return true;
   }
 
-  // Change password route from forgot-password
+  //Change password route when user is logged out
   @Post('/reset-password')
   async updatePassword(@Body() body: UpdatePasswordDto) {
     let status: string = 'from-login';
@@ -79,7 +84,6 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Delete('/delete-user')
   async deleteUser(@Body() body: DeleteUserDto) {
-    console.log('Deleting User');
     const payload = await this.authService.deleteUser(body);
   }
 

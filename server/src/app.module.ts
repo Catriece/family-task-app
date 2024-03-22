@@ -9,7 +9,7 @@ import { ConfigService } from '@nestjs/config';
 import typeorm from './config/typeorm';
 import { AuthModule } from './modules/auth/auth.module';
 import { MailModule } from './modules/mail/mail.module';
-import { TodosModule } from './modules/todos/todos.module';
+import { TasksModule } from './modules/tasks/tasks.module';
 
 @Module({
   imports: [
@@ -25,7 +25,7 @@ import { TodosModule } from './modules/todos/todos.module';
     UserModule,
     AuthModule,
     MailModule,
-    TodosModule,
+    TasksModule,
   ],
   controllers: [AppController],
   providers: [AppService],

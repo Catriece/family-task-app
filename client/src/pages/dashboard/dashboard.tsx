@@ -1,95 +1,61 @@
-import { FC, useContext, useEffect, useState } from "react";
-import AuthContext from "../../context/auth/authContext";
-import { User } from "../../types";
-import Loader from "../../components/loader";
-import HeaderComponent from "../../components/header/header";
-import {
-  Flex,
-  Text,
-  Grid,
-  GridItem,
-  Heading,
-  useMediaQuery,
-  Button,
-  Box,
-} from "@chakra-ui/react";
-import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import { FC, useEffect } from "react";
+import { Flex, Grid, GridItem, useMediaQuery, Center } from "@chakra-ui/react";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
-import TodoForm from "../../components/todos/modal-create-todo";
-import TodoComponent from "../../components/todos/todo-component";
-import { useModal } from "../../context/modal-context";
-import { HamburgerIcon } from "@chakra-ui/icons";
+import TaskModalForm from "../../components/tasks/task-modal";
+import { useModal } from "../../context/modal/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
-// import TodoForm from "../components/todos/todo-form";
-// import TodoComponent from "../components/todos/todo-component";
-// import MobileNavigation from "../components/navigation/mobile-navigation";
-// import DaysOfTheWeek from "../components/calendar/daysOfTheWeek";
+import UserBioCard from "../../components/user/user-card";
+import { LG, SM, XXL } from "../../components/styles";
+import SearchBarComponent from "../../components/search/search-bar-component";
+import TaskByWeekCalendarComponent from "../../components/calendar/task-calendar-component";
+import { useTask } from "../../context/tasks/task-context";
+import { useLoaderData } from "react-router-dom";
+//import { User } from "@auth0/auth0-react";
 
 const DashboardPage: FC = () => {
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
 
-  const { openModal } = useModal();
+  const columns = isLargerThan525 ? "repeat(12, 1fr)" : "repeat(4, 1fr)";
+  const gap = isLargerThan525 ? LG : SM;
+  const margin = isLargerThan525 ? XXL : SM;
   const data: any = useLoaderData();
+
+  const initCount: number = data.get("initialCount");
+  const { setTaskCount, taskCount } = useTask();
+
+  useEffect(() => {
+    setTaskCount(initCount);
+  }, []);
+
+  const { openModal } = useModal();
 
   return (
     <Grid
-      templateAreas={
-        isLargerThan525
-          ? `"header header"
-              "greeting greeting"
-                  "nav main"
-                  "nav footer"`
-          : `"header"
-              "greeting"
-                  "nav"
-                  "main"
-                  "footer"`
-      }
-      gridTemplateRows={
-        isLargerThan525 ? "7% 100px 1fr 50px" : "7% 110px 95px 1fr 50px"
-      }
-      gridTemplateColumns={isLargerThan525 ? "150px 1fr" : "1fr"}
       h="100vh"
       w="100vw"
-      gap="1"
-      color="blackAlpha.700"
-      fontWeight="bold"
+      gridTemplateColumns={columns}
+      gridTemplateRows="auto 1fr"
+      gap={gap}
+      margin={`${20}, ${margin}, 0`}
     >
-      <GridItem pl="2" area={"header"}>
-        <Flex justifyContent={"space-between"}>
-          <HeaderComponent />
-          <Flex alignItems={"center"}>
-            {/* <Button fontSize={"sm"} variant="ghost" onClick={logout}>
-              Logout
-            </Button>
-            <HamburgerIcon mr={2} /> */}
-            <MenuComponent />
-          </Flex>
+      <GridItem colEnd={5}>
+        <Flex justifyContent="flex-end">
+          <MenuComponent /> <TaskModalForm />
         </Flex>
       </GridItem>
-      <GridItem pl="2" area={"greeting"}>
-        <Flex flexDirection="column" justifyContent="center">
-          <Heading color="black" fontSize="38px" fontWeight={800}>
-            Hey, {data.data.firstName}!
-          </Heading>
-          <Text color="black" fontSize="xl">
-            Make today a great day!
-          </Text>
-        </Flex>
+      <GridItem colSpan={4}>
+        <UserBioCard />
       </GridItem>
-      <GridItem bg="pink.300" area={"nav"}>
-        <WeeklyCalendarComponent />
-        {/* {isLargerThan525 ? "hi" : <MobileNavigation />} */}
-        {/* {isLargerThan525 ? "hi" : <DaysOfTheWeek />} */}
+      <GridItem colSpan={4}>
+        <Center>
+          <WeeklyCalendarComponent />
+        </Center>
       </GridItem>
-
-      <GridItem pl="2" bg="green.300" area={"main"}>
-        <Button onClick={openModal}>Open Modal</Button>
-        <TodoForm />
-        <TodoComponent />
+      <GridItem colSpan={4}>
+        <SearchBarComponent />
       </GridItem>
-      <GridItem pl="2" bg="blue.300" area={"footer"}>
-        Footer
+      <GridItem colSpan={4}>
+        <TaskByWeekCalendarComponent />
       </GridItem>
     </Grid>
   );

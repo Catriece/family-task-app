@@ -1,6 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UserService } from '../user/user.service';
-import { UserLoginDto } from './dto/login-user-dto';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SendEmailDto } from '../mail/dto/mail.dto';
@@ -29,10 +28,8 @@ export class AuthService {
       if (!passwordMatch) throw new UnauthorizedException();
 
       const payload = {
-        id: user.id,
+        sub: user.id,
         email: user.email,
-        firstName: user.firstName,
-        lastName: user.lastName,
         isActive: user.isActive,
       };
       return {
@@ -40,7 +37,7 @@ export class AuthService {
         payload,
       };
     } else {
-      console.log('user does not exist');
+      console.error('user does not exist');
     }
     return user;
   }
@@ -89,8 +86,8 @@ export class AuthService {
       secret: `${user.password}-${user.createdAt}`, // add created_at in user entity
       expiresIn: '600s',
     });
-    // send email to user with link to reset password form + token + id
 
+    // send email to user with link to reset password form + token + id
     const dto: SendEmailDto = {
       recipients: [{ name: payload.name, address: payload.email }],
       subject: 'Password Reset',
@@ -141,9 +138,7 @@ export class AuthService {
     email: string,
     birthday: string,
   ) {
-    console.log('ID', id);
     const user = await this.userService.findUserById(id);
-    console.log('USER', user);
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (preferredName) user.preferredName = preferredName;

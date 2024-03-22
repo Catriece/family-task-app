@@ -30,7 +30,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(userCredentials);
     localStorage.setItem("user", JSON.stringify(userCredentials));
     localStorage.setItem("token", token);
-    localStorage.setItem("userId", userCredentials.id);
   };
 
   const logout = () => {
@@ -38,7 +37,6 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    localStorage.removeItem("userId");
     navigate("/login");
   };
 

@@ -10,7 +10,7 @@ const floatingLabel: FloatingLabel = {
   transform: "scale(0.85) translateY(-24px)",
 };
 
-export const inputTheme = extendTheme({
+export const theme = extendTheme({
   components: {
     Form: {
       variants: {
@@ -38,6 +38,18 @@ export const inputTheme = extendTheme({
               transformOrigin: "left top",
             },
           },
+        },
+      },
+    },
+    Button: {
+      variants: {
+        primary: {
+          bgColor: "#FFDB58",
+          borderRadius: "20",
+        },
+        secondary: {
+          bgColor: "#003366",
+          borderRadius: "20",
         },
       },
     },

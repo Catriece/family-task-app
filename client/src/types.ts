@@ -52,7 +52,7 @@ export interface ChangePassword {
 }
 
 export interface UpdateUserInformation {
-  id: string | undefined;
+  //id: string | undefined;
   token: string | null;
   firstName?: string;
   lastName?: string;
@@ -66,7 +66,7 @@ export interface DeleteUser {
   password: string;
 }
 
-export interface TodoFormData {
+export interface TaskFormData {
   title: string;
   description: string;
 }
@@ -74,7 +74,18 @@ export interface TodoFormData {
 export interface ModalContextInterface {
   form?: any | null;
   isOpen: boolean;
-  openModal: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  openModal: () => void;
   closeModal: () => void;
-  setIsOpen?: React.Dispatch<React.SetStateAction<boolean>>;
+  edits: TaskData;
+  setEdits: (edits: TaskData) => void;
+}
+
+export interface TaskData {
+  userId?: string;
+  title: string;
+  description?: string;
+  priority: number;
+  dueOn: string;
+  index: string;
+  completed: boolean;
 }

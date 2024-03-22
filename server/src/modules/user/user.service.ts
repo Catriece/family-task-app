@@ -4,7 +4,7 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
 import { Repository } from 'typeorm';
-import * as functions from '../../functions';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class UserService {
@@ -38,25 +38,25 @@ export class UserService {
     return await this.usersRepository.findOne({ where: { id } });
   }
 
+  async findUserWithToken(authorizationHeader: string) {
+    const payload = this.extractPayloadFromHeader(authorizationHeader);
+    const id = payload.sub.toString();
+    return await this.usersRepository.findOne({ where: { id } });
+  }
+
   async updateUser(updateUserDto: UpdateUserDto) {
     const user = await this.usersRepository.save(updateUserDto);
     return user;
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
-  }
-
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
-  }
-
   async deleteUser(id: string) {
     const user = await this.usersRepository.delete(id);
     return user;
+  }
+
+  public extractPayloadFromHeader(authorizationHeader) {
+    const token = authorizationHeader.split(' ')[1];
+    const decodedToken = jwt.decode(token);
+    return decodedToken;
   }
 }
