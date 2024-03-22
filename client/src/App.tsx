@@ -1,5 +1,5 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import { theme } from "./themes/floating-label.themes.ts";
+import { theme } from "./themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import AuthProvider from "./context/auth/authProvider.tsx";

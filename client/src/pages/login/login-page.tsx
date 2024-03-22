@@ -38,7 +38,7 @@ const LoginPage: FC = () => {
                   </Text>
                   <Button
                     size="sm"
-                    variant="ghost"
+                    variant="tertiary"
                     onClick={() => setPageView("login")}
                   >
                     Login
@@ -59,7 +59,7 @@ const LoginPage: FC = () => {
                   </Text>
                   <Button
                     size="sm"
-                    variant="ghost"
+                    variant="tertiary"
                     onClick={() => setPageView("signup")}
                   >
                     Sign up!

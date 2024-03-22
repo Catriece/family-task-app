@@ -232,9 +232,14 @@ const TaskModalForm = () => {
             </Select>
             <Box w={"50%"}>
               {edits.title ? (
-                <ButtonComponent func={handleEditTask} buttonName={"Edit"} />
+                <ButtonComponent
+                  variant={"primary"}
+                  func={handleEditTask}
+                  buttonName={"Edit"}
+                />
               ) : (
                 <ButtonComponent
+                  variant={"primary"}
                   func={handleSubmitForm}
                   buttonName={"Submit"}
                 />

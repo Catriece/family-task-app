@@ -23,7 +23,7 @@ const MenuComponent = () => {
       </MenuButton>
       <MenuList>
         <MenuItem onClick={toSettings}>Settings</MenuItem>
-        <MenuItem onClick={openModal}>Create Todo</MenuItem>
+        <MenuItem onClick={openModal}>Create Task</MenuItem>
         <MenuItem>Circle Members</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
       </MenuList>

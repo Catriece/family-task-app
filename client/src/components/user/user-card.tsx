@@ -40,7 +40,11 @@ const UserBioCard = () => {
       <Spacer />
       <Flex alignItems={"center"} mr={3}>
         <BellIcon fontSize={"xl"} mr={3} />
-        <IconButton aria-label="Settings Icon Button" onClick={toSettings}>
+        <IconButton
+          variant="unstyled"
+          aria-label="Settings Icon Button"
+          onClick={toSettings}
+        >
           <SettingsIcon fontSize={"xl"} />
         </IconButton>
       </Flex>

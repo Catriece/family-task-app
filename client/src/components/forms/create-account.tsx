@@ -265,7 +265,11 @@ const CreateAccountForm: FC = () => {
               />
               <FormLabel id="create-user-password-label">Password</FormLabel>
               <InputRightElement>
-                <Button name="password" onClick={handlePasswordVisibility}>
+                <Button
+                  name="password"
+                  variant="unstyled"
+                  onClick={handlePasswordVisibility}
+                >
                   {showPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
                 </Button>
               </InputRightElement>
@@ -297,6 +301,7 @@ const CreateAccountForm: FC = () => {
               <InputRightElement>
                 <Button
                   name="confirmPassword"
+                  variant="unstyled"
                   onClick={handleConfirmPasswordVisibility}
                 >
                   {showConfirmPasswordInput ? <ViewOffIcon /> : <ViewIcon />}
@@ -312,7 +317,11 @@ const CreateAccountForm: FC = () => {
             </Box>
           </FormControl>
 
-          <Button isDisabled={disableSubmitButton} onClick={handleSubmitForm}>
+          <Button
+            variant="primary"
+            isDisabled={disableSubmitButton}
+            onClick={handleSubmitForm}
+          >
             Sign Up
           </Button>
         </Stack>
