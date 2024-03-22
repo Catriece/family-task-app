@@ -8,6 +8,8 @@ import {
   Delete,
   Patch,
   Put,
+  Param,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '../auth/auth.guard';
 import { TasksService } from './tasks.service';
@@ -38,7 +40,7 @@ export class TasksController {
     return await this.tasksService.createNewTask(createTaskDto);
   }
 
-  //@UseGuards(AuthGuard)
+  @UseGuards(AuthGuard)
   @Delete('/delete-task')
   async deleteTask(@Body() deleteTaskDto: DeleteTaskDto) {
     const { taskId } = deleteTaskDto;
@@ -46,10 +48,29 @@ export class TasksController {
     return deleted;
   }
 
-  //@UseGuards(AuthGuard)
-  @Put('/edit-my-task')
-  async editTask(@Body() updateTaskDto: UpdateTaskDto) {
-    const edited = await this.tasksService.editTask(updateTaskDto);
+  @UseGuards(AuthGuard)
+  @Get('/get-task')
+  async getOneTask(@Query('index') taskId: number) {
+    const payload = await this.tasksService.getOneTask(taskId);
+    return payload;
+  }
+
+  @UseGuards(AuthGuard)
+  @Put('/update-task')
+  async updateTask(@Body() updateTaskDto: UpdateTaskDto) {
+    const edited = await this.tasksService.updateTask(updateTaskDto);
     return edited;
+  }
+
+  //@UseGuards(AuthGuard)
+  @Put('/mark-completed')
+  async updateCompletedTask(@Body() updateTaskDto: UpdateTaskDto) {
+    console.log(updateTaskDto, 'MCController');
+    const { taskId, completed } = updateTaskDto;
+    const completedTask = await this.tasksService.markCompleted(
+      taskId,
+      completed,
+    );
+    return completedTask;
   }
 }

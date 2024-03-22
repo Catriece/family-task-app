@@ -1,27 +1,16 @@
-import { FC } from "react";
-import HeaderComponent from "../../components/header/header";
-import {
-  Flex,
-  Text,
-  Grid,
-  GridItem,
-  useMediaQuery,
-  Button,
-  Box,
-  Select,
-  SimpleGrid,
-  Center,
-} from "@chakra-ui/react";
+import { FC, useEffect } from "react";
+import { Flex, Grid, GridItem, useMediaQuery, Center } from "@chakra-ui/react";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
-import TaskModalForm from "../../components/tasks/modal-create-task";
+import TaskModalForm from "../../components/tasks/task-modal";
 import { useModal } from "../../context/modal/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
-import { AddIcon, ChevronRightIcon } from "@chakra-ui/icons";
 import UserBioCard from "../../components/user/user-card";
-import { LG, PRIMARYCOLOR, SM, XXL } from "../../components/styles";
+import { LG, SM, XXL } from "../../components/styles";
 import SearchBarComponent from "../../components/search/search-bar-component";
 import TaskByWeekCalendarComponent from "../../components/calendar/task-calendar-component";
-import { User } from "@auth0/auth0-react";
+import { useTask } from "../../context/tasks/task-context";
+import { useLoaderData } from "react-router-dom";
+//import { User } from "@auth0/auth0-react";
 
 const DashboardPage: FC = () => {
   const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
@@ -29,6 +18,14 @@ const DashboardPage: FC = () => {
   const columns = isLargerThan525 ? "repeat(12, 1fr)" : "repeat(4, 1fr)";
   const gap = isLargerThan525 ? LG : SM;
   const margin = isLargerThan525 ? XXL : SM;
+  const data: any = useLoaderData();
+
+  const initCount: number = data.get("initialCount");
+  const { setTaskCount, taskCount } = useTask();
+
+  useEffect(() => {
+    setTaskCount(initCount);
+  }, []);
 
   const { openModal } = useModal();
 

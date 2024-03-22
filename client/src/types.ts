@@ -76,15 +76,16 @@ export interface ModalContextInterface {
   isOpen: boolean;
   openModal: () => void;
   closeModal: () => void;
-  // edits: {};
-  // setEdits: (edits: {}) => void;
-  //setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  edits: TaskData;
+  setEdits: (edits: TaskData) => void;
 }
 
 export interface TaskData {
+  userId?: string;
   title: string;
-  description: string;
+  description?: string;
   priority: number;
   dueOn: string;
   index: string;
+  completed: boolean;
 }

@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TasksEntity } from './entities/tasks.entity';
@@ -30,14 +34,43 @@ export class TasksService {
     return task;
   }
 
-  async editTask(updateTaskDto: UpdateTaskDto) {
-    const { userId, taskId } = updateTaskDto;
-    const findTask = this.taskRepository.findOne({
+  async getOneTask(taskId: number) {
+    if (!taskId) throw new UnauthorizedException('Unable to find user tasks.');
+    return await this.taskRepository.find({ where: { taskId } });
+  }
+
+  async updateTask(updateTaskDto: UpdateTaskDto) {
+    const { taskId } = updateTaskDto;
+    const taskToUpdate = await this.taskRepository.findOne({
       where: {
         taskId,
       },
     });
-    console.log(findTask);
-    // return await this.tasksRepository.save(updateTaskDto);
+
+    if (!taskToUpdate) {
+      throw new NotFoundException(`Task with ID ${taskId} was not found`);
+    }
+
+    // Update the task entity with new data
+    await this.taskRepository.merge(taskToUpdate, updateTaskDto);
+
+    const task = await this.taskRepository.save(taskToUpdate);
+    return task;
+  }
+
+  async markCompleted(taskId: number, completed: boolean) {
+    const findTask = await this.taskRepository.findOne({ where: { taskId } });
+
+    if (!findTask)
+      throw new NotFoundException(`Task with id ${taskId} was not found`);
+
+    findTask.completed = completed;
+    // Save the updated task
+    await this.taskRepository.save(findTask);
+
+    // get task to send back to frontend
+    const task = await this.taskRepository.findOne({ where: { taskId } });
+
+    return task;
   }
 }

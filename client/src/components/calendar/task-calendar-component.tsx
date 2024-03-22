@@ -1,15 +1,17 @@
-import { Center, Flex, Text } from "@chakra-ui/react";
-import dayjs from "dayjs";
+// Change name of component
+import { Box, Flex, Text } from "@chakra-ui/react";
+import { Progress } from "@chakra-ui/react";
 
 import TaskComponent from "../tasks/task-component";
 import { useLoaderData } from "react-router-dom";
+import { descendingOrder } from "../../functions/compare-functions";
+import { useTask } from "../../context/tasks/task-context";
 
 const TaskByWeekCalendarComponent = () => {
-  const today = dayjs().format("dddd, MMMM D, YYYY"); // current day
-  const tomorrow = dayjs().add(1, "d").format("dddd, MMMM D, YYYY"); // current day
-
   let data: any = useLoaderData();
-  const tasks = data.get("tasks").data;
+  const tasks: any = data.get("tasks").data.sort(descendingOrder);
+
+  const { taskCount } = useTask();
 
   return (
     <Flex
@@ -20,6 +22,13 @@ const TaskByWeekCalendarComponent = () => {
       alignItems={"center"}
       overflow={"scroll"}
     >
+      <Box mb={4} w={"90%"}>
+        <Text
+          fontSize={"xl"}
+          sx={{ textAlign: "left" }}
+        >{`Tasks completed: ${taskCount}/${tasks.length}`}</Text>
+        <Progress value={(taskCount / tasks.length) * 100} size={"lg"} />
+      </Box>
       {tasks.length > 0
         ? tasks.map((task: any, index: number) => {
             return (
@@ -30,6 +39,7 @@ const TaskByWeekCalendarComponent = () => {
                 dueOn={task.dueOn}
                 priority={task.priority}
                 title={task.title}
+                completed={task.completed}
               />
             );
           })

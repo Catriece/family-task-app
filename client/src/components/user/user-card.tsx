@@ -5,7 +5,7 @@ import { useLoaderData, useNavigate, useParams } from "react-router-dom";
 
 const UserBioCard = () => {
   const data: any = useLoaderData();
-  const user = data.get("user");
+  const user = data.get("user").data;
   const { id } = useParams();
 
   const currentHour = dayjs().hour();
@@ -34,7 +34,7 @@ const UserBioCard = () => {
             : "Good Evening,"}
         </Text>
         <Text fontSize="lg" fontWeight={800}>
-          {`${user.data.firstName} ${user.data.lastName}`}
+          {`${user.firstName} ${user.lastName}`}
         </Text>
       </Flex>
       <Spacer />

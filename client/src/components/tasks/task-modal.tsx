@@ -19,7 +19,10 @@ import {
   Flex,
 } from "@chakra-ui/react";
 import { useModal } from "../../context/modal/modal-context";
-import { createTaskFunction } from "../../functions/task-mutations";
+import {
+  createTaskFunction,
+  updateTaskFunction,
+} from "../../functions/task-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { useParams, useRevalidator } from "react-router-dom";
 
@@ -55,15 +58,10 @@ interface TaskModalForm {
   editTitle?: string;
   editDescription?: string;
   editDate?: string;
-  editPriority?: string;
+  editPriority?: number;
 }
 
-const TaskModalForm: FC<TaskModalForm> = ({
-  editTitle,
-  editDescription,
-  editPriority,
-  editDate,
-}) => {
+const TaskModalForm = () => {
   const [formData, setFormData] = useState<TaskFormData>({
     title: "",
     description: "",
@@ -72,24 +70,31 @@ const TaskModalForm: FC<TaskModalForm> = ({
   const [formatDate, setFormatDate] = useState<string>("");
   const [priority, setPriority] = useState<number>();
 
-  const { closeModal, isOpen } = useModal();
+  const { closeModal, isOpen, edits, setEdits } = useModal();
   const { id } = useParams();
   const revalidator = useRevalidator();
 
   // Change Title Between Edit and Creating Todo
   const titleOfModal =
-    editDate || editDescription || editPriority || editTitle
+    edits.dueOn || edits.description || edits.priority || edits.title
       ? "Edit"
       : "Create";
 
-  const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleInputField = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (edits.title) setEdits({ ...edits, [e.target.name]: e.target.value });
+    else setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handleTextAreaField = (e: React.ChangeEvent<HTMLTextAreaElement>) =>
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleTextAreaField = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (edits.title) setEdits({ ...edits, [e.target.name]: e.target.value });
+    else setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
-  const handlePriority = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setPriority(Number(e.target.value));
+  const handlePriority = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (edits.title)
+      setEdits({ ...edits, [e.target.name]: Number(e.target.value) });
+    else setPriority(Number(e.target.value));
+  };
 
   const handleDueOn = (e: React.ChangeEvent<HTMLInputElement>) => {
     const date = e.target.value;
@@ -114,12 +119,10 @@ const TaskModalForm: FC<TaskModalForm> = ({
     const data = {
       ...formData,
       userId: id,
-      token,
       priority,
       dueOn: formatDate,
       completed: false,
     };
-    console.log(data);
 
     await createTask.mutateAsync(data);
     revalidator.revalidate();
@@ -133,6 +136,14 @@ const TaskModalForm: FC<TaskModalForm> = ({
     setPriority(0);
   };
 
+  const handleEditTask = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+
+    await updateTask.mutateAsync(edits);
+    revalidator.revalidate();
+  };
+
+  // Place in a separate file
   const createTask = useMutation({
     mutationFn: createTaskFunction,
     onSuccess: () => {
@@ -140,6 +151,17 @@ const TaskModalForm: FC<TaskModalForm> = ({
     },
     onError: () => {
       console.error("Error creating new task");
+    },
+  });
+
+  const updateTask = useMutation({
+    mutationFn: updateTaskFunction,
+    onSuccess: () => {
+      closeModal();
+      // add toast
+    },
+    onError: () => {
+      console.error("Error editing task");
     },
   });
 
@@ -160,7 +182,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
             <Input
               name="title"
               isRequired
-              value={editTitle ? editTitle : formData.title}
+              value={edits.title ? edits.title : formData.title}
               onChange={handleInputField}
               color={DARKVARIATION}
               borderColor={MEDIUMVARIATION}
@@ -171,7 +193,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
           </FormLabel>
           <Textarea
             name="description"
-            value={editDescription ? editDescription : formData.description}
+            value={edits.description ? edits.description : formData.description}
             onChange={handleTextAreaField}
             color={DARKVARIATION}
             borderColor={MEDIUMVARIATION}
@@ -185,7 +207,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
               placeholder="Select Date and Time"
               size="sm"
               type="date"
-              value={editDate ? editDate : dueOn}
+              value={edits.dueOn ? edits.dueOn : dueOn}
               onChange={handleDueOn}
               borderColor={MEDIUMVARIATION}
             />
@@ -200,7 +222,7 @@ const TaskModalForm: FC<TaskModalForm> = ({
               fontSize={"sm"}
               placeholder="Select Priority"
               w={"45%"}
-              value={editPriority ? editPriority : priority}
+              value={edits.priority ? edits.priority : priority}
               onChange={handlePriority}
               color={DARKVARIATION}
               borderColor={MEDIUMVARIATION}
@@ -209,7 +231,14 @@ const TaskModalForm: FC<TaskModalForm> = ({
               <option value={0}>Low Priority</option>
             </Select>
             <Box w={"50%"}>
-              <ButtonComponent func={handleSubmitForm} buttonName={"Submit"} />
+              {edits.title ? (
+                <ButtonComponent func={handleEditTask} buttonName={"Edit"} />
+              ) : (
+                <ButtonComponent
+                  func={handleSubmitForm}
+                  buttonName={"Submit"}
+                />
+              )}
             </Box>
           </Flex>
         </ModalFooter>

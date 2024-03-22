@@ -58,6 +58,9 @@ const LoginForm: FC = () => {
     mutationFn: loginFunction,
     onSuccess: (res) => {
       const { access_token, payload } = res.data;
+
+      // set item immediately after successful login
+      localStorage.setItem("token", access_token);
       login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
       navigate(`/dashboard/${payload.sub}`); //Navigate to user dashboard
     },

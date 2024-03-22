@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useRef, useState } from "react";
 import {
   Card,
   CardHeader,
@@ -11,16 +11,19 @@ import {
   useDisclosure,
   Checkbox,
   useToast,
+  HTMLChakraComponents,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { TfiTrash } from "react-icons/tfi";
 import { BiEditAlt } from "react-icons/bi";
-import { useLoaderData, useParams, useRevalidator } from "react-router-dom";
+import { useParams, useRevalidator } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { deleteTaskFunction } from "../../functions/task-mutations";
 import { TaskData } from "../../types";
 import { useModal } from "../../context/modal/modal-context";
 import { ERROR, SUCCESS } from "../styles";
+import axios from "axios";
+import { useTask } from "../../context/tasks/task-context";
 
 const TaskComponent: FC<TaskData> = ({
   title,
@@ -28,14 +31,26 @@ const TaskComponent: FC<TaskData> = ({
   priority,
   dueOn,
   index,
+  completed,
 }) => {
   const { isOpen, onToggle } = useDisclosure();
-  const data: any = useLoaderData();
   const { id } = useParams();
+  const token = localStorage.getItem("token");
 
   const revalidator = useRevalidator();
   const toast = useToast();
-  const { openModal, closeModal, isOpen: handleModal } = useModal();
+  const completedRef = useRef<boolean>(completed);
+  const [boxChecked, setBoxChecked] = useState<boolean>(completedRef.current);
+
+  let { taskCount, setTaskCount } = useTask();
+
+  const {
+    openModal,
+    closeModal,
+    isOpen: handleModal,
+    setEdits,
+    edits,
+  } = useModal();
 
   const remove = useMutation({
     mutationFn: deleteTaskFunction,
@@ -62,10 +77,7 @@ const TaskComponent: FC<TaskData> = ({
   });
 
   const deleteTask = async () => {
-    const token = localStorage.getItem("token");
-
     const formData = {
-      token,
       taskId: Number(index),
       userId: id,
     };
@@ -73,8 +85,38 @@ const TaskComponent: FC<TaskData> = ({
     await remove.mutateAsync(formData);
   };
 
-  const editTask = () => {
+  const editTask = async () => {
+    // fetch task to edit
+    const formData = await axios.get("http://localhost:2883/tasks/get-task", {
+      params: { index },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    // stores info from edits into state
+    console.log(formData.data);
+    setEdits(formData.data[0]); // Double check how edits are set up in context
     handleModal ? closeModal() : openModal();
+    console.log(edits, "edits");
+  };
+
+  const markCompleted = async () => {
+    const setComplete = !boxChecked;
+    setBoxChecked(setComplete);
+    completedRef.current = setComplete;
+
+    console.log(taskCount, "Task Count");
+    setTaskCount(taskCount + (setComplete ? 1 : -1));
+
+    const markCompleted = await axios.put(
+      "http://localhost:2883/tasks/mark-completed",
+      {
+        taskId: index,
+        completed: setComplete,
+      }
+    );
+
+    console.log("Completed", markCompleted);
   };
 
   return (
@@ -93,7 +135,11 @@ const TaskComponent: FC<TaskData> = ({
               {title}
             </Heading>
             <Box>
-              <Checkbox variant={"square"} value={data.completed} />
+              <Checkbox
+                variant={"square"}
+                isChecked={completedRef.current}
+                onChange={markCompleted}
+              />
             </Box>
           </Flex>
 
