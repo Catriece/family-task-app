@@ -1,7 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
-
-import { Button } from "./components/button";
 import { FloatingLabelStyle } from "./components/forms/floating-label.themes";
+import { Button } from "./components/button";
 
 const overrides = {
   components: {

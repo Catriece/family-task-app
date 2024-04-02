@@ -11,18 +11,18 @@ import {
 } from "../styles";
 
 const WeeklyCalendarComponent = () => {
-  const { ISLARGERTHAN550 } = mediaQueries();
+  const { ISLARGERTHAN550, ISLARGERTHAN525 } = mediaQueries();
   const today = dayjs().day(); // current day
 
   const week = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
   return (
     <Flex
-      w={"90%"}
+      w={"100%"}
       h={"100%"}
       bg={LIGHTESTVARIATION}
       alignItems={"center"}
-      flexDirection={ISLARGERTHAN550 ? "column" : "row"}
+      flexDirection="row"
       justifyContent={"space-around"}
       border={`solid ${DARKVARIATION} .5pt`}
       borderRadius={"16pt"}

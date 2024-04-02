@@ -6,7 +6,7 @@ export const Button = defineStyleConfig({
     minHeight: "32pt",
     fontWeight: "bold",
     textTransform: "uppercase",
-    borderRadius: "20pt",
+    borderRadius: "4pt",
   },
   sizes: {
     sm: {

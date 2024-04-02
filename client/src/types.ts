@@ -78,6 +78,8 @@ export interface ModalContextInterface {
   closeModal: () => void;
   edits: TaskData;
   setEdits: (edits: TaskData) => void;
+  addDescription: boolean;
+  setAddDescription: (addDescription: boolean) => void;
 }
 
 export interface TaskData {
@@ -85,7 +87,7 @@ export interface TaskData {
   title: string;
   description?: string;
   priority: number;
-  dueOn: string;
+  //dueOn: string;
   index: string;
   completed: boolean;
 }

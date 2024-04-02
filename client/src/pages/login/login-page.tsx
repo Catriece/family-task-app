@@ -11,7 +11,7 @@ import {
   Button,
   Flex,
 } from "@chakra-ui/react";
-import TopNavigationBar from "../../components/navigation/top-navigation-bar";
+import LoginAuthenticationTabs from "../../components/navigation/authentication-tabs";
 
 const LoginPage: FC = () => {
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
@@ -20,15 +20,15 @@ const LoginPage: FC = () => {
   return (
     <Center>
       <Grid
-        templateAreas={`"header" "main"`}
+        templateAreas={`"navigation" "body"`}
         gridTemplateRows={isLargerThan550 ? "1fr" : "40px 1fr 40px"}
         gridTemplateColumns={"1fr"}
       >
-        <GridItem area={"header"}>
-          <TopNavigationBar />
+        <GridItem area={"navigation"}>
+          <LoginAuthenticationTabs />
         </GridItem>
         {pageView === "signup" && (
-          <GridItem area={"main"}>
+          <GridItem area={"body"}>
             {isLargerThan550 ? null : (
               <Box paddingTop="10px">
                 <CreateAccountForm />
@@ -49,7 +49,7 @@ const LoginPage: FC = () => {
           </GridItem>
         )}
         {pageView === "login" && (
-          <GridItem area={"main"}>
+          <GridItem area={"body"}>
             {isLargerThan550 ? null : (
               <Box paddingTop="10px">
                 <LoginForm />

@@ -22,8 +22,8 @@ const MenuComponent = () => {
         <HamburgerIcon />
       </MenuButton>
       <MenuList>
-        <MenuItem onClick={toSettings}>Settings</MenuItem>
         <MenuItem onClick={openModal}>Create Task</MenuItem>
+        <MenuItem onClick={toSettings}>Settings</MenuItem>
         <MenuItem>Circle Members</MenuItem>
         <MenuItem onClick={logout}>Logout</MenuItem>
       </MenuList>

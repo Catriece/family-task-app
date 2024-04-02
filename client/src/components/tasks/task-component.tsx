@@ -29,7 +29,7 @@ const TaskComponent: FC<TaskData> = ({
   title,
   description,
   priority,
-  dueOn,
+  //dueOn,
   index,
   completed,
 }) => {
@@ -117,16 +117,18 @@ const TaskComponent: FC<TaskData> = ({
     );
 
     console.log("Completed", markCompleted);
+    1;
   };
 
+  console.log("Priority in card", priority);
   return (
     <Card
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? ERROR : SUCCESS}
+      borderColor={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
       borderWidth=".1em"
-      bg={priority === 1 ? ERROR : SUCCESS}
+      bg={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>
@@ -151,7 +153,9 @@ const TaskComponent: FC<TaskData> = ({
               icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />} // Description must also be present
               onClick={onToggle}
             />
-            <Text fontWeight={500}>{dueOn}</Text>
+            <Text fontWeight={500}>
+              {isOpen ? "Hide Description" : "See Description"}
+            </Text>
           </Flex>
         </Flex>
       </CardHeader>

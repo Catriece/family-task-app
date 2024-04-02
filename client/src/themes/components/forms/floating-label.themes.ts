@@ -1,4 +1,4 @@
-import { defineStyleConfig, extendTheme } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 
 // INTERFACES
 interface FloatingLabel {

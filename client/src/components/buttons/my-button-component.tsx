@@ -1,5 +1,4 @@
 import { Button } from "@chakra-ui/react";
-import { PRIMARYCOLOR, WHITE } from "../styles";
 import { FC } from "react";
 
 interface Button {
