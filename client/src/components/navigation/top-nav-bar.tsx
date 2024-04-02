@@ -25,14 +25,15 @@ const TopNavigationBar = () => {
   };
 
   return (
-    <Flex as="nav" p="20pt" pr={"32pt"} w="100%" alignItems="center">
-      <Button pr={0} pl={0} variant="tertiary">
-        <MenuComponent />
-      </Button>
-      <Heading as="h1" ml="8pt">
-        SimplyDo
-      </Heading>
-      <Spacer />
+    <Flex
+      as="nav"
+      pt="20pt"
+      pl="20pt"
+      pr={"32pt"}
+      w="100%"
+      alignItems="center"
+      justifyContent={"flex-end"}
+    >
       <HStack spacing="20pt">
         <Button onClick={openModal} variant="primary">
           Create Task

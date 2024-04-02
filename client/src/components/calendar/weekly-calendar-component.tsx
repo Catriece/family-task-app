@@ -2,16 +2,10 @@ import { Box, Flex, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import mediaQueries from "../constants";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import {
-  DARKVARIATION,
-  LIGHTESTVARIATION,
-  LIGHTVARIATION,
-  MEDIUMVARIATION,
-  PRIMARYCOLOR,
-} from "../styles";
+import { DARKVARIATION, LIGHTESTVARIATION, MEDIUMVARIATION } from "../styles";
 
 const WeeklyCalendarComponent = () => {
-  const { ISLARGERTHAN550, ISLARGERTHAN525 } = mediaQueries();
+  const { ISLARGERTHAN525 } = mediaQueries();
   const today = dayjs().day(); // current day
 
   const week = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
@@ -22,7 +16,7 @@ const WeeklyCalendarComponent = () => {
       h={"100%"}
       bg={LIGHTESTVARIATION}
       alignItems={"center"}
-      flexDirection="row"
+      flexDirection={ISLARGERTHAN525 ? "column" : "row"}
       justifyContent={"space-around"}
       border={`solid ${DARKVARIATION} .5pt`}
       borderRadius={"16pt"}
@@ -44,11 +38,11 @@ const WeeklyCalendarComponent = () => {
             h={"100%"}
             w={"14%"}
             p={2}
-            bg={ISLARGERTHAN550 ? "" : findWeekDay === 0 ? MEDIUMVARIATION : ""}
+            bg={ISLARGERTHAN525 ? "" : findWeekDay === 0 ? MEDIUMVARIATION : ""}
             flexDirection={"column"}
             alignItems={"center"}
             borderRadius={
-              ISLARGERTHAN550
+              ISLARGERTHAN525
                 ? ""
                 : index === 0
                 ? "16pt 0 0 16pt"
@@ -69,7 +63,7 @@ const WeeklyCalendarComponent = () => {
                 {dayjs().hour() > 18 || dayjs().hour() < 6 ? (
                   <MoonIcon fontSize={"sm"} />
                 ) : (
-                  <SunIcon fontSize={"sm"} />
+                  <SunIcon fontSize={"sm"} fontWeight={800} />
                 )}
               </Flex>
             )}
