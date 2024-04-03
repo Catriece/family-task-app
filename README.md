@@ -2,7 +2,7 @@
 
 ## Introduction:
 
-Welcome to Family Task App, a todo application designed to bring organization and collaboration to your family's daily activities. This application is here to simplify your family's routine by providing a centralized platform where everyone can stay connected and contribute to the shared responsibilities that make households run smoothly.
+Welcome to SimplyDo Task App, a todo application designed to bring organization and collaboration to your daily activities. This application is here to simplify your routine by providing a centralized platform where you can focus on your tasks for the day.
 
 This project is broken up into two folders: `/client` for frontend and `/server` for the backend/api.
 
