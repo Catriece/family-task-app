@@ -107,7 +107,12 @@ const DashboardPage: FC = () => {
       >
         <TaskByWeekCalendarComponent />
       </GridItem>
-      <GridItem area="footer" overflow={"scroll"}>
+      <GridItem
+        area="footer"
+        overflow={"scroll"}
+        colSpan={ISLARGERTHAN750 ? 12 : 6}
+        colStart={2}
+      >
         <Center> &copy; SimplyDo 2024 </Center>
       </GridItem>
     </Grid>
