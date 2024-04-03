@@ -16,8 +16,8 @@ import ProgressBar from "../../context/tasks/progress-bar";
 import HeaderComponent from "../../components/header/header";
 
 const DashboardPage: FC = () => {
-  const { ISLARGERTHAN525 } = mediaQueries();
-  const gap = ISLARGERTHAN525 ? LG : SM;
+  const { ISLARGERTHAN750 } = mediaQueries();
+  const gap = ISLARGERTHAN750 ? LG : SM;
   const data: any = useLoaderData();
 
   const initCount: number = data.get("initialCount");
@@ -33,9 +33,9 @@ const DashboardPage: FC = () => {
       top={0}
       left={0}
       templateAreas={
-        ISLARGERTHAN525
+        ISLARGERTHAN750
           ? `"logo header"
-          "calendar progress"
+          "user progress"
     "calendar main"
     "calendar footer"`
           : `"header"
@@ -48,38 +48,40 @@ const DashboardPage: FC = () => {
       h="100vh"
       w="100vw"
       gridTemplateRows={
-        ISLARGERTHAN525
+        ISLARGERTHAN750
           ? "4.5rem 6rem 1fr 2rem"
           : "2rem 4rem 5.5rem 3rem 1fr 1.5rem"
       }
       gridTemplateColumns={
-        ISLARGERTHAN525
+        ISLARGERTHAN750
           ? ".0125rem 15.25rem 1fr .0125rem "
           : ".0125rem 1fr .0125rem"
       }
       gap={3}
     >
-      {ISLARGERTHAN525 ? (
+      {ISLARGERTHAN750 ? (
         <GridItem area="logo" colStart={2}>
           <HeaderComponent />
         </GridItem>
       ) : null}
 
-      <GridItem as="nav" area="header" colStart={ISLARGERTHAN525 ? 3 : 2}>
-        {ISLARGERTHAN525 ? <TopNavigationBar /> : <MenuComponent />}
+      <GridItem as="nav" area="header" colStart={ISLARGERTHAN750 ? 3 : 2}>
+        {ISLARGERTHAN750 ? <TopNavigationBar /> : <MenuComponent />}
         <TaskModalForm />
       </GridItem>
 
-      {ISLARGERTHAN525 ? null : (
-        <GridItem area="user" colStart={2}>
-          <UserBioCard />
-        </GridItem>
-      )}
+      <GridItem
+        area="user"
+        mt={ISLARGERTHAN750 ? 5 : 0}
+        colStart={ISLARGERTHAN750 ? 2 : 2}
+      >
+        <UserBioCard />
+      </GridItem>
 
       <GridItem
         area="calendar"
-        colStart={ISLARGERTHAN525 ? 2 : 2}
-        rowStart={ISLARGERTHAN525 ? 3 : 0}
+        colStart={ISLARGERTHAN750 ? 2 : 2}
+        rowStart={ISLARGERTHAN750 ? 3 : 0}
       >
         <Center>
           <Flex flexDirection={"column"} justifyContent={"center"} w="90%">
@@ -88,9 +90,9 @@ const DashboardPage: FC = () => {
         </Center>
       </GridItem>
       <GridItem
-        w={ISLARGERTHAN525 ? "100%" : "100%"}
+        w={ISLARGERTHAN750 ? "100%" : "100%"}
         area="progress"
-        colStart={ISLARGERTHAN525 ? 3 : 2}
+        colStart={ISLARGERTHAN750 ? 3 : 2}
         placeContent="center"
       >
         <Flex justifyContent={"center"}>
@@ -101,7 +103,7 @@ const DashboardPage: FC = () => {
       <GridItem
         area="main"
         overflow={"scroll"}
-        colStart={ISLARGERTHAN525 ? 3 : 2}
+        colStart={ISLARGERTHAN750 ? 3 : 2}
       >
         <TaskByWeekCalendarComponent />
       </GridItem>

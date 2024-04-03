@@ -2,11 +2,13 @@ import { BellIcon, SettingsIcon } from "@chakra-ui/icons";
 import { Avatar, Box, Flex, IconButton, Spacer, Text } from "@chakra-ui/react";
 import dayjs from "dayjs";
 import { useLoaderData, useNavigate, useParams } from "react-router-dom";
+import mediaQueries from "../constants";
 
 const UserBioCard = () => {
   const data: any = useLoaderData();
   const user = data.get("user").data;
   const { id } = useParams();
+  const { ISLARGERTHAN750 } = mediaQueries();
 
   const currentHour = dayjs().hour();
 
@@ -24,7 +26,7 @@ const UserBioCard = () => {
       alignItems={"center"}
       //w={"100%"}
     >
-      <Avatar size={"md"} />
+      {ISLARGERTHAN750 ? null : <Avatar size={"md"} />}
       <Flex flexDirection={"column"} ml={2} justifyContent={"center"}>
         <Text fontSize="md" lineHeight={"1.5rem"}>
           {currentHour > 5 && currentHour < 12
@@ -37,17 +39,21 @@ const UserBioCard = () => {
           {`${user.firstName} ${user.lastName}`}
         </Text>
       </Flex>
-      <Spacer />
-      <Flex alignItems={"center"} mr={3}>
-        <BellIcon fontSize={"xl"} mr={3} />
-        <IconButton
-          variant="unstyled"
-          aria-label="Settings Icon Button"
-          onClick={toSettings}
-        >
-          <SettingsIcon fontSize={"xl"} />
-        </IconButton>
-      </Flex>
+      {ISLARGERTHAN750 ? null : (
+        <>
+          <Spacer />
+          <Flex alignItems={"center"} mr={3}>
+            <BellIcon fontSize={"xl"} mr={3} />
+            <IconButton
+              variant="unstyled"
+              aria-label="Settings Icon Button"
+              onClick={toSettings}
+            >
+              <SettingsIcon fontSize={"xl"} />
+            </IconButton>
+          </Flex>
+        </>
+      )}
     </Flex>
   );
 };
