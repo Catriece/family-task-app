@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, FC } from "react";
+import { createContext, useContext, useState } from "react";
 
 interface TaskContextInterface {
   taskCount: number;

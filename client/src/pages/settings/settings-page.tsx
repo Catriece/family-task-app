@@ -321,7 +321,7 @@ const SettingsPage = () => {
             ) : (
               <>
                 <Text fontSize={"sm"}>
-                  Hey {data.data.firstName},<br /> Deleting your account is a{" "}
+                  Hey {data.firstName},<br /> Deleting your account is a{" "}
                   <b>permanent action</b>, and it will result in the permanent
                   removal of <b>all</b> data associated with your account from
                   our system.{" "}
@@ -359,10 +359,10 @@ const SettingsPage = () => {
 
       {currentScreen === "Account Information" && (
         <UserAccountDetailsCard
-          firstName={data.data.firstName}
-          lastName={data.data.lastName}
-          email={data.data.email}
-          preferredName={data.data.preferredName}
+          firstName={data.firstName}
+          lastName={data.lastName}
+          email={data.email}
+          preferredName={data.preferredName}
         />
       )}
       {currentScreen === "Members" && (

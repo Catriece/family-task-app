@@ -11,14 +11,15 @@ type ModalProviderProps = {
 
 export const ModalContextProvider = ({ children }: ModalProviderProps) => {
   const [isOpen, setIsOpen] = useState<boolean>(false); // Modal state
+  const [addDescription, setAddDescription] = useState<boolean>(false);
   const [edits, setEdits] = useState<TaskData>({
     userId: "",
     title: "",
     description: "",
-    priority: 0 | 1,
-    dueOn: "",
+    priority: 0,
+    //dueOn: "",
     index: "",
-    completed: true || false,
+    completed: false,
   });
 
   const openModalRef = useRef<boolean>(false);
@@ -30,16 +31,17 @@ export const ModalContextProvider = ({ children }: ModalProviderProps) => {
     //return;
   };
   const closeModal = () => {
+    setAddDescription(false);
     openModalRef.current = false;
     setIsOpen(false);
     setEdits({
       userId: "",
       title: "",
       description: "",
-      priority: 0 | 1,
-      dueOn: "",
+      priority: 0,
+      //dueOn: "",
       index: "",
-      completed: true || false,
+      completed: false,
     });
 
     //return;
@@ -51,6 +53,8 @@ export const ModalContextProvider = ({ children }: ModalProviderProps) => {
     closeModal,
     edits,
     setEdits,
+    addDescription,
+    setAddDescription,
   };
 
   return (

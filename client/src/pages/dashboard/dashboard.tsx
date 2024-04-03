@@ -1,61 +1,119 @@
 import { FC, useEffect } from "react";
-import { Flex, Grid, GridItem, useMediaQuery, Center } from "@chakra-ui/react";
+import { Flex, Grid, GridItem, Center, Spacer, Box } from "@chakra-ui/react";
 import WeeklyCalendarComponent from "../../components/calendar/weekly-calendar-component";
 import TaskModalForm from "../../components/tasks/task-modal";
 import { useModal } from "../../context/modal/modal-context";
 import MenuComponent from "../../components/menu/menu-component";
 import UserBioCard from "../../components/user/user-card";
 import { LG, SM, XXL } from "../../components/styles";
-import SearchBarComponent from "../../components/search/search-bar-component";
+// import SearchBarComponent from "../../components/search/search-bar-component";
 import TaskByWeekCalendarComponent from "../../components/calendar/task-calendar-component";
 import { useTask } from "../../context/tasks/task-context";
 import { useLoaderData } from "react-router-dom";
-//import { User } from "@auth0/auth0-react";
+import TopNavigationBar from "../../components/navigation/top-nav-bar";
+import mediaQueries from "../../components/constants";
+import ProgressBar from "../../context/tasks/progress-bar";
+import HeaderComponent from "../../components/header/header";
 
 const DashboardPage: FC = () => {
-  const [isLargerThan525] = useMediaQuery("(min-width: 525px)");
-
-  const columns = isLargerThan525 ? "repeat(12, 1fr)" : "repeat(4, 1fr)";
-  const gap = isLargerThan525 ? LG : SM;
-  const margin = isLargerThan525 ? XXL : SM;
+  const { ISLARGERTHAN750 } = mediaQueries();
+  const gap = ISLARGERTHAN750 ? LG : SM;
   const data: any = useLoaderData();
 
   const initCount: number = data.get("initialCount");
-  const { setTaskCount, taskCount } = useTask();
+  const { setTaskCount } = useTask();
 
   useEffect(() => {
     setTaskCount(initCount);
   }, []);
 
-  const { openModal } = useModal();
-
   return (
     <Grid
+      position={"fixed"}
+      top={0}
+      left={0}
+      templateAreas={
+        ISLARGERTHAN750
+          ? `"logo header"
+          "user progress"
+    "calendar main"
+    "calendar footer"`
+          : `"header"
+    "user"
+    "calendar"
+    "progress"
+    "main"
+    "footer"`
+      }
       h="100vh"
       w="100vw"
-      gridTemplateColumns={columns}
-      gridTemplateRows="auto 1fr"
-      gap={gap}
-      margin={`${20}, ${margin}, 0`}
+      gridTemplateRows={
+        ISLARGERTHAN750
+          ? "4.5rem 6rem 1fr 2rem"
+          : "2rem 4rem 5.5rem 3rem 1fr 1.5rem"
+      }
+      gridTemplateColumns={
+        ISLARGERTHAN750
+          ? ".0125rem 15.25rem 1fr .0125rem "
+          : ".0125rem 1fr .0125rem"
+      }
+      gap={3}
     >
-      <GridItem colEnd={5}>
-        <Flex justifyContent="flex-end">
-          <MenuComponent /> <TaskModalForm />
-        </Flex>
+      {ISLARGERTHAN750 ? (
+        <GridItem area="logo" colStart={2}>
+          <HeaderComponent />
+        </GridItem>
+      ) : null}
+
+      <GridItem as="nav" area="header" colStart={ISLARGERTHAN750 ? 3 : 2}>
+        {ISLARGERTHAN750 ? <TopNavigationBar /> : <MenuComponent />}
+        <TaskModalForm />
       </GridItem>
-      <GridItem colSpan={4}>
+
+      <GridItem
+        area="user"
+        mt={ISLARGERTHAN750 ? 5 : 0}
+        colStart={ISLARGERTHAN750 ? 2 : 2}
+      >
         <UserBioCard />
       </GridItem>
-      <GridItem colSpan={4}>
+
+      <GridItem
+        area="calendar"
+        colStart={ISLARGERTHAN750 ? 2 : 2}
+        rowStart={ISLARGERTHAN750 ? 3 : 0}
+      >
         <Center>
-          <WeeklyCalendarComponent />
+          <Flex flexDirection={"column"} justifyContent={"center"} w="90%">
+            <WeeklyCalendarComponent />
+          </Flex>
         </Center>
       </GridItem>
-      <GridItem colSpan={4}>
-        <SearchBarComponent />
+      <GridItem
+        w={ISLARGERTHAN750 ? "100%" : "100%"}
+        area="progress"
+        colStart={ISLARGERTHAN750 ? 3 : 2}
+        placeContent="center"
+      >
+        <Flex justifyContent={"center"}>
+          <ProgressBar />
+        </Flex>
       </GridItem>
-      <GridItem colSpan={4}>
+
+      <GridItem
+        area="main"
+        overflow={"scroll"}
+        colStart={ISLARGERTHAN750 ? 3 : 2}
+      >
         <TaskByWeekCalendarComponent />
+      </GridItem>
+      <GridItem
+        area="footer"
+        overflow={"scroll"}
+        colSpan={ISLARGERTHAN750 ? 12 : 6}
+        colStart={2}
+      >
+        <Center> &copy; SimplyDo 2024 </Center>
       </GridItem>
     </Grid>
   );

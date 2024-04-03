@@ -123,6 +123,7 @@ const LoginForm: FC = () => {
                   <InputRightElement h="40px">
                     <Button
                       name="password"
+                      variant="unstyled"
                       aria-label="Show-Password-Icon"
                       onClick={handlePasswordVisibility}
                     >
@@ -138,6 +139,7 @@ const LoginForm: FC = () => {
               </FormControl>
 
               <Button
+                variant="primary"
                 onClick={() => {
                   mutation.mutate(formData);
                 }}

@@ -1,15 +1,15 @@
 import { Button } from "@chakra-ui/react";
-import { PRIMARYCOLOR, WHITE } from "../styles";
 import { FC } from "react";
 
 interface Button {
   func: (e: React.MouseEvent<HTMLButtonElement>) => void;
   buttonName: string;
+  variant: string;
 }
 
-const ButtonComponent: FC<Button> = ({ func, buttonName }) => {
+const ButtonComponent: FC<Button> = ({ variant, func, buttonName }) => {
   return (
-    <Button w={"100%"} bgColor={PRIMARYCOLOR} color={WHITE} onClick={func}>
+    <Button variant={variant} w={"100%"} onClick={func}>
       {buttonName}
     </Button>
   );

@@ -14,9 +14,9 @@ export class CreateTaskDto {
   @IsString()
   description: string;
 
-  @IsNotEmpty()
-  @IsString()
-  dueOn: string;
+  // @IsNotEmpty()
+  // @IsString()
+  // dueOn: string;
 
   @IsNumber()
   priority: number;
