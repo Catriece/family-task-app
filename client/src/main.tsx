@@ -27,9 +27,12 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: async () => {
           const token = localStorage.getItem("token");
+          console.log("TOKEN", token);
+
           const user = await axios.get("http://localhost:2883/auth/get-user", {
-            headers: { Authorization: "Bearer " + token },
+            headers: { Authorization: `Bearer ${token}` },
           });
+          console.log("USER PRESENT: ", user);
 
           const tasks = await axios.get(
             "http://localhost:2883/tasks/get-tasks",

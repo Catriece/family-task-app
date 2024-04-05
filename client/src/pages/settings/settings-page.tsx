@@ -6,7 +6,6 @@ import {
   Grid,
   GridItem,
   Button,
-  Avatar,
   Divider,
   Modal,
   ModalOverlay,
@@ -23,11 +22,8 @@ import {
 } from "@chakra-ui/react";
 import {
   ArrowLeftIcon,
-  AtSignIcon,
-  BellIcon,
   ChevronRightIcon,
   CloseIcon,
-  InfoOutlineIcon,
   SettingsIcon,
 } from "@chakra-ui/icons";
 import { useContext, useState } from "react";
@@ -48,6 +44,7 @@ const button = {
 };
 
 const SettingsPage = () => {
+  const { user } = useContext(AuthContext);
   const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
   const { logout } = useContext(AuthContext);
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -58,6 +55,9 @@ const SettingsPage = () => {
   const [password, setPassword] = useState<string>("");
   const token = localStorage.getItem("token");
 
+  console.log("User", user);
+  console.log("Token", token);
+
   // Delete account error handling
   const [errorDeletingAccount, setErrorDeletingAccount] =
     useState<boolean>(false);
@@ -67,7 +67,6 @@ const SettingsPage = () => {
   const screenHeight = ISLARGERTHAN550 ? "100vh" : "90svh";
   const textSize = ISSMALLERTHAN300 ? "md" : ISLARGERTHAN550 ? "xl" : "lg";
   const iconSize = ISLARGERTHAN550 ? "3xl" : "2xl";
-  const avatarSize = ISLARGERTHAN550 ? "sm" : "xs";
 
   const data: any = useLoaderData();
 
@@ -95,18 +94,15 @@ const SettingsPage = () => {
 
   return (
     <Grid
-      templateAreas={`"header"
+      templateAreas={`
     "heading"
     "main"
     "footer"`}
-      gridTemplateRows={"8% 15% 70% 7%"}
+      gridTemplateRows={"15% 1fr 7%"}
       h={screenHeight}
       w={screenWidth}
       gap="1"
     >
-      <GridItem area={"header"}>
-        <Text>HEADER WILL GO HERE</Text>
-      </GridItem>
       <GridItem area={"heading"}>
         <Flex
           justifyContent={"space-between"}
@@ -118,6 +114,7 @@ const SettingsPage = () => {
               display: "flex",
               flexDirection: "row",
               justifyContent: "flex-end",
+              marginTop: 4,
             }}
           >
             {currentScreen === "options" ? null : (
@@ -146,147 +143,66 @@ const SettingsPage = () => {
           </Text>
         </Flex>
       </GridItem>
-      {currentScreen === "options" && (
-        <GridItem
-          area={"main"}
-          // bg="gray.30  0"
-          borderRadius={15}
-          h={"100%"}
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "space-between",
-          }}
-        >
-          <Flex flexDirection={"column"} justifyContent={"center"}>
-            <Box
-              as="button"
-              sx={button}
-              aria-labelledby="account"
-              role="button"
-              name="account"
-              onClick={() => setCurrentScreen("Account Information")}
-              textAlign="left"
-              h={"60px"}
+      <GridItem
+        area={"main"}
+        h={"100%"}
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "space-between",
+        }}
+      >
+        <Flex flexDirection={"column"} justifyContent={"center"}>
+          <UserAccountDetailsCard
+            firstName={data.firstName}
+            lastName={data.lastName}
+            email={data.email}
+            preferredName={data.preferredName}
+          />
+
+          <Divider marginTop={"20px"} marginBottom={"20px"} />
+        </Flex>
+        <Flex flexDirection={"column"}>
+          <Box
+            as="button"
+            aria-labelledby="change-password"
+            role="button"
+            name="change-password"
+            sx={button}
+            onClick={() => setCurrentScreen("Change Password")}
+            textAlign="left"
+            h={"60px"}
+          >
+            <SettingsIcon fontSize={iconSize} />
+            <Text
+              id="change-password"
+              pl={3}
+              fontSize={textSize}
+              fontWeight={500}
             >
-              <Avatar size={avatarSize} />
-              <Text id="account" pl={3} fontSize={textSize} fontWeight={500}>
-                Account
-              </Text>
-              <Box sx={{ flexGrow: 1 }} />
-              <ChevronRightIcon
-                boxSize={6}
-                onClick={() => setCurrentScreen("Account Information")}
-              />
-            </Box>
-            <Box
-              as="button"
-              sx={button}
-              aria-labelledby="members"
-              role="button"
-              name="members"
-              onClick={() => setCurrentScreen("Members")}
-              textAlign="left"
-              h={"60px"}
-            >
-              <AtSignIcon fontSize={iconSize} />
-              <Text id="members" pl={3} fontSize={textSize} fontWeight={500}>
-                Members
-              </Text>
-              <Box sx={{ flexGrow: 1 }} />
-              <ChevronRightIcon
-                boxSize={6}
-                onClick={() => setCurrentScreen("Members")}
-              />
-            </Box>
-            <Box
-              as="button"
-              sx={button}
-              aria-labelledby="notifications"
-              role="button"
-              name="notifications"
-              onClick={() => setCurrentScreen("Notifications")}
-              textAlign="left"
-              h={"60px"}
-            >
-              <BellIcon fontSize={iconSize} />
-              <Text
-                id="notifications"
-                pl={3}
-                fontSize={textSize}
-                fontWeight={500}
-              >
-                Notifications
-              </Text>
-              <Box sx={{ flexGrow: 1 }} />
-              <ChevronRightIcon
-                boxSize={6}
-                onClick={() => setCurrentScreen("Notifications")}
-              />
-            </Box>
-            <Box
-              as="button"
-              aria-labelledby="statistics"
-              role="button"
-              name="statistics"
-              sx={button}
-              onClick={() => setCurrentScreen("Statistics")}
-              textAlign="left"
-              h={"60px"}
-            >
-              <InfoOutlineIcon fontSize={iconSize} />
-              <Text id="statistics" pl={3} fontSize={textSize} fontWeight={500}>
-                Statistics
-              </Text>
-              <Box sx={{ flexGrow: 1 }} />
-              <ChevronRightIcon
-                boxSize={6}
-                onClick={() => setCurrentScreen("Statistics")}
-              />
-            </Box>
-            <Divider marginTop={"20px"} marginBottom={"20px"} />
-          </Flex>
-          <Flex flexDirection={"column"}>
-            <Box
-              as="button"
-              aria-labelledby="change-password"
-              role="button"
-              name="change-password"
-              sx={button}
-              onClick={() => setCurrentScreen("Change Password")}
-              textAlign="left"
-              h={"60px"}
-            >
-              <SettingsIcon fontSize={iconSize} />
-              <Text
-                id="change-password"
-                pl={3}
-                fontSize={textSize}
-                fontWeight={500}
-              >
-                Change Password
-              </Text>
-              <Box sx={{ flexGrow: 1 }} />
-              <ChevronRightIcon
-                boxSize={6}
-                onClick={() => setCurrentScreen("Settings")}
-              />
-            </Box>
+              Change Password
+            </Text>
+            <Box sx={{ flexGrow: 1 }} />
+            <ChevronRightIcon
+              boxSize={6}
+              onClick={() => setCurrentScreen("Settings")}
+            />
+          </Box>
+          <Center>
+            <Button onClick={() => logout()} bg="red.300" w={"50%"}>
+              Logout
+            </Button>
+          </Center>
+          <Box>
             <Center>
-              <Button onClick={() => logout()} bg="red.300" w={"50%"}>
-                Logout
+              <Button variant="ghost" fontSize={"xs"} onClick={onOpen}>
+                Delete Account
               </Button>
             </Center>
-            <Box>
-              <Center>
-                <Button variant="ghost" fontSize={"xs"} onClick={onOpen}>
-                  Delete Account
-                </Button>
-              </Center>
-            </Box>
-          </Flex>
-        </GridItem>
-      )}
+          </Box>
+        </Flex>
+      </GridItem>
+
       {/* Modal */}
 
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
@@ -357,29 +273,6 @@ const SettingsPage = () => {
         </ModalContent>
       </Modal>
 
-      {currentScreen === "Account Information" && (
-        <UserAccountDetailsCard
-          firstName={data.firstName}
-          lastName={data.lastName}
-          email={data.email}
-          preferredName={data.preferredName}
-        />
-      )}
-      {currentScreen === "Members" && (
-        <Center>
-          <Text>Don't worry! This feature is coming soon :D</Text>
-        </Center>
-      )}
-      {currentScreen === "Notifications" && (
-        <Center>
-          <Text>Don't worry! This feature is coming soon :D</Text>
-        </Center>
-      )}
-      {currentScreen === "Statistics" && (
-        <Center>
-          <Text>Don't worry! This feature is coming soon :D</Text>
-        </Center>
-      )}
       {currentScreen === "Change Password" && (
         <Center>
           <ChangePasswordPage />

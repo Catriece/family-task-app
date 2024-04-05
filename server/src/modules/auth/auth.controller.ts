@@ -30,7 +30,9 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Get('/get-user')
   async getUserData(@Headers('Authorization') authorizationHeader: string) {
+    console.log(typeof authorizationHeader);
     const user = await this.userService.findUserWithToken(authorizationHeader);
+
     const payload = {
       ...user,
       isActive: user.isActive === true,

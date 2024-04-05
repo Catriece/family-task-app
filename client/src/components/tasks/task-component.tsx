@@ -126,9 +126,13 @@ const TaskComponent: FC<TaskData> = ({
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
+      borderColor={
+        Number(priority) === 1 ? SUCCESS : Number(priority) === 2 ? ERROR : ""
+      }
       borderWidth=".1em"
-      bg={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
+      bg={
+        Number(priority) === 1 ? SUCCESS : Number(priority) === 2 ? ERROR : ""
+      }
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>

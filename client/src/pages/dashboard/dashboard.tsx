@@ -17,7 +17,6 @@ import HeaderComponent from "../../components/header/header";
 
 const DashboardPage: FC = () => {
   const { ISLARGERTHAN750 } = mediaQueries();
-  const gap = ISLARGERTHAN750 ? LG : SM;
   const data: any = useLoaderData();
 
   const initCount: number = data.get("initialCount");
@@ -60,7 +59,7 @@ const DashboardPage: FC = () => {
       gap={3}
     >
       {ISLARGERTHAN750 ? (
-        <GridItem area="logo" colStart={2}>
+        <GridItem area="logo">
           <HeaderComponent />
         </GridItem>
       ) : null}
@@ -110,7 +109,7 @@ const DashboardPage: FC = () => {
       <GridItem
         area="footer"
         overflow={"scroll"}
-        colSpan={ISLARGERTHAN750 ? 12 : 6}
+        colSpan={ISLARGERTHAN750 ? 3 : 2}
         colStart={2}
       >
         <Center> &copy; SimplyDo 2024 </Center>

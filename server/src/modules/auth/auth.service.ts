@@ -10,6 +10,7 @@ import { SignUpDto } from './dto/sign-up-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
+import { create } from 'domain';
 
 @Injectable()
 export class AuthService {
@@ -58,9 +59,16 @@ export class AuthService {
       password: hashedPassword,
     };
 
-    const payload = await this.userService.createUser(user);
+    const createdUser = await this.userService.createUser(user);
 
-    if (payload !== null) {
+    console.log('CreatedUser', createdUser);
+    if (createdUser !== null) {
+      const payload = {
+        sub: createdUser.id,
+        email: createdUser.email,
+        isActive: createdUser.isActive,
+      };
+
       return {
         access_token: await this.jwtService.signAsync(payload),
         payload,

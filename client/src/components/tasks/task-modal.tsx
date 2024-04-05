@@ -188,7 +188,7 @@ const TaskModalForm = () => {
         <ModalBody pb={0}>
           <FormControl>
             <FormLabel mb={"4pt"} fontSize={"xl"} color={DARKESTVARIATION}>
-              Title*:
+              Title (required):
             </FormLabel>
 
             <Input

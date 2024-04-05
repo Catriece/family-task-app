@@ -6,13 +6,15 @@ import {
   DeleteUser,
 } from "../types";
 
+const token = localStorage.getItem("token");
+
 export const loginFunction = (requestBody: LoginUser) => {
   const res = axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
   return res;
 };
 
 export const changePasswordFunction = (requestBody: ChangePassword) => {
-  const { token } = requestBody;
+  const token = localStorage.getItem("token");
   return axios.post("http://localhost:2883/auth/update-password", requestBody, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -21,7 +23,8 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
 };
 
 export const updateUserFunction = (requestBody: UpdateUserInformation) => {
-  const { token } = requestBody;
+  const token = localStorage.getItem("token");
+  console.log("TOKEN IN UPDATE: ", token);
   const data = axios.post(
     `http://localhost:2883/auth/update-user-personal-info`,
     requestBody,
@@ -35,7 +38,7 @@ export const updateUserFunction = (requestBody: UpdateUserInformation) => {
 };
 
 export const deleteUserFunction = (requestBody: DeleteUser) => {
-  const { token } = requestBody;
+  const token = localStorage.getItem("token");
   return axios.delete("http://localhost:2883/auth/delete-user", {
     headers: {
       Authorization: `Bearer ${token}`,

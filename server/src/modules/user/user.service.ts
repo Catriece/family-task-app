@@ -41,6 +41,7 @@ export class UserService {
   async findUserWithToken(authorizationHeader: string) {
     const payload = this.extractPayloadFromHeader(authorizationHeader);
     const id = payload.sub.toString();
+
     return await this.usersRepository.findOne({ where: { id } });
   }
 

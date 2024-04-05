@@ -104,7 +104,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
     )
       throw new Error("Input fields haven't changed");
 
-    const formData = { ...nameFormData, token, id };
+    const formData = { ...nameFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditName(!editName);
@@ -122,7 +122,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
       preferredNameFormData["preferredName"] = updatePreferredName;
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...preferredNameFormData, token };
+    const formData = { ...preferredNameFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditPreferredName(!editPreferredName);
@@ -266,10 +266,19 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                           </Flex>
                         </FormControl>
                         <Flex justifyContent={"flex-end"}>
-                          <Button onClick={handleUpdateName} w={"25%"} mr={2}>
+                          <Button
+                            variant="primary"
+                            onClick={handleUpdateName}
+                            w={"25%"}
+                            mr={2}
+                          >
                             Update
                           </Button>
-                          <Button w={"25%"} onClick={handleNameEditButton}>
+                          <Button
+                            variant="secondary"
+                            w={"25%"}
+                            onClick={handleNameEditButton}
+                          >
                             Cancel
                           </Button>
                         </Flex>
@@ -324,12 +333,14 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                             onClick={handleUpdatePreferredName}
                             w={"25%"}
                             mr={2}
+                            variant="primary"
                           >
                             Update
                           </Button>
                           <Button
                             w={"25%"}
                             onClick={handlePreferredNameEditButton}
+                            variant="secondary"
                           >
                             Cancel
                           </Button>
@@ -377,10 +388,19 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                           </Flex>
                         </FormControl>
                         <Flex justifyContent={"flex-end"}>
-                          <Button onClick={handleUpdateEmail} w={"25%"} mr={2}>
+                          <Button
+                            onClick={handleUpdateEmail}
+                            w={"25%"}
+                            mr={2}
+                            variant="primary"
+                          >
                             Update
                           </Button>
-                          <Button w={"25%"} onClick={handleEmailEditButton}>
+                          <Button
+                            w={"25%"}
+                            onClick={handleEmailEditButton}
+                            variant="secondary"
+                          >
                             Cancel
                           </Button>
                         </Flex>
