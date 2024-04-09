@@ -9,6 +9,6 @@ import { UserModule } from '../user/user.module';
   imports: [TypeOrmModule.forFeature([TasksEntity]), UserModule],
   controllers: [TasksController],
   providers: [TasksService],
-  exports: [TasksModule],
+  exports: [TasksService],
 })
 export class TasksModule {}

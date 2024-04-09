@@ -36,6 +36,10 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
   const [editPhotoText, setEditPhotoText] = useState<string>("Edit photo");
 
+  // Get ID from URL and Token from Storage for form data
+  const { id } = useParams();
+  const token = localStorage.getItem("token");
+
   // Name state
   const [currentFirstName, setFirstName] = useState<string>(firstName);
   const [currentLastName, setLastName] = useState<string>(lastName);
@@ -69,9 +73,6 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   let nameFormData: { [key: string]: string } = {};
   let preferredNameFormData: { [key: string]: string } = {};
   let emailFormData: { [key: string]: string } = {};
-
-  const { id } = useParams();
-  const token = localStorage.getItem("token");
 
   // Edit Icon Button Actions
   const handleNameEditButton = (e: React.MouseEvent) => {
@@ -137,7 +138,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
     if (updateEmail !== currentEmail) emailFormData["Email"] = updateEmail;
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...emailFormData, token, id };
+    const formData = { ...emailFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditEmail(!editEmail);

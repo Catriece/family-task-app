@@ -51,8 +51,7 @@ export class UserService {
   }
 
   async deleteUser(id: string) {
-    const user = await this.usersRepository.delete(id);
-    return user;
+    return await this.usersRepository.delete(id);
   }
 
   public extractPayloadFromHeader(authorizationHeader) {

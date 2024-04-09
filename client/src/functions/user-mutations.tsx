@@ -6,8 +6,6 @@ import {
   DeleteUser,
 } from "../types";
 
-const token = localStorage.getItem("token");
-
 export const loginFunction = (requestBody: LoginUser) => {
   const res = axios.post("http://localhost:2883/auth/login", requestBody); // Data sent from the client side to backend
   return res;
@@ -24,7 +22,6 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
 
 export const updateUserFunction = (requestBody: UpdateUserInformation) => {
   const token = localStorage.getItem("token");
-  console.log("TOKEN IN UPDATE: ", token);
   const data = axios.post(
     `http://localhost:2883/auth/update-user-personal-info`,
     requestBody,

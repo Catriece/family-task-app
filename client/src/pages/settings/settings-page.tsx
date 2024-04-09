@@ -26,7 +26,7 @@ import {
   CloseIcon,
   SettingsIcon,
 } from "@chakra-ui/icons";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
 import UserAccountDetailsCard from "./account-settings/account-details-coponent";
 import ChangePasswordPage from "./password/change-password-form";
@@ -70,6 +70,13 @@ const SettingsPage = () => {
 
   const data: any = useLoaderData();
 
+  useEffect(() => {
+    if (isOpen) {
+      setPassword("");
+      setModalBody(false);
+    }
+  }, [isOpen]);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -86,9 +93,8 @@ const SettingsPage = () => {
 
   const handleDeleteUser = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const payload = { password, token, id };
+    const payload = { password, id };
     const response = deleteUser.mutateAsync(payload);
-    console.log(response);
     return response;
   };
 
@@ -96,8 +102,7 @@ const SettingsPage = () => {
     <Grid
       templateAreas={`
     "heading"
-    "main"
-    "footer"`}
+    "main"`}
       gridTemplateRows={"15% 1fr 7%"}
       h={screenHeight}
       w={screenWidth}
@@ -118,13 +123,20 @@ const SettingsPage = () => {
             }}
           >
             {currentScreen === "options" ? null : (
-              <ArrowLeftIcon
-                fontSize={"sm"}
+              <Flex
+                cursor="pointer"
+                justifyContent="center"
+                alignItems="center"
                 onClick={() => {
                   navigate(`/account/settings/${id}`); // Repulls loader data
                   setCurrentScreen("options");
                 }}
-              />
+              >
+                <ArrowLeftIcon fontSize={"xs"} />
+                <Text fontSize={"lg"} ml={2}>
+                  Settings
+                </Text>
+              </Flex>
             )}
             <Box sx={{ flexGrow: 1 }} />
             <CloseIcon
@@ -149,58 +161,80 @@ const SettingsPage = () => {
         sx={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "space-between",
+          justifyContent: "space-evenly",
         }}
       >
-        <Flex flexDirection={"column"} justifyContent={"center"}>
-          <UserAccountDetailsCard
-            firstName={data.firstName}
-            lastName={data.lastName}
-            email={data.email}
-            preferredName={data.preferredName}
-          />
+        {currentScreen === "options" ? (
+          <>
+            <Flex flexDirection={"column"} justifyContent={"center"}>
+              <UserAccountDetailsCard
+                firstName={data.firstName}
+                lastName={data.lastName}
+                email={data.email}
+                preferredName={data.preferredName}
+              />
 
-          <Divider marginTop={"20px"} marginBottom={"20px"} />
-        </Flex>
-        <Flex flexDirection={"column"}>
-          <Box
-            as="button"
-            aria-labelledby="change-password"
-            role="button"
-            name="change-password"
-            sx={button}
-            onClick={() => setCurrentScreen("Change Password")}
-            textAlign="left"
-            h={"60px"}
-          >
-            <SettingsIcon fontSize={iconSize} />
-            <Text
-              id="change-password"
-              pl={3}
-              fontSize={textSize}
-              fontWeight={500}
-            >
-              Change Password
-            </Text>
-            <Box sx={{ flexGrow: 1 }} />
-            <ChevronRightIcon
-              boxSize={6}
-              onClick={() => setCurrentScreen("Settings")}
-            />
-          </Box>
+              <Divider marginTop={"20px"} marginBottom={"20px"} />
+            </Flex>
+
+            <Flex flexDirection={"column"} pb={5}>
+              <Box
+                as="button"
+                aria-labelledby="change-password"
+                role="button"
+                name="change-password"
+                sx={button}
+                onClick={() => setCurrentScreen("Change Password")}
+                textAlign="left"
+                h={"60px"}
+              >
+                <SettingsIcon fontSize={iconSize} />
+                <Text
+                  id="change-password"
+                  pl={3}
+                  fontSize={textSize}
+                  fontWeight={500}
+                >
+                  Change Password
+                </Text>
+                <Box sx={{ flexGrow: 1 }} />
+                <ChevronRightIcon
+                  boxSize={6}
+                  onClick={() => setCurrentScreen("Settings")}
+                />
+              </Box>
+              <Center>
+                <Button
+                  onClick={() => logout()}
+                  variant="primary"
+                  w={"50%"}
+                  fontSize={ISLARGERTHAN550 ? "xl" : "lg"}
+                  h={ISLARGERTHAN550 ? "44pt" : "32pt"}
+                  mb={3}
+                >
+                  Logout
+                </Button>
+              </Center>
+              <Box>
+                <Center>
+                  <Button
+                    variant="ghost"
+                    fontSize={ISLARGERTHAN550 ? "md" : "xs"}
+                    color="red.500"
+                    onClick={onOpen}
+                  >
+                    Delete Account
+                  </Button>
+                </Center>
+              </Box>
+            </Flex>
+          </>
+        ) : null}
+        {currentScreen === "Change Password" && (
           <Center>
-            <Button onClick={() => logout()} bg="red.300" w={"50%"}>
-              Logout
-            </Button>
+            <ChangePasswordPage />
           </Center>
-          <Box>
-            <Center>
-              <Button variant="ghost" fontSize={"xs"} onClick={onOpen}>
-                Delete Account
-              </Button>
-            </Center>
-          </Box>
-        </Flex>
+        )}
       </GridItem>
 
       {/* Modal */}
@@ -208,7 +242,7 @@ const SettingsPage = () => {
       <Modal isCentered isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Delete Your Account</ModalHeader>
+          <ModalHeader>Delete Account</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
             {modalBody ? (
@@ -218,6 +252,7 @@ const SettingsPage = () => {
                     <FormLabel>Enter Your Password</FormLabel>
                     <Input
                       value={password}
+                      borderColor="gray.500"
                       onChange={(e) => {
                         setErrorDeletingAccount(false);
                         setPassword(e.target.value);
@@ -229,16 +264,24 @@ const SettingsPage = () => {
                       </Text>
                     ) : null}
                   </FormControl>
-                  <Button bg="red.300" onClick={handleDeleteUser}>
-                    Delete Your Account
-                  </Button>
+                  <Center>
+                    <Button
+                      bg="red.600"
+                      border="none"
+                      color="white"
+                      onClick={handleDeleteUser}
+                      w="75%"
+                    >
+                      Delete Your Account
+                    </Button>
+                  </Center>
                 </Stack>
               </>
             ) : (
               <>
                 <Text fontSize={"sm"}>
                   Hey {data.firstName},<br /> Deleting your account is a{" "}
-                  <b>permanent action</b>, and it will result in the permanent
+                  <b>permanent action</b>, and will result in the permanent
                   removal of <b>all</b> data associated with your account from
                   our system.{" "}
                   <b>
@@ -247,11 +290,8 @@ const SettingsPage = () => {
                   </b>
                   . <br />
                   <br />
-                  If you have any tasks saved or shared with others, please make
-                  sure to save them elsewhere <b>before</b> proceeding with the
-                  account deletion. Once your account is deleted, all tasks and
-                  lists created by you will be permanently removed from our
-                  system.
+                  If you have any tasks saved please make sure to save them
+                  elsewhere <b>before</b> proceeding with the account deletion.
                 </Text>
                 <br />
                 <Text fontSize={"sm"}>
@@ -263,22 +303,18 @@ const SettingsPage = () => {
           </ModalBody>
 
           <ModalFooter>
-            <Button colorScheme="blue" mr={3} onClick={onClose}>
+            <Button variant="primary" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost" onClick={() => setModalBody(!modalBody)}>
+            <Button
+              variant="secondary"
+              onClick={() => setModalBody(!modalBody)}
+            >
               {modalBody ? "Back" : "Next"}
             </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
-
-      {currentScreen === "Change Password" && (
-        <Center>
-          <ChangePasswordPage />
-        </Center>
-      )}
-      <GridItem area={"footer"}></GridItem>
     </Grid>
   );
 };
