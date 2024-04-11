@@ -22,6 +22,7 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import mediaQueries from "../constants";
 
 const CreateAccountForm: FC = () => {
   const { login } = useContext(AuthContext);
@@ -44,10 +45,11 @@ const CreateAccountForm: FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Media queries for styling mobile and desktop screens
+  const { ISLARGERTHAN750 } = mediaQueries();
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
   // Changes the width of form container based on screen size
-  const screenWidth = isLargerThan800 ? "450px" : "280px";
+  const screenWidth = isLargerThan800 ? "600px" : "300px";
 
   // Allows me to reference the current/updated state
   const emailErrorReference = useRef<boolean>(false);
@@ -173,11 +175,11 @@ const CreateAccountForm: FC = () => {
   return (
     <Center>
       <Box
-        w={screenWidth}
+        w={"100%"}
         p={5}
-        borderWidth={isLargerThan550 ? "1px" : "0px"}
+        borderWidth={ISLARGERTHAN750 ? "1px" : "0px"}
         borderRadius="lg"
-        boxShadow={isLargerThan550 ? "2xl" : "none"}
+        boxShadow={ISLARGERTHAN750 ? "2xl" : "none"}
         paddingTop="0px"
       >
         <Stack spacing={4}>

@@ -140,11 +140,16 @@ const SettingsPage = () => {
                 </Text>
               </Flex>
             )}
-            <Box sx={{ flexGrow: 1 }} />
-            <CloseIcon
-              fontSize={"sm"}
+            <Box
+              as="button"
+              sx={{ flexGrow: 1, display: "flex", justifyContent: "flex-end" }}
               onClick={() => navigate(`/dashboard/${id}`)}
-            />
+              cursor={"pointer"}
+            >
+              <Text fontSize={"md"} mt={5}>
+                Back to dashboard
+              </Text>
+            </Box>
           </Box>
           <Text
             fontSize={ISSMALLERTHAN300 ? "xl" : ISLARGERTHAN550 ? "4xl" : "3xl"}

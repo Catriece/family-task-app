@@ -49,7 +49,7 @@ const DashboardPage: FC = () => {
       gridTemplateRows={
         ISLARGERTHAN750
           ? "4.5rem 6rem 1fr 2rem"
-          : "2rem 4rem 5.5rem 3rem 1fr 1.5rem"
+          : "3rem 4rem 5.5rem 3rem 1fr 1.5rem"
       }
       gridTemplateColumns={
         ISLARGERTHAN750
@@ -59,21 +59,30 @@ const DashboardPage: FC = () => {
       gap={3}
     >
       {ISLARGERTHAN750 ? (
-        <GridItem area="logo">
-          <HeaderComponent />
+        <GridItem area="logo" rowStart={1}>
+          <HeaderComponent
+            ptop={"20pt"}
+            pright={"20pt"}
+            pleft={"24pt"}
+            width={"100%"}
+            height={"100%"}
+            mleft={"8pt"}
+            fontSize={"4xl"}
+          />
         </GridItem>
       ) : null}
 
-      <GridItem as="nav" area="header" colStart={ISLARGERTHAN750 ? 3 : 2}>
+      <GridItem
+        as="nav"
+        area="header"
+        colStart={ISLARGERTHAN750 ? 3 : 2}
+        rowStart={1}
+      >
         <TopNavigationBar />
         <TaskModalForm />
       </GridItem>
 
-      <GridItem
-        area="user"
-        mt={ISLARGERTHAN750 ? 5 : 0}
-        colStart={ISLARGERTHAN750 ? 2 : 2}
-      >
+      <GridItem area="user" mt={ISLARGERTHAN750 ? 5 : 0} colStart={2}>
         <UserBioCard />
       </GridItem>
 

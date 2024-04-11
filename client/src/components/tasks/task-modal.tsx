@@ -18,6 +18,7 @@ import {
   Select,
   Flex,
   Button,
+  useToast,
 } from "@chakra-ui/react";
 import { useModal } from "../../context/modal/modal-context";
 import {
@@ -66,6 +67,7 @@ const TaskModalForm = () => {
 
   const { id } = useParams();
   const revalidator = useRevalidator();
+  const toast = useToast();
 
   // Change Title Between Edit and Creating Todo
   const titleOfModal = edits.title ? "Edit" : "Create";
@@ -132,10 +134,24 @@ const TaskModalForm = () => {
     mutationFn: updateTaskFunction,
     onSuccess: () => {
       closeModal();
-      // add toast
+      revalidator.revalidate();
+      toast({
+        title: "Task Updated",
+        description: "Your task was successfully updated.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     },
     onError: () => {
       console.error("Error editing task");
+      toast({
+        title: "Task Update Unsuccessful",
+        description: "There was an error updating your task.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     },
   });
 

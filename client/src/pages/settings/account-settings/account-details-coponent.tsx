@@ -12,7 +12,6 @@ import {
   Stack,
   IconButton,
   Center,
-  HStack,
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { AccountInfo } from "../../../types";
@@ -22,7 +21,6 @@ import { useMutation } from "@tanstack/react-query";
 import { EditIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
 import testPhoto from "../../../assets/bg-img.png";
-import MyModal from "../../../components/modal/modal";
 
 const container = {
   padding: "20px 30px",
@@ -211,7 +209,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
           Hey {name}, You can manage all of your personal information here.
         </Text>
 
-        <Text mt={5} fontSize={headingSize} fontWeight={600}>
+        {/* <Text mt={5} fontSize={headingSize} fontWeight={600}>
           Profile Photo
         </Text>
         <Flex
@@ -243,7 +241,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
             fontSize="xs"
             padding="4pt 0"
           />
-        </Flex>
+        </Flex> */}
 
         <Flex
           h={"100%"}

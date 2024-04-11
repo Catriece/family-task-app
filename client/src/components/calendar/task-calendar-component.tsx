@@ -5,12 +5,14 @@ import { useLoaderData } from "react-router-dom";
 import { descendingOrder } from "../../functions/compare-functions";
 import ButtonComponent from "../buttons/my-button-component";
 import { useModal } from "../../context/modal/modal-context";
+import mediaQueries from "../constants";
 
 const TaskByWeekCalendarComponent = () => {
   let data: any = useLoaderData();
   const tasks: any = data.get("tasks").data.sort(descendingOrder);
 
   const { openModal } = useModal();
+  const { ISLARGERTHAN750 } = mediaQueries();
 
   return (
     <Flex
@@ -39,7 +41,7 @@ const TaskByWeekCalendarComponent = () => {
           variant="primary"
           func={openModal}
           buttonName="Add your first task"
-          width="50%"
+          width={ISLARGERTHAN750 ? "50%" : "65%"}
         />
       )}
     </Flex>

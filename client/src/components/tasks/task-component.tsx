@@ -74,7 +74,9 @@ const TaskComponent: FC<TaskData> = ({
       userId: id,
     };
 
-    if (completed) setTaskCount(taskCount - 1);
+    if (completed) {
+      setTaskCount(taskCount - 1);
+    }
     await remove.mutateAsync(formData);
     onToggle();
   };
@@ -87,7 +89,6 @@ const TaskComponent: FC<TaskData> = ({
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("Form data", formData);
     // stores info from edits into state
     setEdits(formData.data[0]); // Double check how edits are set up in context
     handleModal ? closeModal() : openModal();
