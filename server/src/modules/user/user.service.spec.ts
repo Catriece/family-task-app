@@ -2,6 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserService } from './user.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { UserEntity } from './entities/user.entity';
+import { SignUpDto } from '../auth/dto/sign-up-dto';
 
 describe('UserService', () => {
   let service: UserService;
@@ -77,16 +78,16 @@ describe('UserService', () => {
     });
   });
 
-  it('createUser => should create a new user', async () => {
+  it('createUser => should create a new user and assign that user a unique id ', async () => {
     const create = {
-      id: '1',
       firstName: 'Catriece',
       lastName: 'Gilbert',
       email: 'catriece.gilbert@gmail.com',
       password: 'fake',
       isActive: false,
       createdAt: Date.now(),
-    };
+    } as SignUpDto;
+
     const user = {
       id: '1',
       firstName: 'Catriece',
