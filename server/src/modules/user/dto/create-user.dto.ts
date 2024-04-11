@@ -2,8 +2,8 @@ import { IsEmail, IsNotEmpty, IsUUID } from 'class-validator';
 
 export class CreateUserDto {
   // can i extend login user dto?
-  @IsUUID()
-  id: string;
+  // @IsUUID()
+  // id: string;
 
   @IsEmail()
   email: string;

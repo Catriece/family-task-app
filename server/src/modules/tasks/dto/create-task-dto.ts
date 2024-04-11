@@ -1,7 +1,13 @@
-import { IsBoolean, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTaskDto {
-  taskId: number;
+  //taskId: number;
 
   @IsNotEmpty()
   @IsString()
@@ -14,9 +20,9 @@ export class CreateTaskDto {
   @IsString()
   description: string;
 
-  // @IsNotEmpty()
-  // @IsString()
-  // dueOn: string;
+  @IsOptional()
+  @IsString()
+  dueOn: string;
 
   @IsNumber()
   priority: number;
