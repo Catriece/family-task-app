@@ -14,9 +14,8 @@ interface DeleteTask {
   taskId: number | null;
 }
 
-const token = localStorage.getItem("token");
-
 export const getTaskFunction = async (index: number) => {
+  const token = localStorage.getItem("token");
   const data = await axios.get("http://localhost:2883/tasks/get-task", {
     params: { index },
     headers: {
@@ -28,6 +27,7 @@ export const getTaskFunction = async (index: number) => {
 };
 
 export const createTaskFunction = async (requestBody: Task) => {
+  const token = localStorage.getItem("token");
   const data = await axios.post(
     "http://localhost:2883/tasks/create-tasks",
     requestBody,
@@ -41,6 +41,7 @@ export const createTaskFunction = async (requestBody: Task) => {
 };
 
 export const deleteTaskFunction = async (requestBody: DeleteTask) => {
+  const token = localStorage.getItem("token");
   const data = await axios.delete("http://localhost:2883/tasks/delete-task", {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -52,6 +53,8 @@ export const deleteTaskFunction = async (requestBody: DeleteTask) => {
 };
 
 export const updateTaskFunction = async (requestBody: Task) => {
+  const token = localStorage.getItem("token");
+  console.log("REQBODY", requestBody);
   const data = await axios.put(
     "http://localhost:2883/tasks/update-task",
     requestBody,

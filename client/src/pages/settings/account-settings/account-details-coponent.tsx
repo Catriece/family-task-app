@@ -20,6 +20,7 @@ import { updateUserFunction } from "../../../functions/user-mutations";
 import { useMutation } from "@tanstack/react-query";
 import { EditIcon } from "@chakra-ui/icons";
 import { useParams } from "react-router-dom";
+import testPhoto from "../../../assets/bg-img.png";
 
 const container = {
   padding: "20px 30px",
@@ -32,9 +33,15 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   lastName,
   email,
   preferredName,
+  //profilePhoto,
 }) => {
+  console.log(firstName, lastName, email, preferredName);
+
   const { ISLARGERTHAN550, ISSMALLERTHAN300 } = mediaQueries();
-  const [editPhotoText, setEditPhotoText] = useState<string>("Edit photo");
+  const [editPhoto, setEditPhoto] = useState<boolean>(false);
+
+  // Get ID from URL and Token from Storage for form data
+  const { id } = useParams();
 
   // Name state
   const [currentFirstName, setFirstName] = useState<string>(firstName);
@@ -55,6 +62,9 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   const [editEmail, setEditEmail] = useState<boolean>(false);
   const [updateEmail, setUpdateEmail] = useState<string>(email);
 
+  // Profile Photo State
+  const [currentProfilePhoto, setProfilePhoto] = useState<string>(testPhoto);
+  const [updateProfilePhoto, setUpdateProfilePhoto] = useState<string>("");
   const toast = useToast(); // Toast for success and error messages
 
   // CSS Media Queries
@@ -65,13 +75,11 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   // Name to display for greeting message
   const name = preferredName ? currentPreferredName : currentFirstName;
 
-  // Setting form data - name, preferred name and email edit
+  // Setting form data - name, preferred name profile photo and email edit
   let nameFormData: { [key: string]: string } = {};
   let preferredNameFormData: { [key: string]: string } = {};
   let emailFormData: { [key: string]: string } = {};
-
-  const { id } = useParams();
-  const token = localStorage.getItem("token");
+  let profilePhotoFormData: { [key: string]: string } = {};
 
   // Edit Icon Button Actions
   const handleNameEditButton = (e: React.MouseEvent) => {
@@ -104,7 +112,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
     )
       throw new Error("Input fields haven't changed");
 
-    const formData = { ...nameFormData, token, id };
+    const formData = { ...nameFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditName(!editName);
@@ -122,7 +130,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
       preferredNameFormData["preferredName"] = updatePreferredName;
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...preferredNameFormData, token };
+    const formData = { ...preferredNameFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditPreferredName(!editPreferredName);
@@ -134,10 +142,11 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
   const handleUpdateEmail = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     // Form data for axios request
-    if (updateEmail !== currentEmail) emailFormData["Email"] = updateEmail;
+    if (updateEmail !== currentEmail)
+      emailFormData["Email"] = updateEmail; // email is uppercased
     else throw new Error("Input fields haven't changed");
 
-    const formData = { ...emailFormData, token, id };
+    const formData = { ...emailFormData, id };
     const response = await updateUser.mutateAsync(formData);
 
     if (response) setEditEmail(!editEmail);
@@ -145,13 +154,19 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
     return response;
   };
 
-  const handleUploadPhoto = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleUploadPhoto = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    editPhotoText === "Edit photo"
-      ? setEditPhotoText("Save photo")
-      : setEditPhotoText("Edit Photo");
-    console.log("Upload new image");
+    setEditPhoto(!editPhoto);
+
+    if (updateProfilePhoto) {
+      profilePhotoFormData["profilePhoto"] = updateProfilePhoto;
+    } else throw new Error("Input fields haven't changed");
+
+    const formData = { ...profilePhotoFormData, id };
+    const response = await updateUser.mutateAsync(formData);
+
+    return response;
   };
 
   const updateUser = useMutation({
@@ -162,6 +177,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
       setLastName(response.data.lastName);
       setPreferredName(response.data.preferredName);
       setEmail(response.data.email);
+      setProfilePhoto(response.data.profilePhoto);
 
       console.log("RESPONSE ON SUCCESS", response);
       toast({
@@ -193,7 +209,7 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
           Hey {name}, You can manage all of your personal information here.
         </Text>
 
-        <Text mt={5} fontSize={headingSize} fontWeight={600}>
+        {/* <Text mt={5} fontSize={headingSize} fontWeight={600}>
           Profile Photo
         </Text>
         <Flex
@@ -201,16 +217,31 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
           alignItems={"center"}
           flexDirection={"column"}
         >
-          <Avatar size={avatarSize} />
-          <Button
+          <Avatar size={avatarSize} src={currentProfilePhoto} />
+
+          <MyModal
+            func={handleUploadPhoto}
+            buttonName="Edit Photo"
+            title="Edit Profile Photo"
+            content={
+              <>
+                <FormControl>
+                  <FormLabel>Upload New Photo</FormLabel>
+                  <Input
+                    type="file"
+                    border="none"
+                    accept="image/png, image/jpeg"
+                    value={updateProfilePhoto}
+                    onChange={(e) => setUpdateProfilePhoto(e.target.value)}
+                  />
+                </FormControl>
+              </>
+            }
             variant="ghost"
-            fontSize={"sm"}
-            alignSelf={"flex-end"}
-            onClick={handleUploadPhoto}
-          >
-            {editPhotoText}
-          </Button>
-        </Flex>
+            fontSize="xs"
+            padding="4pt 0"
+          />
+        </Flex> */}
 
         <Flex
           h={"100%"}
@@ -266,10 +297,19 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                           </Flex>
                         </FormControl>
                         <Flex justifyContent={"flex-end"}>
-                          <Button onClick={handleUpdateName} w={"25%"} mr={2}>
+                          <Button
+                            variant="primary"
+                            onClick={handleUpdateName}
+                            w={"35%"}
+                            mr={3}
+                          >
                             Update
                           </Button>
-                          <Button w={"25%"} onClick={handleNameEditButton}>
+                          <Button
+                            variant="secondary"
+                            w={"35%"}
+                            onClick={handleNameEditButton}
+                          >
                             Cancel
                           </Button>
                         </Flex>
@@ -322,14 +362,16 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                         <Flex justifyContent={"flex-end"}>
                           <Button
                             onClick={handleUpdatePreferredName}
-                            w={"25%"}
+                            w={"35%"}
                             mr={2}
+                            variant="primary"
                           >
                             Update
                           </Button>
                           <Button
-                            w={"25%"}
+                            w={"35%"}
                             onClick={handlePreferredNameEditButton}
+                            variant="secondary"
                           >
                             Cancel
                           </Button>
@@ -377,10 +419,19 @@ const UserAccountDetailsCard: FC<AccountInfo> = ({
                           </Flex>
                         </FormControl>
                         <Flex justifyContent={"flex-end"}>
-                          <Button onClick={handleUpdateEmail} w={"25%"} mr={2}>
+                          <Button
+                            onClick={handleUpdateEmail}
+                            w={"35%"}
+                            mr={2}
+                            variant="primary"
+                          >
                             Update
                           </Button>
-                          <Button w={"25%"} onClick={handleEmailEditButton}>
+                          <Button
+                            w={"35%"}
+                            onClick={handleEmailEditButton}
+                            variant="secondary"
+                          >
                             Cancel
                           </Button>
                         </Flex>

@@ -1,10 +1,9 @@
 import {
   Controller,
   Delete,
-  Param,
-  Query,
-  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Get, Post, Body, Headers, Request } from '@nestjs/common';
@@ -19,6 +18,8 @@ import { UserService } from '../user/user.service';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
 import * as jwt from 'jsonwebtoken';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -31,6 +32,7 @@ export class AuthController {
   @Get('/get-user')
   async getUserData(@Headers('Authorization') authorizationHeader: string) {
     const user = await this.userService.findUserWithToken(authorizationHeader);
+
     const payload = {
       ...user,
       isActive: user.isActive === true,
@@ -78,29 +80,32 @@ export class AuthController {
   @Post('/update-password')
   async changePassword(@Body() body: ChangePasswordDto) {
     const payload = await this.authService.changePassword(body);
-    if (payload !== null) return true;
+    if (payload !== null) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   @UseGuards(AuthGuard)
   @Delete('/delete-user')
   async deleteUser(@Body() body: DeleteUserDto) {
-    const payload = await this.authService.deleteUser(body);
+    await this.authService.deleteUser(body);
   }
 
   // Change name route
   @UseGuards(AuthGuard)
   @Post('/update-user-personal-info')
   async updatePersonalInformation(@Body() body: UpdateUserDto) {
-    const { id, firstName, lastName, preferredName, email, birthday } = body;
-    const payload = await this.authService.updatePersonalInformation(
-      id,
-      firstName,
-      lastName,
-      preferredName,
-      email,
-      birthday,
-    );
+    const payload = await this.authService.updatePersonalInformation(body);
 
     if (payload) return payload;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/upload-image')
+  @UseInterceptors(FileInterceptor('profilePhoto'))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    console.log('File url: ', file);
   }
 }

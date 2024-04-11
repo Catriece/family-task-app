@@ -1,8 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { AuthGuard } from './modules/auth/auth.guard';
-import { JwtService } from '@nestjs/jwt';
+import { config as dotenvConfig } from 'dotenv';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -13,7 +12,7 @@ async function bootstrap() {
     }),
   );
   await app.listen(2883, () => {
-    console.log('Listening on port 2883...');
+    console.log(`Listening on port 2883...`);
   });
 }
 bootstrap();

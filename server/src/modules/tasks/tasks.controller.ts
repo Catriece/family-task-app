@@ -58,6 +58,7 @@ export class TasksController {
   @UseGuards(AuthGuard)
   @Put('/update-task')
   async updateTask(@Body() updateTaskDto: UpdateTaskDto) {
+    console.log('UPDATE TASK CONTROLLER', updateTaskDto);
     const edited = await this.tasksService.updateTask(updateTaskDto);
     return edited;
   }
@@ -65,7 +66,6 @@ export class TasksController {
   //@UseGuards(AuthGuard)
   @Put('/mark-completed')
   async updateCompletedTask(@Body() updateTaskDto: UpdateTaskDto) {
-    console.log(updateTaskDto, 'MCController');
     const { taskId, completed } = updateTaskDto;
     const completedTask = await this.tasksService.markCompleted(
       taskId,

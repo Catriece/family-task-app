@@ -22,6 +22,7 @@ import {
   FormHelperText,
 } from "@chakra-ui/react";
 import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import mediaQueries from "../constants";
 
 const CreateAccountForm: FC = () => {
   const { login } = useContext(AuthContext);
@@ -44,10 +45,11 @@ const CreateAccountForm: FC = () => {
   const [confirmPassword, setConfirmPassword] = useState<string>("");
 
   // Media queries for styling mobile and desktop screens
+  const { ISLARGERTHAN750 } = mediaQueries();
   const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
   const [isLargerThan800] = useMediaQuery("(min-width: 800px)");
   // Changes the width of form container based on screen size
-  const screenWidth = isLargerThan800 ? "450px" : "280px";
+  const screenWidth = isLargerThan800 ? "600px" : "300px";
 
   // Allows me to reference the current/updated state
   const emailErrorReference = useRef<boolean>(false);
@@ -153,36 +155,31 @@ const CreateAccountForm: FC = () => {
     mutationFn: async (requestBody: CreateUser) => {
       if (formData.password !== confirmPassword) setPasswordsDontMatch(true); // I think this is checked elsewhere in this code
 
-      return await axios.post(
+      const data = await axios.post(
         "http://localhost:2883/auth/signup", // MAKE AN ENV VARIABLE
         requestBody
       );
+
+      return data;
     },
-  });
+    onSuccess: (res) => {
+      const { access_token, payload } = res.data;
 
-  const handleSubmitForm = async (e: React.MouseEvent) => {
-    e.preventDefault();
-
-    try {
-      const userCreated = await submitForm.mutateAsync(formData); // adding user to database
-      const { access_token, payload } = userCreated.data;
+      localStorage.setItem("token", access_token);
 
       login({ userCredentials: payload, token: access_token }); // Giving info to context to be used throughout the application
-      navigate(`/dashboard/${payload.id}`); //Navigate to user dashboard
-    } catch (error) {
-      console.error(error);
-      throw new Error("Error creating new user");
-    }
-  };
+      navigate(`/dashboard/${payload.sub}`); //Navigate to user dashboard
+    },
+  });
 
   return (
     <Center>
       <Box
-        w={screenWidth}
+        w={"100%"}
         p={5}
-        borderWidth={isLargerThan550 ? "1px" : "0px"}
+        borderWidth={ISLARGERTHAN750 ? "1px" : "0px"}
         borderRadius="lg"
-        boxShadow={isLargerThan550 ? "2xl" : "none"}
+        boxShadow={ISLARGERTHAN750 ? "2xl" : "none"}
         paddingTop="0px"
       >
         <Stack spacing={4}>
@@ -211,7 +208,7 @@ const CreateAccountForm: FC = () => {
               value={formData.email}
               onChange={handleInput}
             />
-            <FormLabel id="create-user-email-label">Email</FormLabel>
+            <FormLabel id="create-user-email-label">Email (required)</FormLabel>
             {emailError ? (
               <FormHelperText fontSize="small" color="red">
                 Email is already in use.
@@ -231,7 +228,7 @@ const CreateAccountForm: FC = () => {
               required
               min="2"
             />
-            <FormLabel id="first-name-label">First Name</FormLabel>
+            <FormLabel id="first-name-label">First Name (required)</FormLabel>
           </FormControl>
 
           <FormControl variant="floating">
@@ -246,7 +243,7 @@ const CreateAccountForm: FC = () => {
               value={formData.lastName}
               onChange={handleInput}
             />
-            <FormLabel id="last-name-label">Last Name</FormLabel>
+            <FormLabel id="last-name-label">Last Name (required)</FormLabel>
           </FormControl>
 
           <FormControl variant="floating">
@@ -262,8 +259,11 @@ const CreateAccountForm: FC = () => {
                 focusBorderColor={passwordError ? "red.300" : "blue.300"}
                 errorBorderColor="red.300"
                 onChange={handleInput}
+                required
               />
-              <FormLabel id="create-user-password-label">Password</FormLabel>
+              <FormLabel id="create-user-password-label">
+                Password (required)
+              </FormLabel>
               <InputRightElement>
                 <Button
                   name="password"
@@ -296,8 +296,9 @@ const CreateAccountForm: FC = () => {
                 errorBorderColor="red.300"
                 value={confirmPassword}
                 onChange={handleInput}
+                required
               />
-              <FormLabel>Confirm Password</FormLabel>
+              <FormLabel>Confirm Password (required)</FormLabel>
               <InputRightElement>
                 <Button
                   name="confirmPassword"
@@ -320,7 +321,9 @@ const CreateAccountForm: FC = () => {
           <Button
             variant="primary"
             isDisabled={disableSubmitButton}
-            onClick={handleSubmitForm}
+            onClick={() => {
+              submitForm.mutate(formData);
+            }}
           >
             Sign Up
           </Button>

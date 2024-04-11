@@ -1,5 +1,5 @@
 // Need to create modal context
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { TaskFormData } from "../../types";
 import {
   FormControl,
@@ -18,10 +18,7 @@ import {
   Select,
   Flex,
   Button,
-  Switch,
-  Radio,
-  RadioGroup,
-  Stack,
+  useToast,
 } from "@chakra-ui/react";
 import { useModal } from "../../context/modal/modal-context";
 import {
@@ -35,30 +32,6 @@ import { useParams, useRevalidator } from "react-router-dom";
 import { DARKESTVARIATION, DARKVARIATION, MEDIUMVARIATION } from "../styles";
 import ButtonComponent from "../buttons/my-button-component";
 
-// const dayNames = [
-//   "Sunday",
-//   "Monday",
-//   "Tuesday",
-//   "Wednesday",
-//   "Thursday",
-//   "Friday",
-//   "Saturday",
-// ];
-// const monthAbbr = [
-//   "Jan",
-//   "Feb",
-//   "Mar",
-//   "Apr",
-//   "May",
-//   "Jun",
-//   "Jul",
-//   "Aug",
-//   "Sept",
-//   "Oct",
-//   "Nov",
-//   "Dec",
-// ];
-
 interface TaskModalForm {
   editTitle?: string;
   editDescription?: string;
@@ -71,8 +44,7 @@ const TaskModalForm = () => {
     title: "",
     description: "",
   });
-  // const [dueOn, setDueOn] = useState<string>("");
-  //const [formatDate, setFormatDate] = useState<string>("");
+
   const [priority, setPriority] = useState<number>(0);
   const {
     closeModal,
@@ -83,8 +55,19 @@ const TaskModalForm = () => {
     setAddDescription,
   } = useModal();
 
+  useEffect(() => {
+    if (isOpen === false) {
+      setFormData({
+        title: "",
+        description: "",
+      });
+      setPriority(0);
+    }
+  }, [isOpen]);
+
   const { id } = useParams();
   const revalidator = useRevalidator();
+  const toast = useToast();
 
   // Change Title Between Edit and Creating Todo
   const titleOfModal = edits.title ? "Edit" : "Create";
@@ -100,36 +83,20 @@ const TaskModalForm = () => {
   };
 
   const handlePriority = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    if (edits.title) setEdits({ ...edits, [e.target.name]: e.target.value });
+    if (edits.title)
+      setEdits({ ...edits, [e.target.name]: Number(e.target.value) });
     else setPriority(Number(e.target.value));
-    console.log("Target Name: ", e.target.name);
-    console.log("Target Value: ", typeof e.target.value);
   };
-
-  // const handleDueOn = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const date = e.target.value;
-  //   const dotw = dayjs(e.target.value).get("day");
-  //   setDueOn(date);
-  //   // Is this called destructuring?
-  //   const [year, month, day] = date.split("-");
-  //   const index = Number(month) - 1;
-  //   const formattedDate = `${dayNames[dotw]}, ${monthAbbr[index]} ${day}`;
-  //   console.log(formattedDate);
-  //   setFormatDate(formattedDate);
-  // };
 
   const handleSubmitForm = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
 
-    console.log("Button clicked");
     const data = {
       ...formData,
       userId: id,
-      priority,
-      // dueOn: formatDate,
+      priority: Number(priority),
       completed: false,
     };
-    console.log("form data", data);
 
     await createTask.mutateAsync(data);
     revalidator.revalidate();
@@ -139,18 +106,19 @@ const TaskModalForm = () => {
       description: "",
     });
     setPriority(0);
-    // setDueOn("");
-    //setFormatDate("");
   };
 
   const handleEditTask = async (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    await updateTask.mutateAsync(edits);
-    revalidator.revalidate();
+
+    const editedData = {
+      ...edits,
+      priority: Number(edits.priority),
+    };
+    await updateTask.mutateAsync(editedData);
   };
 
   // Mutations
-
   // Place in a separate file?
   const createTask = useMutation({
     mutationFn: createTaskFunction,
@@ -166,10 +134,24 @@ const TaskModalForm = () => {
     mutationFn: updateTaskFunction,
     onSuccess: () => {
       closeModal();
-      // add toast
+      revalidator.revalidate();
+      toast({
+        title: "Task Updated",
+        description: "Your task was successfully updated.",
+        status: "success",
+        duration: 5000,
+        isClosable: true,
+      });
     },
     onError: () => {
       console.error("Error editing task");
+      toast({
+        title: "Task Update Unsuccessful",
+        description: "There was an error updating your task.",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
     },
   });
 
@@ -188,7 +170,7 @@ const TaskModalForm = () => {
         <ModalBody pb={0}>
           <FormControl>
             <FormLabel mb={"4pt"} fontSize={"xl"} color={DARKESTVARIATION}>
-              Title*:
+              Title (required):
             </FormLabel>
 
             <Input
@@ -200,7 +182,7 @@ const TaskModalForm = () => {
               borderColor={MEDIUMVARIATION}
             />
           </FormControl>
-          {addDescription === false && (
+          {addDescription === false && edits.description === "" ? (
             <Button
               borderRadius={20}
               mt={2}
@@ -211,9 +193,9 @@ const TaskModalForm = () => {
             >
               Add description
             </Button>
-          )}
+          ) : null}
 
-          {addDescription ? (
+          {addDescription || edits.description !== "" ? (
             <>
               <FormLabel
                 mt={"20pt"}
@@ -235,24 +217,6 @@ const TaskModalForm = () => {
               />
             </>
           ) : null}
-
-          {/* <Flex mt={2} flexDirection={"row-reverse"} align={"center"}>
-            <Input
-              name="dateTime"
-              color={DARKVARIATION}
-              isRequired
-              w={"50%"}
-              placeholder="Select Date and Time"
-              size="sm"
-              type="date"
-              value={edits.dueOn ? edits.dueOn : dueOn}
-              onChange={handleDueOn}
-              borderColor={MEDIUMVARIATION}
-            />
-            <Text fontSize={"xl"} color={DARKESTVARIATION} mr={3}>
-              Due:{" "}
-            </Text>
-          </Flex> */}
         </ModalBody>
 
         <ModalFooter>
@@ -262,7 +226,6 @@ const TaskModalForm = () => {
               placeholder="Select Priority"
               name="priority"
               w={"45%"}
-              defaultValue={0}
               value={edits.priority ? edits.priority : priority}
               onChange={handlePriority}
               color={DARKVARIATION}

@@ -7,7 +7,6 @@ import ResetPasswordPage from "./pages/settings/password/reset-password-form.tsx
 import SettingsPage from "./pages/settings/settings-page.tsx";
 import ErrorPage from "./pages/error/error-page.tsx";
 import TodoByWeekCalendarComponent from "./components/calendar/task-calendar-component.tsx";
-import { useNavigate } from "react-router-dom";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import axios from "axios";
 
@@ -18,7 +17,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "/login",
+        index: true,
         element: <LoginPage />,
       },
       {
@@ -27,9 +26,12 @@ const router = createBrowserRouter([
         errorElement: <ErrorPage />,
         loader: async () => {
           const token = localStorage.getItem("token");
+          console.log("TOKEN", token);
+
           const user = await axios.get("http://localhost:2883/auth/get-user", {
-            headers: { Authorization: "Bearer " + token },
+            headers: { Authorization: `Bearer ${token}` },
           });
+          console.log("USER PRESENT: ", user);
 
           const tasks = await axios.get(
             "http://localhost:2883/tasks/get-tasks",

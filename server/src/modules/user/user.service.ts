@@ -41,6 +41,7 @@ export class UserService {
   async findUserWithToken(authorizationHeader: string) {
     const payload = this.extractPayloadFromHeader(authorizationHeader);
     const id = payload.sub.toString();
+
     return await this.usersRepository.findOne({ where: { id } });
   }
 
@@ -50,8 +51,7 @@ export class UserService {
   }
 
   async deleteUser(id: string) {
-    const user = await this.usersRepository.delete(id);
-    return user;
+    return await this.usersRepository.delete(id);
   }
 
   public extractPayloadFromHeader(authorizationHeader) {

@@ -37,7 +37,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     setUser(null);
     localStorage.removeItem("token");
     localStorage.removeItem("user");
-    navigate("/login");
+    navigate("/");
   };
 
   const userPackage: CurrentUser = {

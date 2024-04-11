@@ -1,3 +1,3 @@
 export function descendingOrder(a: any, b: any) {
-  return a.taskId - b.taskId;
+  return b.taskId - a.taskId;
 }

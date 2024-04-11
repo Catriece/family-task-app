@@ -6,12 +6,10 @@ import {
   Box,
   Heading,
   Text,
-  IconButton,
   Collapse,
   useDisclosure,
   Checkbox,
   useToast,
-  HTMLChakraComponents,
 } from "@chakra-ui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@chakra-ui/icons";
 import { TfiTrash } from "react-icons/tfi";
@@ -44,13 +42,7 @@ const TaskComponent: FC<TaskData> = ({
 
   let { taskCount, setTaskCount } = useTask();
 
-  const {
-    openModal,
-    closeModal,
-    isOpen: handleModal,
-    setEdits,
-    edits,
-  } = useModal();
+  const { openModal, closeModal, isOpen: handleModal, setEdits } = useModal();
 
   const remove = useMutation({
     mutationFn: deleteTaskFunction,
@@ -76,13 +68,17 @@ const TaskComponent: FC<TaskData> = ({
     },
   });
 
-  const deleteTask = async () => {
+  const deleteTask = async (e: React.MouseEvent<HTMLButtonElement>) => {
     const formData = {
       taskId: Number(index),
       userId: id,
     };
 
+    if (completed) {
+      setTaskCount(taskCount - 1);
+    }
     await remove.mutateAsync(formData);
+    onToggle();
   };
 
   const editTask = async () => {
@@ -94,10 +90,8 @@ const TaskComponent: FC<TaskData> = ({
       },
     });
     // stores info from edits into state
-    console.log(formData.data);
     setEdits(formData.data[0]); // Double check how edits are set up in context
     handleModal ? closeModal() : openModal();
-    console.log(edits, "edits");
   };
 
   const markCompleted = async () => {
@@ -105,7 +99,6 @@ const TaskComponent: FC<TaskData> = ({
     setBoxChecked(setComplete);
     completedRef.current = setComplete;
 
-    console.log(taskCount, "Task Count");
     setTaskCount(taskCount + (setComplete ? 1 : -1));
 
     const markCompleted = await axios.put(
@@ -117,18 +110,20 @@ const TaskComponent: FC<TaskData> = ({
     );
 
     console.log("Completed", markCompleted);
-    1;
   };
 
-  console.log("Priority in card", priority);
   return (
     <Card
       w="90%"
       mb={3}
       key={index}
-      borderColor={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
+      borderColor={
+        Number(priority) === 1 ? SUCCESS : Number(priority) === 2 ? ERROR : ""
+      }
       borderWidth=".1em"
-      bg={priority === 1 ? SUCCESS : priority === 2 ? ERROR : ""}
+      bg={
+        Number(priority) === 1 ? SUCCESS : Number(priority) === 2 ? ERROR : ""
+      }
     >
       <CardHeader p={2} pt={3} pb={0}>
         <Flex flexDirection={"column"}>
@@ -145,15 +140,16 @@ const TaskComponent: FC<TaskData> = ({
             </Box>
           </Flex>
 
-          <Flex alignItems={"center"}>
-            <IconButton
-              variant="ghost"
-              colorScheme="gray"
-              aria-label="See menu"
-              icon={isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />} // Description must also be present
-              onClick={onToggle}
-            />
-            <Text fontWeight={500}>
+          <Flex
+            alignItems={"center"}
+            mt={2}
+            mb={3}
+            ml={3}
+            as="button"
+            onClick={onToggle}
+          >
+            {isOpen ? <ChevronUpIcon /> : <ChevronDownIcon />}
+            <Text fontWeight={500} fontSize={"sm"} ml={2}>
               {isOpen ? "Hide Description" : "See Description"}
             </Text>
           </Flex>

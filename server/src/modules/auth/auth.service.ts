@@ -6,10 +6,10 @@ import { SendEmailDto } from '../mail/dto/mail.dto';
 import { MailService } from '../mail/mail.service';
 import { ResetPasswordTemplate } from '../mail/emailTemplates/password-reset';
 import { UpdatePasswordDto } from './dto/update-password-dto';
-import { SignUpDto } from './dto/sign-up-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
-import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
+import { TasksService } from '../tasks/tasks.service';
+import { profile } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -17,6 +17,7 @@ export class AuthService {
     private userService: UserService,
     private jwtService: JwtService,
     private mailService: MailService,
+    private taskService: TasksService,
   ) {} // Add constructor to allow usage of service
 
   async login(email: string, password: string): Promise<any> {
@@ -42,7 +43,7 @@ export class AuthService {
     return user;
   }
 
-  // Salt and hashing password
+  // Salt and hashing password function
   async hashPassword(password: string) {
     return await bcrypt.hash(password, 10); // 10 salt rounds
   }
@@ -58,9 +59,15 @@ export class AuthService {
       password: hashedPassword,
     };
 
-    const payload = await this.userService.createUser(user);
+    const createdUser = await this.userService.createUser(user);
 
-    if (payload !== null) {
+    if (createdUser !== null) {
+      const payload = {
+        sub: createdUser.id,
+        email: createdUser.email,
+        isActive: createdUser.isActive,
+      };
+
       return {
         access_token: await this.jwtService.signAsync(payload),
         payload,
@@ -130,23 +137,36 @@ export class AuthService {
     }
   }
 
-  async updatePersonalInformation(
-    id: string,
-    firstName: string,
-    lastName: string,
-    preferredName: string,
-    email: string,
-    birthday: string,
-  ) {
+  async updatePersonalInformation(body) {
+    const {
+      id,
+      Email,
+      birthday,
+      preferredName,
+      lastName,
+      firstName,
+      profilePhoto,
+    } = body;
+
     const user = await this.userService.findUserById(id);
+
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (preferredName) user.preferredName = preferredName;
+    if (!preferredName) user.preferredName = null;
+    if (profilePhoto) user.profilePhoto = profilePhoto;
     if (birthday) user.birthday = birthday;
-    if (email) user.email = email; // Eventually new email should be delayed and verified with mailservice
+    if (Email) {
+      const exists = await this.userService.findUserByEmail(Email);
+
+      if (exists) throw new Error('Email already exists');
+      else user.email = Email; // Eventually new email should be delayed and verified with mailservice
+    }
 
     if (user === null) throw new UnauthorizedException('User does not exist');
-    else return await this.userService.updateUser(user);
+    else {
+      return await this.userService.updateUser(user);
+    }
   }
 
   async deleteUser(deleteUserDto: DeleteUserDto) {
@@ -159,6 +179,17 @@ export class AuthService {
 
     if (verified === false)
       throw new UnauthorizedException('Incorrect password');
-    else return await this.userService.deleteUser(id);
+
+    try {
+      const tasksToDelete = await this.taskService.getUserTasks(id);
+
+      tasksToDelete.forEach(async (task) => {
+        await this.taskService.deleteTask(task.taskId);
+      });
+
+      if (tasksToDelete.length < 1) await this.userService.deleteUser(id);
+    } catch (error) {
+      throw new UnauthorizedException('Unable to delete user');
+    }
   }
 }

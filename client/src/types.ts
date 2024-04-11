@@ -28,7 +28,7 @@ export type CurrentUser = {
 };
 
 export type AccountInfo = {
-  // image: string
+  profilePhoto: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -46,23 +46,24 @@ export interface ToastMessage {
 
 export interface ChangePassword {
   id: string | undefined;
-  token: string | null;
+  // token: string | null;
   currentPassword: string;
   newPassword: string;
 }
 
 export interface UpdateUserInformation {
-  //id: string | undefined;
-  token: string | null;
+  id: string | undefined;
+  //token: string | null;
   firstName?: string;
   lastName?: string;
   preferredName?: string;
   email?: string;
+  profilePhoto?: string;
 }
 
 export interface DeleteUser {
   id: string | undefined;
-  token: string | null;
+  //token: string | null;
   password: string;
 }
 
