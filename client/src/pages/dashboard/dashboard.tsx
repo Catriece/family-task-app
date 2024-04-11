@@ -65,7 +65,7 @@ const DashboardPage: FC = () => {
       ) : null}
 
       <GridItem as="nav" area="header" colStart={ISLARGERTHAN750 ? 3 : 2}>
-        {ISLARGERTHAN750 ? <TopNavigationBar /> : <MenuComponent />}
+        <TopNavigationBar />
         <TaskModalForm />
       </GridItem>
 

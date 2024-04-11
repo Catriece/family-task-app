@@ -9,6 +9,7 @@ import { UpdatePasswordDto } from './dto/update-password-dto';
 import { ChangePasswordDto } from './dto/change-password-dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
 import { TasksService } from '../tasks/tasks.service';
+import { profile } from 'console';
 
 @Injectable()
 export class AuthService {
@@ -136,36 +137,35 @@ export class AuthService {
     }
   }
 
-  async updatePersonalInformation(
-    // id: string,
-    // firstName: string,
-    // lastName: string,
-    // preferredName: string,
-    // email: string,
-    // birthday: string,
-    body,
-  ) {
-    const { id, email, birthday, preferredName, lastName, firstName } = body;
-    console.log('BODY IN UPI Func', body);
+  async updatePersonalInformation(body) {
+    const {
+      id,
+      Email,
+      birthday,
+      preferredName,
+      lastName,
+      firstName,
+      profilePhoto,
+    } = body;
 
     const user = await this.userService.findUserById(id);
 
     if (firstName) user.firstName = firstName;
     if (lastName) user.lastName = lastName;
     if (preferredName) user.preferredName = preferredName;
+    if (!preferredName) user.preferredName = null;
+    if (profilePhoto) user.profilePhoto = profilePhoto;
     if (birthday) user.birthday = birthday;
-    if (email) {
-      const exists = await this.userService.findUserByEmail(email);
+    if (Email) {
+      const exists = await this.userService.findUserByEmail(Email);
 
       if (exists) throw new Error('Email already exists');
-      else user.email = email; // Eventually new email should be delayed and verified with mailservice
+      else user.email = Email; // Eventually new email should be delayed and verified with mailservice
     }
 
-    console.log('USER AFTER CHANGE: ', user);
     if (user === null) throw new UnauthorizedException('User does not exist');
     else {
-      const updated = await this.userService.updateUser(user);
-      console.log('Updated', updated);
+      return await this.userService.updateUser(user);
     }
   }
 

@@ -28,7 +28,7 @@ export type CurrentUser = {
 };
 
 export type AccountInfo = {
-  // image: string
+  profilePhoto: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -58,6 +58,7 @@ export interface UpdateUserInformation {
   lastName?: string;
   preferredName?: string;
   email?: string;
+  profilePhoto?: string;
 }
 
 export interface DeleteUser {

@@ -1,10 +1,9 @@
 import {
   Controller,
   Delete,
-  Param,
-  Query,
-  Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { Get, Post, Body, Headers, Request } from '@nestjs/common';
@@ -19,6 +18,8 @@ import { UserService } from '../user/user.service';
 import { UpdateUserDto } from '../user/dto/update-user.dto';
 import { DeleteUserDto } from '../user/dto/delete-user.dto';
 import * as jwt from 'jsonwebtoken';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Express } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -98,6 +99,13 @@ export class AuthController {
   async updatePersonalInformation(@Body() body: UpdateUserDto) {
     const payload = await this.authService.updatePersonalInformation(body);
 
-    //if (payload) return payload;
+    if (payload) return payload;
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('/upload-image')
+  @UseInterceptors(FileInterceptor('profilePhoto'))
+  async uploadImage(@UploadedFile() file: Express.Multer.File) {
+    console.log('File url: ', file);
   }
 }

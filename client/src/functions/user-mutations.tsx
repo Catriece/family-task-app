@@ -20,18 +20,36 @@ export const changePasswordFunction = (requestBody: ChangePassword) => {
   });
 };
 
-export const updateUserFunction = (requestBody: UpdateUserInformation) => {
+export const updateUserFunction = async (
+  requestBody: UpdateUserInformation
+) => {
   const token = localStorage.getItem("token");
-  const data = axios.post(
-    `http://localhost:2883/auth/update-user-personal-info`,
-    requestBody,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return data;
+  if (requestBody.profilePhoto) {
+    console.log(requestBody);
+    const data = await axios.post(
+      `http://localhost:2883/auth/upload-image`,
+      requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    return data;
+  } else {
+    const data = await axios.post(
+      `http://localhost:2883/auth/update-user-personal-info`,
+      requestBody,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return data;
+  }
 };
 
 export const deleteUserFunction = (requestBody: DeleteUser) => {

@@ -68,10 +68,10 @@ In a new terminal:
 
 - [ ] Navigate to the `/server` folder
 - [ ] Install all dependencies with `npm install`
-- [ ] Create `.env` file from `.env.copy` file
-- [ ]
+- [ ] Create `.env` file from `.env.copy` file (Make sure the .env file is located in the server folder)
+- [ ] Run `npm run build`
 - [ ] Run migration with: `npm run migration:run`
-- [ ] Start the server with `nest run start:dev` command
+- [ ] Start the server with `npm run start:dev` command
 
 ## FOLDER STRUCTURE
 

@@ -5,11 +5,14 @@ import {
   TabList,
   TabPanels,
   TabPanel,
+  useMediaQuery,
 } from "@chakra-ui/react";
 import LoginForm from "../../pages/login/login-form";
 import CreateAccountForm from "../forms/create-account";
 
 const LoginAuthenticationTabs = () => {
+  const [isLargerThan550] = useMediaQuery("(min-width: 550px)");
+
   return (
     <Tabs align="end" variant="enclosed" height="600px" width="450px">
       <TabList
@@ -31,11 +34,11 @@ const LoginAuthenticationTabs = () => {
       <TabPanels>
         <TabPanel aria-labelledby="Login-Tab">
           <Flex justifyContent="center" marginTop="25%">
-            <LoginForm />
+            {isLargerThan550 ? <LoginForm /> : null}
           </Flex>
         </TabPanel>
         <TabPanel aria-labelledby="Create-An-Account-Tab">
-          <CreateAccountForm />
+          {isLargerThan550 ? <CreateAccountForm /> : null}
         </TabPanel>
       </TabPanels>
     </Tabs>

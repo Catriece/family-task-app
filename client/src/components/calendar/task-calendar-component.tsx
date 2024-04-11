@@ -9,12 +9,9 @@ import { useModal } from "../../context/modal/modal-context";
 const TaskByWeekCalendarComponent = () => {
   let data: any = useLoaderData();
   const tasks: any = data.get("tasks").data.sort(descendingOrder);
+
   const { openModal } = useModal();
 
-  const prioritySort = tasks;
-  console.log(prioritySort, "Priority");
-
-  console.log("Tasks", tasks);
   return (
     <Flex
       w={"100%"}
@@ -26,13 +23,11 @@ const TaskByWeekCalendarComponent = () => {
     >
       {tasks.length > 0 ? (
         tasks.map((task: any, index: number) => {
-          console.log("Task: ", task);
           return (
             <TaskComponent
               key={index}
               index={task.taskId}
               description={task.description}
-              //dueOn={task.dueOn}
               priority={task.priority}
               title={task.title}
               completed={task.completed}

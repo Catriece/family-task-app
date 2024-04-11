@@ -77,6 +77,8 @@ const SettingsPage = () => {
     }
   }, [isOpen]);
 
+  console.log("Data from browser router", data);
+
   const navigate = useNavigate();
   const { id } = useParams();
 
@@ -172,6 +174,7 @@ const SettingsPage = () => {
                 lastName={data.lastName}
                 email={data.email}
                 preferredName={data.preferredName}
+                profilePhoto={"test"}
               />
 
               <Divider marginTop={"20px"} marginBottom={"20px"} />

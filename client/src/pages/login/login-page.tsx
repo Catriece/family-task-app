@@ -20,15 +20,19 @@ const LoginPage: FC = () => {
   return (
     <Center>
       <Grid
-        templateAreas={`"navigation" "body"`}
-        gridTemplateRows={isLargerThan550 ? "1fr" : "40px 1fr 40px"}
+        templateAreas={`"nav" "body" "footer"`}
+        gridTemplateRows={isLargerThan550 ? "1fr" : "40pt 1fr 40pt"}
         gridTemplateColumns={"1fr"}
+        height="100vh"
       >
-        <GridItem area={"navigation"}>
-          <LoginAuthenticationTabs />
+        <GridItem area={"nav"} rowStart={1}>
+          <Flex justifyContent={"flex-end"}>
+            <Button variant="ghost">Sign Up</Button>
+            <Button />
+          </Flex>
         </GridItem>
         {pageView === "signup" && (
-          <GridItem area={"body"}>
+          <GridItem area={"body"} rowStart={2}>
             {isLargerThan550 ? null : (
               <Box paddingTop="10px">
                 <CreateAccountForm />
