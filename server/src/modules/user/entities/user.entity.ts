@@ -1,5 +1,5 @@
 // table schema for database
-import { TasksEntity } from 'src/modules/tasks/entities/tasks.entity';
+import { TasksEntity } from '../../tasks/entities/tasks.entity';
 import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 
 @Entity()
