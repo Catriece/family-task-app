@@ -167,34 +167,76 @@ describe('TasksService', () => {
     });
   });
 
-  it('updateTask => should find the user task to update by the taskId and update the found task', async () => {
+  it('updateTask => should find the user task to be updated and update that task', async () => {
+    const taskId = 1;
     const toUpdate = {
       taskId: 1,
       userId: '1',
-      title: 'Task 1',
-      description: '',
-      priority: 1,
+      title: 'Update Task 1',
+      description: 'Task is updated!',
+      priority: 2,
       completed: false,
-    } as UpdateTaskDto;
+    } as TasksEntity;
 
-    const updatedTask = [
-      {
-        taskId: 1,
-        userId: '1',
-        title: 'Update Task 1',
-        description: 'Task is updated!',
-        priority: 2,
-        completed: false,
+    const updatedTask = {
+      taskId: 1,
+      userId: '1',
+      title: 'Update Task 1',
+      description: 'Task is updated!',
+      priority: 2,
+      completed: false,
+    } as TasksEntity;
+
+    jest.spyOn(mockTaskRepository, 'findOne').mockReturnValue({
+      where: {
+        taskId: toUpdate.taskId,
       },
-    ] as TasksEntity[];
-
-    jest.spyOn(mockTaskRepository, 'findOne').mockReturnValue(toUpdate);
-    jest.spyOn(mockTaskRepository, 'merge').mockReturnValue(updatedTask);
+    });
+    jest.spyOn(mockTaskRepository, 'merge');
+    jest.spyOn(mockTaskRepository, 'save').mockReturnValue(toUpdate);
 
     const result = await service.updateTask(toUpdate);
 
     expect(result).toEqual(updatedTask);
-    // expect(mockTaskRepository.delete).toHaveBeenCalled();
-    // expect(mockTaskRepository.delete).toHaveBeenCalledWith(toUpdate);
+    expect(mockTaskRepository.findOne).toHaveBeenCalled();
+    expect(mockTaskRepository.findOne).toHaveBeenCalledWith({
+      where: { taskId },
+    });
+    expect(mockTaskRepository.merge).toHaveBeenCalled();
+    expect(mockTaskRepository.merge).toHaveBeenCalledWith(toUpdate);
+    expect(mockTaskRepository.save).toHaveBeenCalled();
+    expect(mockTaskRepository.save).toHaveBeenCalledWith(toUpdate);
+  });
+
+  it('markCompleted => should find the user task to update and mark it completed', async () => {
+    const taskId = 1;
+    const completed = true;
+
+    const foundTask = {
+      taskId: 1,
+      userId: '1',
+      title: 'Update Task 1',
+      description: 'Task is updated!',
+      priority: 2,
+      completed: false,
+    } as TasksEntity;
+
+    jest.spyOn(mockTaskRepository, 'findOne').mockReturnValue(taskId);
+    jest.spyOn(mockTaskRepository, 'save').mockReturnValue(foundTask);
+    jest.spyOn(mockTaskRepository, 'findOne').mockReturnValue(foundTask);
+
+    const result = await service.markCompleted(taskId, completed);
+
+    expect(result).toEqual(foundTask);
+    expect(mockTaskRepository.findOne).toHaveBeenCalled();
+    expect(mockTaskRepository.findOne).toHaveBeenCalledWith({
+      where: { taskId },
+    });
+    expect(mockTaskRepository.save).toHaveBeenCalled();
+    expect(mockTaskRepository.save).toHaveBeenCalledWith(foundTask);
+    expect(mockTaskRepository.findOne).toHaveBeenCalled();
+    expect(mockTaskRepository.findOne).toHaveBeenCalledWith({
+      where: { taskId },
+    });
   });
 });
